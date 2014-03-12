@@ -1,0 +1,3 @@
+[submodule "scoring-2014"]
+	path = scoring-2014
+	url = https://github.com/PeterJCLaw/scoring-2014.git
