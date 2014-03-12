@@ -1,3 +1,4 @@
+import arenas
 import matches
 import os
 import scores
@@ -11,4 +12,4 @@ class SRComp(object):
         self.schedule = matches.MatchSchedule(os.path.join(root, "schedule.yaml"))
         self.scores = scores.Scores(os.path.join(root, "league"),
                                     self.teams)
-
+        self.arenas = arenas.load_arenas(os.path.join(root, "arenas.yaml"))
