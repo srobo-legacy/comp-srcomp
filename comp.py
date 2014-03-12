@@ -13,3 +13,4 @@ class SRComp(object):
         self.scores = scores.Scores(os.path.join(root, "league"),
                                     self.teams)
         self.arenas = arenas.load_arenas(os.path.join(root, "arenas.yaml"))
+        self.corners = arenas.load_corners(os.path.join(root, "arenas.yaml"))
