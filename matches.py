@@ -28,66 +28,47 @@ class MatchSchedule(object):
         self.match_period = datetime.timedelta(0, y["match_period_length_seconds"])
         self.current_delay = datetime.timedelta(0, y["current_delay"])
 
+        self._build_matchlist(y["matches"])
+
+    def _build_matchlist(self, yamldata):
+        "Build the match list"
         self.matches = {}
-        for num, info in y["matches"].iteritems():
-            self.matches[num] = {}
+        match_numbers = sorted(yamldata.keys())
 
-            for arena_name, teams in info.iteritems():
-                start_time = self._find_match_start(num)
-                end_time = start_time + self.match_period
+        # First match starts at this point
+        current_start = self.match_periods[0].start_time + self.current_delay
 
-                match = Match(num, arena_name, teams, start_time, end_time)
-                self.matches[num][arena_name] = match
-
-    def _find_match_start(self, num):
-        "Find match num's start time"
-        n = 0
-
-        # Find the period this match features in
         for period in self.match_periods:
-            n += self.matches_in_period(period)
-            if num < n:
-                "Match is in this period"
-                break
+            # Fill this period with matches
+            start = period.start_time + self.current_delay
 
-        if num >= n:
-            "This match never starts"
-            return None
+            # Fill this match period with matches
+            while start < period.end_time:
+                try:
+                    matchnum = match_numbers.pop(0)
+                except IndexError:
+                    "No more matches left"
+                    break
+                self.matches[matchnum] = {}
 
-        # Number of the first match in the period:
-        period_first_match = n - self.matches_in_period(period)
+                for arena_name, teams in yamldata[matchnum].iteritems():
+                    end_time = start + self.match_period
+                    match = Match(matchnum, arena_name, teams, start, end_time)
+                    self.matches[matchnum][arena_name] = match
 
-        # Offset of this match within this period
-        offset_in_period = num - period_first_match
-
-        return period.start_time + (offset_in_period * self.match_period)
+                start += self.match_period
 
     def n_matches(self):
-        total = 0
-        for period in self.match_periods:
-            total += self.matches_in_period(period)
-
-        return total
+        return len(self.matches)
 
     def current_match(self):
-        t = datetime.datetime.now() - self.current_delay
-        match_num = 0
+        now = datetime.datetime.now()
 
-        # Find the period that we are currently int
-        for period in self.match_periods:
-            if t < period.end_time:
-                break
-            match_num += self.matches_in_period(period)
+        for arenas in self.matches.values():
+            match = arenas.values()[0]
 
-        if t < period.start_time:
-            "We're before the beginning of the competition"
-            return None
+            if now >= match.start_time and now < match.end_time:
+                return match
 
-        # Partial period from beginning of current period until now
-        partial = MatchPeriod(period.start_time,t)
-        match_num += self.matches_in_period(partial)
-
-        return self.matches[match_num]
-
-    def matches_in_period(self, period):
-        return (period.end_time - period.start_time).seconds/self.match_period.seconds
+        # No current match
+        return None
