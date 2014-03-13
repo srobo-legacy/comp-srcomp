@@ -11,7 +11,7 @@ except ImportError:
     from yaml import Loader as YAML_Loader
 
 MatchPeriod = namedtuple("MatchPeriod",
-                         ["start_time","end_time"])
+                         ["start_time","end_time", "max_end_time"])
 
 Match = namedtuple("Match",
                    ["num", "arena", "teams", "start_time", "end_time"])
@@ -26,8 +26,14 @@ class MatchSchedule(object):
 
         self.match_periods = []
         for e in y["match_sets"]:
+            if "max_end_time" in e:
+                max_end_time = e["max_end_time"]
+            else:
+                max_end_time = e["end_time"]
+
             self.match_periods.append(MatchPeriod(e["start_time"],
-                                                 e["end_time"]))
+                                                  e["end_time"],
+                                                  max_end_time))
 
         self.match_period = datetime.timedelta(0, y["match_period_length_seconds"])
 
@@ -52,24 +58,19 @@ class MatchSchedule(object):
         self.matches = {}
         match_numbers = sorted(yamldata.keys())
 
-        # First match starts at this point
-        current_start = self.match_periods[0].start_time
-
-        # The current delay
-        current_delay = datetime.timedelta()
-
         # We'll pop items off this list as we go
         delays = list(self.delays)
 
         for period in self.match_periods:
             # Fill this period with matches
             start = period.start_time
-
-            while len(delays) and delays[0].time <= start:
-                start += delays.pop(0).delay
+            delay = timedelta()
 
             # Fill this match period with matches
-            while start < period.end_time:
+            while True:
+                while len(delays) and delays[0].time <= start:
+                    delay += delays.pop(0).delay
+
                 try:
                     matchnum = match_numbers.pop(0)
                 except IndexError:
@@ -78,13 +79,25 @@ class MatchSchedule(object):
                 self.matches[matchnum] = {}
 
                 for arena_name, teams in yamldata[matchnum].iteritems():
-                    end_time = start + self.match_period
-                    match = Match(matchnum, arena_name, teams, start, end_time)
+                    start_time = start + delay
+                    end_time = start_time + self.match_period
+                    match = Match(matchnum, arena_name, teams, start_time, end_time)
                     self.matches[matchnum][arena_name] = match
 
                 start += self.match_period
-                while len(delays) and delays[0].time <= start:
-                    start += delays.pop(0).delay
+
+                # Ensure we haven't exceeded the maximum time limit
+                # (if we have then matches will get pushed into the next period)
+                if start + delay > period.max_end_time:
+                    "We've filled this up to the maximum end time"
+                    break
+
+                # Ensure we haven't attempted to pack in more matches than will
+                # fit in this period
+                if start > period.end_time:
+                    "We've filled up this period"
+                    break
+
 
     def n_matches(self):
         return len(self.matches)
