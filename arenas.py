@@ -1,18 +1,13 @@
 from collections import namedtuple
-import yaml
 
-try:
-    from yaml import CLoader as YAML_Loader
-except ImportError:
-    from yaml import Loader as YAML_Loader
+import yaml_loader
 
 Corner = namedtuple("Corner", ["number", "colour"])
 
 def load_arenas(fname):
     "Load arenas from a YAML file"
 
-    with open(fname, "r") as f:
-        y = yaml.load(f, Loader = YAML_Loader)
+    y = yaml_loader.load(fname)
 
     arenas = []
     for name in y["arenas"]:
@@ -23,8 +18,7 @@ def load_arenas(fname):
 def load_corners(fname):
     "Load corner colours from a YAML file"
 
-    with open(fname, "r") as f:
-        y = yaml.load(f, Loader = YAML_Loader)
+    y = yaml_loader.load(fname)
 
     corners = {}
     for n, colour in y["corner_colours"].iteritems():

@@ -3,15 +3,10 @@ from decimal import Decimal as D
 import glob
 import os
 import sys
-import yaml
 
 import ranker
 from scorer import Scorer
-
-try:
-    from yaml import CLoader as YAML_Loader
-except ImportError:
-    from yaml import Loader as YAML_Loader
+import yaml_loader
 
 class InvalidTeam(Exception):
     pass
@@ -55,8 +50,7 @@ class LeagueScores(object):
                 self.teams[tla] += D(score)
 
     def _load_resfile(self, fname):
-        with open(fname, "r") as f:
-            y = yaml.load(f, Loader = YAML_Loader)
+        y = yaml_loader.load(fname)
 
         match_id = (y["arena_id"], y["match_number"])
         if match_id in self.game_points:
