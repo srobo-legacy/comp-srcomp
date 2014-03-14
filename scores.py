@@ -1,10 +1,12 @@
+
 from decimal import Decimal as D
 import glob
 import os
-import ranker
-from scorer import Scorer
 import sys
 import yaml
+
+import ranker
+from scorer import Scorer
 
 try:
     from yaml import CLoader as YAML_Loader
@@ -76,5 +78,3 @@ class Scores(object):
     def __init__(self, resultdir, teams):
         self.resultdir = resultdir
         self.league = LeagueScores(resultdir, teams)
-
-

@@ -1,6 +1,8 @@
+
+import os
+
 import arenas
 import matches
-import os
 import scores
 import teams
 
