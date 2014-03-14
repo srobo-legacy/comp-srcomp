@@ -38,8 +38,12 @@ class LeagueScores(object):
             self.teams[tla] = D(0)
 
         # Find the scores for each match
-        for resfile in glob.glob( os.path.join( resultdir, "*.yaml" ) ):
-            self._load_resfile( resfile )
+        for dname in glob.glob( os.path.join( resultdir, "*" ) ):
+            if not os.path.isdir(dname):
+                continue
+
+            for resfile in glob.glob( os.path.join( dname, "*.yaml" ) ):
+                self._load_resfile( resfile )
 
         # Sum the scores for each team
         for match in self.match_league_points.values():
