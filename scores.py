@@ -1,6 +1,7 @@
 from decimal import Decimal as D
 import glob
 import os
+import ranker
 from scorer import Scorer
 import sys
 import yaml
@@ -13,16 +14,19 @@ except ImportError:
 class InvalidTeam(Exception):
     pass
 
+class DuplicateScoresheet(Exception):
+    pass
+
 class LeagueScores(object):
     def __init__(self, resultdir, teams):
         self.resultdir = resultdir
 
         # Game points in each match
-        # keys are match numbers
-        self.matches = {}
+        # keys are (arena_id, match_num) tuples
+        self.game_points = {}
 
         # League points in each match
-        # keys are match numbers
+        # keys are (arena_id, match_num) tuples
         self.match_league_points = {}
 
         # League points for each team
@@ -40,34 +44,29 @@ class LeagueScores(object):
         # Sum the scores for each team
         for match in self.match_league_points.values():
             for tla, score in match.iteritems():
-
                 if tla not in self.teams:
                     raise InvalidTeam()
-
-                self.teams[tla] += score
-            self.teams
+                self.teams[tla] += D(score)
 
     def _load_resfile(self, fname):
         with open(fname, "r") as f:
             y = yaml.load(f, Loader = YAML_Loader)
 
+        match_id = (y["arena_id"], y["match_number"])
+        if match_id in self.game_points:
+            raise DuplicateScoresheet()
+
         game_points = Scorer(y["teams"]).calculate_scores()
-        match_num = y["match_number"]
+        self.game_points[match_id] = game_points
 
-        self.matches[match_num] = game_points
-        self.match_league_points[match_num] = self._league_points(game_points)
+        # Build the disqualification dict
+        dsq = []
+        for tla, scoreinfo in y["teams"].iteritems():
+            if "disqualified" in scoreinfo and scoreinfo["disqualified"]:
+                dsq.append(tla)
 
-    def _league_points(self, game_points):
-        "Find the league points given these game_points"
-
-        # TODO: Deal with disqualifications and absences
-        p = {}
-        for tla, game_score in game_points.iteritems():
-            # TODO: Do this properly
-            p[tla] = game_score
-
-        return p
-
+        league_points = ranker.get_ranked_points(game_points, dsq)
+        self.match_league_points[match_id] = league_points
 
 class Scores(object):
     def __init__(self, resultdir, teams):
