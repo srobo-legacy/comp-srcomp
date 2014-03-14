@@ -14,6 +14,14 @@ class InvalidTeam(Exception):
 class DuplicateScoresheet(Exception):
     pass
 
+def results_finder(root):
+    for dname in glob.glob(os.path.join(root, "*")):
+        if not os.path.isdir(dname):
+            continue
+
+        for resfile in glob.glob(os.path.join(dname, "*.yaml")):
+            yield resfile
+
 class LeagueScores(object):
     def __init__(self, resultdir, teams):
         self.resultdir = resultdir
@@ -31,16 +39,12 @@ class LeagueScores(object):
         self.teams = {}
 
         # Start with 0 points for each team
-        for tla in teams.keys():
+        for tla in teams:
             self.teams[tla] = D(0)
 
         # Find the scores for each match
-        for dname in glob.glob( os.path.join( resultdir, "*" ) ):
-            if not os.path.isdir(dname):
-                continue
-
-            for resfile in glob.glob( os.path.join( dname, "*.yaml" ) ):
-                self._load_resfile( resfile )
+        for resfile in results_finder(resultdir):
+            self._load_resfile(resfile)
 
         # Sum the scores for each team
         for match in self.match_league_points.values():
