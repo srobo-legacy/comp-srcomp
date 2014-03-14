@@ -103,7 +103,7 @@ class MatchSchedule(object):
             if when >= match.start_time and when < match.end_time:
                 return arenas
 
-        # No current match
+        # No match at that time
         return None
 
     def current_match(self):
