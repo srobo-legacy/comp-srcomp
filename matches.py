@@ -19,7 +19,7 @@ class MatchSchedule(object):
         y = yaml_loader.load(config_fname)
 
         self.match_periods = []
-        for e in y["match_sets"]:
+        for e in y["match_periods"]["league"]:
             if "max_end_time" in e:
                 max_end_time = e["max_end_time"]
             else:
