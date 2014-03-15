@@ -6,4 +6,4 @@
 	url = git://github.com/PeterJCLaw/ranker.git
 [submodule "tests/dummy"]
 	path = tests/dummy
-	url = https://bitbucket.org/rspanton/sr-dummy-comp
+	url = git://github.com/PeterJCLaw/sr-dummy-comp.git

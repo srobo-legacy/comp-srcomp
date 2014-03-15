@@ -15,11 +15,14 @@ def get_basic_data():
             "delay": 15,
             "time":         datetime(2014, 03, 26,  13, 02)
         } ],
-        "match_sets": [ {
-            "start_time":   datetime(2014, 03, 26,  13),
-            "end_time":     datetime(2014, 03, 26,  17, 30),
-            "max_end_time": datetime(2014, 03, 26,  17, 40, 00)
-        } ],
+        "match_periods": {
+            "league": [ {
+                "start_time":   datetime(2014, 03, 26,  13),
+                "end_time":     datetime(2014, 03, 26,  17, 30),
+                "max_end_time": datetime(2014, 03, 26,  17, 40, 00)
+            } ],
+            "knockout": []
+        },
         "matches": {
             0: {
                 "A": ["CLY", "TTN", "SCC", "DSF"],
