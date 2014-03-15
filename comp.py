@@ -1,4 +1,5 @@
 
+from collections import namedtuple
 import os
 
 import arenas
@@ -16,3 +17,6 @@ class SRComp(object):
                                     self.teams.keys())
         self.arenas = arenas.load_arenas(os.path.join(root, "arenas.yaml"))
         self.corners = arenas.load_corners(os.path.join(root, "arenas.yaml"))
+        Knockout = namedtuple('Knockout', ['max_entrants'])
+        # TODO: put this somewhere in a config file once the knockouts have a format
+        self.knockout = Knockout(max_entrants = 10)
