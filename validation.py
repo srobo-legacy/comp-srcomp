@@ -10,12 +10,17 @@ def report_errors(type_, id_, errors):
         print >>sys.stderr, "    {0}".format(error)
 
 def validate(comp):
-    validate_schedule(comp.schedule, comp.teams.keys())
+    count = 0
+    count += validate_schedule(comp.schedule, comp.teams.keys())
+    return count
 
 def validate_schedule(schedule, possible_teams):
+    count = 0
     for num, match in schedule.matches.items():
         errors = validate_match(match, possible_teams)
+        count += len(errors)
         report_errors('Match', num, errors)
+    return count
 
 def validate_match(match, possible_teams):
     errors = []
