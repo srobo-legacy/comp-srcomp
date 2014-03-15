@@ -5,7 +5,7 @@ def report_errors(type_, id_, errors):
     if len(errors) == 0:
         return
 
-    print >>sys.stderr, "{0} {0} has the following errors:".format(type_, id_)
+    print >>sys.stderr, "{0} {1} has the following errors:".format(type_, id_)
     for error in errors:
         print >>sys.stderr, "    {0}".format(error)
 
