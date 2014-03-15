@@ -102,11 +102,11 @@ class MatchSchedule(object):
     def n_matches(self):
         return len(self.matches)
 
-    def current_match(self):
+    def current_match(self, arena):
         now = datetime.datetime.now()
 
         for arenas in self.matches.values():
-            match = arenas.values()[0]
+            match = arenas[arena]
 
             if now >= match.start_time and now < match.end_time:
                 return match
