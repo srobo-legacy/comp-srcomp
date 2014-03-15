@@ -97,7 +97,7 @@ def test_match_at():
     matches = load_data(the_data)
 
     def check(expected, when):
-        actual = matches.match_at(when)
+        actual = matches.match_at('A', when)
         assert expected == actual
 
     yield check, None,               datetime(2014, 03, 26,  12, 59, 59)
@@ -114,7 +114,7 @@ def test_match_at_with_delays():
     matches = load_basic_data()
 
     def check(expected, when):
-        actual = matches.match_at(when)
+        actual = matches.match_at('A', when)
         assert expected == actual
 
     yield check, matches.matches[0], datetime(2014, 03, 26,  13)

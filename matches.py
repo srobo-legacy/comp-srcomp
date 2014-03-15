@@ -96,9 +96,9 @@ class MatchSchedule(object):
     def n_matches(self):
         return len(self.matches)
 
-    def match_at(self, when):
+    def match_at(self, arena, when):
         for arenas in self.matches.values():
-            match = arenas.values()[0]
+            match = arenas[arena]
 
             if when >= match.start_time and when < match.end_time:
                 return arenas
@@ -106,6 +106,6 @@ class MatchSchedule(object):
         # No match at that time
         return None
 
-    def current_match(self):
+    def current_match(self, arena):
         now = datetime.datetime.now()
-        return self.match_at(now)
+        return self.match_at(arena, now)
