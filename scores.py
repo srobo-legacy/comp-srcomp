@@ -14,6 +14,19 @@ class InvalidTeam(Exception):
 class DuplicateScoresheet(Exception):
     pass
 
+class TeamScore(object):
+    def __init__(self, league = 0, game = 0):
+        self.league_points = D(league)
+        self.game_points = game
+
+    def __eq__(self, other):
+        return isinstance(other, TeamScore) and \
+                other.league_points == self.league_points and \
+                other.game_points == self.game_points
+
+    def __repr__(self):
+        return "TeamScore({0}, {1})".format(self.league_points, self.game_points)
+
 def results_finder(root):
     for dname in glob.glob(os.path.join(root, "*")):
         if not os.path.isdir(dname):
@@ -40,18 +53,25 @@ class LeagueScores(object):
 
         # Start with 0 points for each team
         for tla in teams:
-            self.teams[tla] = D(0)
+            self.teams[tla] = TeamScore()
 
         # Find the scores for each match
         for resfile in results_finder(resultdir):
             self._load_resfile(resfile)
 
-        # Sum the scores for each team
+        # Sum the league scores for each team
         for match in self.match_league_points.values():
             for tla, score in match.iteritems():
                 if tla not in self.teams:
                     raise InvalidTeam()
-                self.teams[tla] += D(score)
+                self.teams[tla].league_points += D(score)
+
+        # Sum the game for each team
+        for match in self.game_points.values():
+            for tla, score in match.iteritems():
+                if tla not in self.teams:
+                    raise InvalidTeam()
+                self.teams[tla].game_points += score
 
     def _load_resfile(self, fname):
         y = yaml_loader.load(fname)

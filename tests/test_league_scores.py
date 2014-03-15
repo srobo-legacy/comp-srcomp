@@ -5,7 +5,7 @@ import mock
 # Hack the path
 import helpers as test_helpers
 
-from scores import LeagueScores
+from scores import LeagueScores, TeamScore
 
 def get_basic_data():
     the_data = {
@@ -84,3 +84,16 @@ def test_league_points():
     league = leagues[id_]
 
     assert league == {'JMS': 0.0, 'PAS': 2.0, 'RUN': 4.0, 'ICE': 3.0}
+
+def test_team_points():
+    scores = load_basic_data()
+
+    expected = {
+        'JMS': TeamScore(0.0, 4),
+        'PAS': TeamScore(2.0, 1),
+        'RUN': TeamScore(4.0, 8),
+        'ICE': TeamScore(3.0, 2),
+    }
+
+    teams_data = scores.teams
+    assert teams_data == expected
