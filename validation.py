@@ -16,7 +16,7 @@ def validate(comp):
 
 def validate_schedule(schedule, possible_teams):
     count = 0
-    for num, match in schedule.matches.items():
+    for num, match in enumerate(schedule.matches):
         errors = validate_match(match, possible_teams)
         count += len(errors)
         report_errors('Match', num, errors)
