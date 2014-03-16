@@ -20,6 +20,15 @@ def validate_schedule(schedule, possible_teams):
         errors = validate_match(match, possible_teams)
         count += len(errors)
         report_errors('Match', num, errors)
+
+    planned = schedule.n_planned_matches
+    actual = schedule.n_matches()
+    if planned != actual:
+        count += 1
+        msg = "Only contains enough time for {0} matches, {1} are planned" \
+                .format(planned, actual)
+        report_errors('Schedule', '', [msg])
+
     return count
 
 def validate_match(match, possible_teams):
