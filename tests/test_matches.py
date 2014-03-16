@@ -41,14 +41,13 @@ def load_data(the_data):
         mock_loader.return_value = the_data
 
         matches = MatchSchedule('')
-
-        assert len(matches.match_periods) == 1
-        assert len(matches.matches) == 2
-
         return matches
 
 def load_basic_data():
-    return load_data(get_basic_data())
+    matches = load_data(get_basic_data())
+    assert len(matches.match_periods) == 1
+    assert len(matches.matches) == 2
+    return matches
 
 def test_basic_data():
     matches = load_basic_data()
