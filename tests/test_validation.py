@@ -1,6 +1,7 @@
 
 from collections import namedtuple
 import os
+import subprocess
 
 # Hack the path
 import helpers as test_helpers
@@ -8,6 +9,17 @@ import helpers as test_helpers
 from validation import validate_match
 
 Match = namedtuple("Match", ["teams"])
+
+def test_dummy_is_valid():
+    test_dir = os.path.dirname(os.path.abspath(__file__))
+    root = os.path.dirname(test_dir)
+    validate = os.path.join(root, 'validate')
+    dummy_compstate = os.path.join(test_dir, 'dummy')
+    try:
+        subprocess.check_output([validate, dummy_compstate], \
+                                stderr=subprocess.STDOUT)
+    except subprocess.CalledProcessError as cpe:
+        assert cpe.returncode == 0, cpe.output
 
 def test_validate_match_duplicate_entrant():
     teams_a = ['ABC', 'DEF', 'GHI', 'JKL']
