@@ -4,3 +4,6 @@
 [submodule "ranker"]
 	path = ranker
 	url = git://github.com/PeterJCLaw/ranker.git
+[submodule "tests/dummy"]
+	path = tests/dummy
+	url = git://github.com/PeterJCLaw/sr-dummy-comp.git

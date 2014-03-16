@@ -1,21 +1,39 @@
+
 from decimal import Decimal as D
 import glob
 import os
+import sys
+
 import ranker
 from scorer import Scorer
-import sys
-import yaml
-
-try:
-    from yaml import CLoader as YAML_Loader
-except ImportError:
-    from yaml import Loader as YAML_Loader
+import yaml_loader
 
 class InvalidTeam(Exception):
     pass
 
 class DuplicateScoresheet(Exception):
     pass
+
+class TeamScore(object):
+    def __init__(self, league = 0, game = 0):
+        self.league_points = D(league)
+        self.game_points = game
+
+    def __eq__(self, other):
+        return isinstance(other, TeamScore) and \
+                other.league_points == self.league_points and \
+                other.game_points == self.game_points
+
+    def __repr__(self):
+        return "TeamScore({0}, {1})".format(self.league_points, self.game_points)
+
+def results_finder(root):
+    for dname in glob.glob(os.path.join(root, "*")):
+        if not os.path.isdir(dname):
+            continue
+
+        for resfile in glob.glob(os.path.join(dname, "*.yaml")):
+            yield resfile
 
 class LeagueScores(object):
     def __init__(self, resultdir, teams):
@@ -34,27 +52,29 @@ class LeagueScores(object):
         self.teams = {}
 
         # Start with 0 points for each team
-        for tla in teams.keys():
-            self.teams[tla] = D(0)
+        for tla in teams:
+            self.teams[tla] = TeamScore()
 
         # Find the scores for each match
-        for dname in glob.glob( os.path.join( resultdir, "*" ) ):
-            if not os.path.isdir(dname):
-                continue
+        for resfile in results_finder(resultdir):
+            self._load_resfile(resfile)
 
-            for resfile in glob.glob( os.path.join( dname, "*.yaml" ) ):
-                self._load_resfile( resfile )
-
-        # Sum the scores for each team
+        # Sum the league scores for each team
         for match in self.match_league_points.values():
             for tla, score in match.iteritems():
                 if tla not in self.teams:
                     raise InvalidTeam()
-                self.teams[tla] += D(score)
+                self.teams[tla].league_points += D(score)
+
+        # Sum the game for each team
+        for match in self.game_points.values():
+            for tla, score in match.iteritems():
+                if tla not in self.teams:
+                    raise InvalidTeam()
+                self.teams[tla].game_points += score
 
     def _load_resfile(self, fname):
-        with open(fname, "r") as f:
-            y = yaml.load(f, Loader = YAML_Loader)
+        y = yaml_loader.load(fname)
 
         match_id = (y["arena_id"], y["match_number"])
         if match_id in self.game_points:
@@ -76,5 +96,3 @@ class Scores(object):
     def __init__(self, resultdir, teams):
         self.resultdir = resultdir
         self.league = LeagueScores(resultdir, teams)
-
-

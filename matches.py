@@ -2,13 +2,8 @@
 from collections import namedtuple
 from datetime import timedelta
 import datetime
-import time
-import yaml
 
-try:
-    from yaml import CLoader as YAML_Loader
-except ImportError:
-    from yaml import Loader as YAML_Loader
+import yaml_loader
 
 MatchPeriod = namedtuple("MatchPeriod",
                          ["start_time","end_time", "max_end_time"])
@@ -21,8 +16,7 @@ Delay = namedtuple("Delay",
 
 class MatchSchedule(object):
     def __init__(self, config_fname):
-        with open(config_fname, "r") as f:
-            y = yaml.load(f.read(), Loader = YAML_Loader)
+        y = yaml_loader.load(config_fname)
 
         self.match_periods = []
         for e in y["match_periods"]["league"]:
@@ -114,13 +108,18 @@ class MatchSchedule(object):
         return len(self.matches)
 
     def current_match(self, arena):
-        now = datetime.datetime.now()
+        return self.match_at(self, arena, datetime.datetime.now())
 
+    def match_at(self, arena, when):
         for arenas in self.matches:
             match = arenas[arena]
 
-            if now >= match.start_time and now < match.end_time:
+            if when >= match.start_time and when < match.end_time:
                 return match
 
-        # No current match
+        # No match at that time
         return None
+
+    def current_match(self, arena):
+        now = datetime.datetime.now()
+        return self.match_at(arena, now)
