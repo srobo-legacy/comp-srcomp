@@ -49,11 +49,18 @@ class MatchSchedule(object):
 
     def _build_matchlist(self, yamldata):
         "Build the match list"
-        self.matches = {}
+        self.matches = []
         match_numbers = sorted(yamldata.keys())
+
+        if match_numbers != range(len(match_numbers)):
+            raise Exception("Matches are not a complete 0-N range")
+
+        arena_info = [yamldata[m] for m in match_numbers]
 
         # We'll pop items off this list as we go
         delays = list(self.delays)
+
+        match_n = 0
 
         for period in self.match_periods:
             # Fill this period with matches
@@ -66,19 +73,23 @@ class MatchSchedule(object):
                     delay += delays.pop(0).delay
 
                 try:
-                    matchnum = match_numbers.pop(0)
+                    arenas = arena_info.pop(0)
                 except IndexError:
                     "No more matches left"
                     break
-                self.matches[matchnum] = {}
 
-                for arena_name, teams in yamldata[matchnum].iteritems():
+                m = {}
+
+                for arena_name, teams in arenas.iteritems():
                     start_time = start + delay
                     end_time = start_time + self.match_period
-                    match = Match(matchnum, arena_name, teams, start_time, end_time)
-                    self.matches[matchnum][arena_name] = match
+                    match = Match(match_n, arena_name, teams, start_time, end_time)
+                    m[arena_name] = match
+
+                self.matches.append(m)
 
                 start += self.match_period
+                match_n += 1
 
                 # Ensure we haven't exceeded the maximum time limit
                 # (if we have then matches will get pushed into the next period)
@@ -97,7 +108,7 @@ class MatchSchedule(object):
         return len(self.matches)
 
     def match_at(self, arena, when):
-        for arenas in self.matches.values():
+        for arenas in self.matches:
             match = arenas[arena]
 
             if when >= match.start_time and when < match.end_time:
