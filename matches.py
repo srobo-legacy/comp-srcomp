@@ -107,9 +107,6 @@ class MatchSchedule(object):
     def n_matches(self):
         return len(self.matches)
 
-    def current_match(self, arena):
-        return self.match_at(self, arena, datetime.datetime.now())
-
     def match_at(self, arena, when):
         for arenas in self.matches:
             match = arenas[arena]
