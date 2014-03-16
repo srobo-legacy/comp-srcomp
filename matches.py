@@ -51,6 +51,7 @@ class MatchSchedule(object):
         "Build the match list"
         self.matches = []
         match_numbers = sorted(yamldata.keys())
+        self.n_planned_matches = len(match_numbers)
 
         if match_numbers != range(len(match_numbers)):
             raise Exception("Matches are not a complete 0-N range")

@@ -1,5 +1,5 @@
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import mock
 import os
 
@@ -129,3 +129,24 @@ def test_match_at_with_delays():
     yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13, 10, 14)
 
     yield check, None,                      datetime(2014, 03, 26,  13, 10, 15)
+
+def test_planned_matches():
+    the_data = get_basic_data()
+
+    extra_match = {
+                "A": ["WYC2", "QMS2", "LSS2", "EMM2"],
+                "B": ["BPV2", "BDF2", "NHS2", "MEA2"]
+            }
+    the_data['matches'][2] = extra_match
+
+    league = the_data['match_periods']['league'][0]
+    league['end_time'] = league['start_time'] + timedelta(minutes=10)
+    del league['max_end_time']
+
+    matches = load_data(the_data)
+
+    n_matches = matches.n_matches()
+    assert n_matches == 2, "Number actually scheduled"
+
+    n_planned_matches = matches.n_planned_matches
+    assert n_planned_matches == 3, "Number originally planned"
