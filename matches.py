@@ -55,6 +55,7 @@ class MatchSchedule(object):
         if match_numbers != range(len(match_numbers)):
             raise Exception("Matches are not a complete 0-N range")
 
+        # Effectively just the .values(), except that it's ordered by number
         arena_info = [yamldata[m] for m in match_numbers]
 
         # We'll pop items off this list as we go
