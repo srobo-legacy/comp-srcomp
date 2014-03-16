@@ -96,33 +96,37 @@ def test_match_at():
 
     matches = load_data(the_data)
 
+    arena = 'A'
+
     def check(expected, when):
-        actual = matches.match_at('A', when)
+        actual = matches.match_at(arena, when)
         assert expected == actual
 
-    yield check, None,               datetime(2014, 03, 26,  12, 59, 59)
+    yield check, None,                      datetime(2014, 03, 26,  12, 59, 59)
 
-    yield check, matches.matches[0], datetime(2014, 03, 26,  13)
-    yield check, matches.matches[0], datetime(2014, 03, 26,  13,  4, 59)
+    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  13)
+    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  13,  4, 59)
 
-    yield check, matches.matches[1], datetime(2014, 03, 26,  13,  5)
-    yield check, matches.matches[1], datetime(2014, 03, 26,  13,  9, 59)
+    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  5)
+    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  9, 59)
 
-    yield check, None,               datetime(2014, 03, 26,  13, 10)
+    yield check, None,                      datetime(2014, 03, 26,  13, 10)
 
 def test_match_at_with_delays():
     matches = load_basic_data()
 
+    arena = 'A'
+
     def check(expected, when):
-        actual = matches.match_at('A', when)
+        actual = matches.match_at(arena, when)
         assert expected == actual
 
-    yield check, matches.matches[0], datetime(2014, 03, 26,  13)
-    yield check, matches.matches[0], datetime(2014, 03, 26,  13,  4, 59)
+    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  13)
+    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  13,  4, 59)
 
-    yield check, None,               datetime(2014, 03, 26,  13,  5, 14)
+    yield check, None,                      datetime(2014, 03, 26,  13,  5, 14)
 
-    yield check, matches.matches[1], datetime(2014, 03, 26,  13,  5, 15)
-    yield check, matches.matches[1], datetime(2014, 03, 26,  13, 10, 14)
+    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  5, 15)
+    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13, 10, 14)
 
-    yield check, None,               datetime(2014, 03, 26,  13, 10, 15)
+    yield check, None,                      datetime(2014, 03, 26,  13, 10, 15)

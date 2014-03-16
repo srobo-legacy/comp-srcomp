@@ -101,7 +101,7 @@ class MatchSchedule(object):
             match = arenas[arena]
 
             if when >= match.start_time and when < match.end_time:
-                return arenas
+                return match
 
         # No match at that time
         return None
