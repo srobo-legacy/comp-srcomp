@@ -6,7 +6,7 @@ import subprocess
 # Hack the path
 import helpers as test_helpers
 
-from validation import validate_match
+from validation import validate_match, validate_match_score
 
 Match = namedtuple("Match", ["teams"])
 
@@ -68,3 +68,74 @@ def test_validate_match_all():
 
     assert 'more than once' in error
     assert 'not exist' in error
+
+
+def test_validate_match_score_extra_team():
+    match = Match(['ABC', 'DEF', 'GHI', 'JKL'])
+
+    bad_score = {
+        'ABC': 1,
+        'DEF': 1,
+        'GHI': 1,
+        'NOP': 1,
+    }
+
+    errors = validate_match_score(bad_score, match)
+    assert len(errors) == 1
+    error = '\n'.join(errors)
+
+    assert 'not in this match' in error
+    assert 'NOP' in error
+
+def test_validate_match_score_extra_team():
+    match = Match(['ABC', 'DEF', 'GHI', 'JKL'])
+
+    bad_score = {
+        'ABC': 1,
+        'DEF': 1,
+        'GHI': 1,
+        'JKL': 1,
+        'NOP': 1,
+    }
+
+    errors = validate_match_score(bad_score, match)
+    assert len(errors) == 1
+    error = '\n'.join(errors)
+
+    assert 'not scheduled in this match' in error
+    assert 'NOP' in error
+
+def test_validate_match_score_missing_team():
+    match = Match(['ABC', 'DEF', 'GHI', 'JKL'])
+
+    bad_score = {
+        'ABC': 1,
+        'DEF': 1,
+        'GHI': 1,
+    }
+
+    errors = validate_match_score(bad_score, match)
+    assert len(errors) == 1
+    error = '\n'.join(errors)
+
+    assert 'missing from this match' in error
+    assert 'JKL' in error
+
+def test_validate_match_score_swapped_team():
+    match = Match(['ABC', 'DEF', 'GHI', 'JKL'])
+
+    bad_score = {
+        'ABC': 1,
+        'DEF': 1,
+        'GHI': 1,
+        'NOP': 1,
+    }
+
+    errors = validate_match_score(bad_score, match)
+    assert len(errors) == 2
+    error = '\n'.join(errors)
+
+    assert 'not scheduled in this match' in error
+    assert 'missing from this match' in error
+    assert 'JKL' in error
+    assert 'NOP' in error
