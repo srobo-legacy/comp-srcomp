@@ -36,6 +36,11 @@ class MatchSchedule(object):
 
     def _build_delaylist(self, yamldata):
         delays = []
+        if yamldata is None:
+            "No delays, hurrah"
+            self.delays = delays
+            return
+
         for info in yamldata:
             d = Delay(timedelta(seconds = info["delay"]),
                       info["time"])

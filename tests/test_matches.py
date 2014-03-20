@@ -88,6 +88,29 @@ def test_basic_delay():
     assert a_end == datetime(2014, 03, 26,  13, 10, 15)
     assert a_end == b_end
 
+def test_no_delays():
+    the_data = get_basic_data()
+    the_data['delays'] = None
+    matches = load_data(the_data)
+
+    first = matches.matches[0]
+    assert len(first) == 2
+    assert 'A' in first
+    assert 'B' in first
+
+    a = first['A']
+    b = first['B']
+
+    a_start = a.start_time
+    b_start = b.start_time
+    assert a_start == datetime(2014, 03, 26,  13)
+    assert a_start == b_start
+
+    a_end = a.end_time
+    b_end = b.end_time
+    assert a_end == datetime(2014, 03, 26,  13, 05)
+    assert a_end == b_end
+
 def test_match_at():
     the_data = get_basic_data()
 
