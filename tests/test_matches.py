@@ -1,5 +1,5 @@
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import mock
 import os
 
@@ -41,14 +41,13 @@ def load_data(the_data):
         mock_loader.return_value = the_data
 
         matches = MatchSchedule('')
-
-        assert len(matches.match_periods) == 1
-        assert len(matches.matches) == 2
-
         return matches
 
 def load_basic_data():
-    return load_data(get_basic_data())
+    matches = load_data(get_basic_data())
+    assert len(matches.match_periods) == 1
+    assert len(matches.matches) == 2
+    return matches
 
 def test_basic_data():
     matches = load_basic_data()
@@ -130,3 +129,24 @@ def test_match_at_with_delays():
     yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13, 10, 14)
 
     yield check, None,                      datetime(2014, 03, 26,  13, 10, 15)
+
+def test_planned_matches():
+    the_data = get_basic_data()
+
+    extra_match = {
+                "A": ["WYC2", "QMS2", "LSS2", "EMM2"],
+                "B": ["BPV2", "BDF2", "NHS2", "MEA2"]
+            }
+    the_data['matches'][2] = extra_match
+
+    league = the_data['match_periods']['league'][0]
+    league['end_time'] = league['start_time'] + timedelta(minutes=10)
+    del league['max_end_time']
+
+    matches = load_data(the_data)
+
+    n_matches = matches.n_matches()
+    assert n_matches == 2, "Number actually scheduled"
+
+    n_planned_matches = matches.n_planned_matches
+    assert n_planned_matches == 3, "Number originally planned"

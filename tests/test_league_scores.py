@@ -23,7 +23,8 @@ def get_basic_data():
             'PAS': {
                 'zone_tokens': {0: 0, 1: 0, 2: 0, 3: 0},
                 'slot_bottoms': {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0},
-                'robot_moved': True,
+                'present': False,
+                'robot_moved': False,
                 'upright_tokens': 0,
                 'zone': 4
             },
@@ -70,7 +71,7 @@ def test_game_points():
 
     game = games[id_]
 
-    assert game == {'JMS': 4, 'PAS': 1, 'RUN': 8, 'ICE': 2}
+    assert game == {'JMS': 4, 'PAS': 0, 'RUN': 8, 'ICE': 2}
 
 def test_league_points():
     scores = load_basic_data()
@@ -83,14 +84,14 @@ def test_league_points():
 
     league = leagues[id_]
 
-    assert league == {'JMS': 0.0, 'PAS': 2.0, 'RUN': 4.0, 'ICE': 3.0}
+    assert league == {'JMS': 0.0, 'PAS': 0.0, 'RUN': 4.0, 'ICE': 3.0}
 
 def test_team_points():
     scores = load_basic_data()
 
     expected = {
         'JMS': TeamScore(0.0, 4),
-        'PAS': TeamScore(2.0, 1),
+        'PAS': TeamScore(0.0, 0),
         'RUN': TeamScore(4.0, 8),
         'ICE': TeamScore(3.0, 2),
     }

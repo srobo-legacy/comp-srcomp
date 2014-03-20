@@ -86,7 +86,10 @@ class LeagueScores(object):
         # Build the disqualification dict
         dsq = []
         for tla, scoreinfo in y["teams"].iteritems():
-            if "disqualified" in scoreinfo and scoreinfo["disqualified"]:
+            # disqualifications and non-presence are effectively the same
+            # in terms of league points awarding.
+            if scoreinfo.get("disqualified", False) or \
+                not scoreinfo.get("present", True):
                 dsq.append(tla)
 
         league_points = ranker.get_ranked_points(game_points, dsq)
