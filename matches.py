@@ -120,3 +120,15 @@ class MatchSchedule(object):
     def current_match(self, arena):
         now = datetime.datetime.now()
         return self.match_at(arena, now)
+
+    def match_after(self, arena, when):
+        """Return the next match starting after the given time
+
+        If there's no next match, returns None."""
+        for arenas in self.matches:
+            match = arenas[arena]
+
+            if match.start_time > when:
+                return match
+
+        return None
