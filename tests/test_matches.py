@@ -70,6 +70,19 @@ def test_basic_data():
     assert a_end == datetime(2014, 03, 26,  13, 05)
     assert a_end == b_end
 
+def test_no_matches():
+    the_data = get_basic_data()
+    the_data['matches'] = None
+    matches = load_data(the_data)
+
+    assert matches, "Should have at least loaded the data"
+
+    n_matches = matches.n_matches()
+    assert n_matches == 0, "Number actually scheduled"
+
+    n_planned_matches = matches.n_planned_matches
+    assert n_planned_matches == 0, "Number originally planned"
+
 def test_basic_delay():
     matches = load_basic_data()
 

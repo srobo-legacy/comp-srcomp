@@ -55,6 +55,10 @@ class MatchSchedule(object):
     def _build_matchlist(self, yamldata):
         "Build the match list"
         self.matches = []
+        if yamldata is None:
+            self.n_planned_matches = 0
+            return
+
         match_numbers = sorted(yamldata.keys())
         self.n_planned_matches = len(match_numbers)
 
