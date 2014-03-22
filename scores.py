@@ -95,6 +95,12 @@ class LeagueScores(object):
         league_points = ranker.get_ranked_points(game_points, dsq)
         self.match_league_points[match_id] = league_points
 
+    @property
+    def last_scored_match(self):
+        """The most match with the highest id for which we have score data"""
+        matches = self.match_league_points.keys()
+        return max(num for arena, num in matches)
+
 class Scores(object):
     def __init__(self, resultdir, teams):
         self.resultdir = resultdir

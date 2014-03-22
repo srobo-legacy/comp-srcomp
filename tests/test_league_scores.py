@@ -46,13 +46,21 @@ def get_basic_data():
     return the_data
 
 def load_data(the_data):
+    teams = the_data['teams'].keys()
+    return load_datas([the_data], teams)
+
+def load_datas(the_datas, teams):
+    my_datas = the_datas[:]
+    the_files = ['whatever-{0}.yaml'.format(i) for i in xrange(len(the_datas))]
+    def loader(*args):
+        assert len(my_datas), "Should not be loading additional files"
+        return my_datas.pop(0)
+
     with mock.patch('matches.yaml_loader.load') as mock_loader, \
             mock.patch('scores.results_finder') as mock_finder:
 
-        mock_finder.return_value = ['whatever.yaml']
-        mock_loader.return_value = the_data
-
-        teams = the_data['teams'].keys()
+        mock_finder.return_value = the_files
+        mock_loader.side_effect = loader
 
         scores = LeagueScores('somewhere', teams)
         return scores
@@ -98,3 +106,32 @@ def test_team_points():
 
     teams_data = scores.teams
     assert teams_data == expected
+
+
+def test_last_scored_match():
+    m_1 = get_basic_data()
+    m_1['match_number'] = 1
+    scores = load_data(m_1)
+
+    lsm = scores.last_scored_match
+    assert lsm == 1, "Should match id of only match present."
+
+def test_last_scored_match_some_missing():
+    scores = load_basic_data()
+
+    lsm = scores.last_scored_match
+    assert lsm == 123, "Should match id of only match present."
+
+def test_last_scored_match_many_scores():
+    m_1 = get_basic_data()
+    m_1['match_number'] = 1
+
+    m_2B = get_basic_data()
+    m_2B['match_number'] = 2
+    m_2B['arena_id'] = 'B'
+
+    scores = load_datas([m_1, m_2B], m_1['teams'].keys())
+
+    lsm = scores.last_scored_match
+
+    assert lsm == 2, "Should latest match id, even when in other arena."
