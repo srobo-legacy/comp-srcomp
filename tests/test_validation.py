@@ -6,7 +6,8 @@ import subprocess
 # Hack the path
 import helpers as test_helpers
 
-from validation import validate_match, validate_match_score
+from validation import validate_match, validate_match_score, \
+                        find_missing_scores
 
 Match = namedtuple("Match", ["teams"])
 
@@ -139,3 +140,75 @@ def test_validate_match_score_swapped_team():
     assert 'missing from this match' in error
     assert 'JKL' in error
     assert 'NOP' in error
+
+
+def test_find_missing_scores_arena():
+    match_ids = [
+        ('A', 0)
+    ]
+    last_match = 0
+    schedule = [
+        {'A': None, 'B': None}
+    ]
+
+    missing = find_missing_scores(match_ids, last_match, schedule)
+
+    expected = [ (0, ['B']) ]
+    assert missing == expected
+
+def test_find_missing_scores_match():
+    match_ids = [
+        ('A', 1)
+    ]
+    last_match = 1
+    schedule = [
+        {'A': None},
+        {'A': None}
+    ]
+
+    missing = find_missing_scores(match_ids, last_match, schedule)
+
+    expected = [ (0, ['A']) ]
+    assert missing == expected
+
+def test_find_missing_scores_many_matches():
+    match_ids = [
+        ('A', 0),
+        ('A', 2),
+        ('A', 4)
+    ]
+    last_match = 4
+    schedule = [
+        {'A': None},
+        {'A': None},
+        {'A': None},
+        {'A': None},
+        {'A': None}
+    ]
+
+    missing = find_missing_scores(match_ids, last_match, schedule)
+
+    expected = [
+        (1, ['A']),
+        (3, ['A'])
+    ]
+    assert missing == expected
+
+def test_find_missing_scores_ignore_future_matches():
+    match_ids = [
+        ('A', 0),
+        ('A', 1),
+        ('A', 2)
+    ]
+    last_match = 2
+    schedule = [
+        {'A': None},
+        {'A': None},
+        {'A': None},
+        {'A': None},
+        {'A': None}
+    ]
+
+    missing = find_missing_scores(match_ids, last_match, schedule)
+
+    assert missing == []

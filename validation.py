@@ -1,4 +1,5 @@
 
+from collections import defaultdict
 import sys
 
 def report_errors(type_, id_, errors):
@@ -13,6 +14,7 @@ def validate(comp):
     count = 0
     count += validate_schedule(comp.schedule, comp.teams.keys())
     count += validate_scores(comp.scores.league, comp.schedule.matches)
+    warn_missing_scores(comp.scores.league, comp.schedule.matches)
     return count
 
 def validate_schedule(schedule, possible_teams):
@@ -112,3 +114,36 @@ def validate_match_score(match_score, scheduled_match):
         errors.append("Teams {0} not scheduled in this match.".format(extra))
 
     return errors
+
+def warn_missing_scores(scores, schedule):
+    match_ids = scores.match_league_points.keys()
+    last_match = scores.last_scored_match
+
+    missing = find_missing_scores(match_ids, last_match, schedule)
+    if len(missing) == 0:
+        return
+
+    print >>sys.stderr, "The following scores are missing:"
+    print >>sys.stderr, "Match   | Arena "
+    for m in missing:
+        arenas = ", ".join(sorted(m[1]))
+        print >>sys.stderr, " {0:>3}    | {1}".format(m[0], arenas)
+
+def find_missing_scores(match_ids, last_match, schedule):
+    expected = set()
+    for num, match in enumerate(schedule):
+        if num > last_match:
+            break
+        for arena in match.keys():
+            id_ = (arena, num)
+            expected.add(id_)
+
+    missing_ids = expected - set(match_ids)
+    missing = defaultdict(set)
+    for id_ in missing_ids:
+        arena = id_[0]
+        num = id_[1]
+        missing[num].add(arena)
+
+    missing_items = sorted(missing.items())
+    return missing_items
