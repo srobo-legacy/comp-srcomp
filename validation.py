@@ -18,6 +18,8 @@ def validate(comp):
     return count
 
 def validate_schedule(schedule, possible_teams):
+    """Check that the schedule contains enough time for all the matches,
+    and that the matches themselves are valid."""
     count = 0
     for num, match in enumerate(schedule.matches):
         errors = validate_match(match, possible_teams)
@@ -38,6 +40,8 @@ def validate_schedule(schedule, possible_teams):
     return count
 
 def validate_match(match, possible_teams):
+    """Check that the teams feature in a match exist and are only required
+    in one arena at a time."""
     errors = []
     all_teams = []
 
@@ -67,6 +71,7 @@ def validate_scores(scores, schedule):
     count = 0
 
     def get_scheduled_match(match_id, type_):
+        """Check that the requested match was scheduled, return it if so."""
         num = match_id[1]
         if num < 0 or num >= len(schedule):
             report_errors(type_, match_id, ['Match not scheduled'])
@@ -98,6 +103,8 @@ def validate_scores(scores, schedule):
     return count
 
 def validate_match_score(match_score, scheduled_match):
+    """Check that the match awards points to the right teams, by checking
+    that the teams with points were scheduled to appear in the match."""
     expected_teams = set(scheduled_match.teams)
     actual_teams = set(match_score.keys())
 
@@ -116,6 +123,7 @@ def validate_match_score(match_score, scheduled_match):
     return errors
 
 def warn_missing_scores(scores, schedule):
+    """Check that the scores up to the most recent are all present."""
     match_ids = scores.match_league_points.keys()
     last_match = scores.last_scored_match
 
