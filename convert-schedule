@@ -1,0 +1,70 @@
+#!/usr/bin/env python
+
+from argparse import ArgumentParser
+import os
+import sys
+import yaml
+
+from comp import SRComp
+
+ARENAS = ['A', 'B']
+TEAMS_PER_GAME = 4
+TEAMS_PER_MATCH = TEAMS_PER_GAME * len(ARENAS)
+
+parser = ArgumentParser(description="SR Competition Schedule Converter")
+parser.add_argument("schedule", help="Newline- and pipe-separated schedule.")
+parser.add_argument("compstate", help="Competition state git repository path")
+parser.add_argument("-o", "--output", required=False, \
+                    help="Output location, defaulting to stdout.")
+
+args = parser.parse_args()
+
+def tidy(lines):
+    "Strip comments and trailing whitespace"
+    for line in lines:
+        line = line.strip()
+        if not line.startswith('#'):
+            yield line
+
+def chunks_of_size(list_, size):
+    list_ = list_[:]
+    assert len(list_) % size == 0
+    while len(list_):
+        chunk = []
+        for i in range(size):
+            chunk.append(list_.pop(0))
+        yield chunk
+
+def numbers_to_tlas(numbers, all_tlas):
+    teams = []
+    for num in numbers:
+        num = int(num)
+        if num >= len(all_tlas):
+            continue
+        tla = tlas[num]
+        teams.append(tla)
+    return teams
+
+def build_matches(schedule, tlas):
+    matches = {}
+    for i, line in enumerate(tidy(schedule)):
+        match_teams = line.split('|')
+        assert len(match_teams) == TEAMS_PER_MATCH
+        matches[i] = match = {}
+        for i, game_teams in enumerate(chunks_of_size(match_teams, TEAMS_PER_GAME)):
+            arena = ARENAS[i]
+            match[arena] = numbers_to_tlas(game_teams, tlas)
+    return matches
+
+output = sys.stdout
+if args.output is not None:
+    output = open(args.output, 'w')
+
+schedule = open(args.schedule, 'r').readlines()
+comp = SRComp(args.compstate)
+tlas = comp.teams.keys()
+
+matches = build_matches(schedule, tlas)
+
+wrapper = dict(matches=matches)
+yaml.dump(wrapper, output)
