@@ -153,7 +153,7 @@ def test_find_missing_scores_arena():
 
     missing = find_missing_scores(match_ids, last_match, schedule)
 
-    expected = [ (0, ['B']) ]
+    expected = [ (0, set(['B'])) ]
     assert missing == expected
 
 def test_find_missing_scores_match():
@@ -168,7 +168,7 @@ def test_find_missing_scores_match():
 
     missing = find_missing_scores(match_ids, last_match, schedule)
 
-    expected = [ (0, ['A']) ]
+    expected = [ (0, set(['A'])) ]
     assert missing == expected
 
 def test_find_missing_scores_many_matches():
@@ -189,8 +189,8 @@ def test_find_missing_scores_many_matches():
     missing = find_missing_scores(match_ids, last_match, schedule)
 
     expected = [
-        (1, ['A']),
-        (3, ['A'])
+        (1, set(['A'])),
+        (3, set(['A']))
     ]
     assert missing == expected
 
