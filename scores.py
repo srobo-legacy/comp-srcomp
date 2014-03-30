@@ -98,6 +98,8 @@ class LeagueScores(object):
     @property
     def last_scored_match(self):
         """The most match with the highest id for which we have score data"""
+        if len(self.match_league_points) == 0:
+            return None
         matches = self.match_league_points.keys()
         return max(num for arena, num in matches)
 

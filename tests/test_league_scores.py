@@ -116,6 +116,12 @@ def test_last_scored_match():
     lsm = scores.last_scored_match
     assert lsm == 1, "Should match id of only match present."
 
+def test_last_scored_match_none():
+    scores = load_datas([], [])
+
+    lsm = scores.last_scored_match
+    assert lsm is None, "Should be none when there are no scores."
+
 def test_last_scored_match_some_missing():
     scores = load_basic_data()
 
