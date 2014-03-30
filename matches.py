@@ -6,7 +6,8 @@ import datetime
 import yaml_loader
 
 MatchPeriod = namedtuple("MatchPeriod",
-                         ["start_time","end_time", "max_end_time"])
+                         ["start_time", "end_time", "max_end_time", \
+                            "description", "matches"])
 
 Match = namedtuple("Match",
                    ["num", "arena", "teams", "start_time", "end_time"])
@@ -25,9 +26,9 @@ class MatchSchedule(object):
             else:
                 max_end_time = e["end_time"]
 
-            self.match_periods.append(MatchPeriod(e["start_time"],
-                                                  e["end_time"],
-                                                  max_end_time))
+            period = MatchPeriod(e["start_time"], e["end_time"], max_end_time, \
+                                    e["description"], [])
+            self.match_periods.append(period)
 
         self.match_period = datetime.timedelta(0, y["match_period_length_seconds"])
 
@@ -97,6 +98,7 @@ class MatchSchedule(object):
                     match = Match(match_n, arena_name, teams, start_time, end_time)
                     m[arena_name] = match
 
+                period.matches.append(m)
                 self.matches.append(m)
 
                 start += self.match_period
