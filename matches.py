@@ -264,10 +264,11 @@ class MatchSchedule(object):
 
     def match_at(self, arena, when):
         for arenas in self.matches:
-            match = arenas[arena]
+            if arena in arenas:
+                match = arenas[arena]
 
-            if when >= match.start_time and when < match.end_time:
-                return match
+                if when >= match.start_time and when < match.end_time:
+                    return match
 
         # No match at that time
         return None
