@@ -273,7 +273,7 @@ class MatchSchedule(object):
         return None
 
     def current_match(self, arena):
-        now = datetime.datetime.now()
+        now = datetime.datetime.utcnow()
         return self.match_at(arena, now)
 
     def match_after(self, arena, when):
