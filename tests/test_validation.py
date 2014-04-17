@@ -6,6 +6,7 @@ import subprocess
 # Hack the path
 import helpers as test_helpers
 
+import matches
 from validation import validate_match, validate_match_score, \
                         find_missing_scores
 
@@ -21,6 +22,31 @@ def test_dummy_is_valid():
                                 stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as cpe:
         assert cpe.returncode == 0, cpe.output
+
+def test_validate_match_unknowable_entrants():
+    teams_a = [matches.UNKNOWABLE_TEAM] * 4
+    teams_b = [matches.UNKNOWABLE_TEAM] * 4
+    teams = set()
+    knockout_match = {
+        'A': Match(teams_a),
+        'B': Match(teams_b)
+    }
+
+    errors = validate_match(knockout_match, teams)
+    assert len(errors) == 0
+
+def test_validate_match_empty_corners():
+    """ Empty corner zones are represented by 'None' """
+    teams_a = ['ABC', 'DEF', None, 'JKL']
+    teams_b = ['LMN', 'OPQ', None, None]
+    teams = set(['ABC', 'DEF', 'JKL', 'LMN', 'OPQ'])
+    knockout_match = {
+        'A': Match(teams_a),
+        'B': Match(teams_b)
+    }
+
+    errors = validate_match(knockout_match, teams)
+    assert len(errors) == 0
 
 def test_validate_match_duplicate_entrant():
     teams_a = ['ABC', 'DEF', 'GHI', 'JKL']

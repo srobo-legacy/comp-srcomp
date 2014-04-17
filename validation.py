@@ -2,6 +2,11 @@
 from collections import defaultdict
 import sys
 
+from matches import UNKNOWABLE_TEAM
+NO_TEAM = None
+
+META_TEAMS = set([NO_TEAM, UNKNOWABLE_TEAM])
+
 def report_errors(type_, id_, errors):
     if len(errors) == 0:
         return
@@ -48,12 +53,13 @@ def validate_match(match, possible_teams):
     for a in match.values():
         all_teams += a.teams
 
-    teams = set(all_teams)
+    teams = set(all_teams) - META_TEAMS
     for t in teams:
         all_teams.remove(t)
 
-    if len(all_teams):
-        duplicates = ", ".join(set(all_teams))
+    duplicates = set(all_teams) - META_TEAMS
+    if len(duplicates):
+        duplicates = ", ".join(duplicates)
         errors.append("Teams {0} appear more than once.".format(duplicates))
 
     extras = teams - set(possible_teams)
