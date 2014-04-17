@@ -108,13 +108,15 @@ def test_validate_match_score_extra_team():
     }
 
     errors = validate_match_score(bad_score, match)
-    assert len(errors) == 1
+    assert len(errors) == 2
     error = '\n'.join(errors)
 
-    assert 'not in this match' in error
+    assert 'not scheduled in this match' in error
     assert 'NOP' in error
+    assert 'missing from this match' in error
+    assert 'JKL' in error
 
-def test_validate_match_score_extra_team():
+def test_validate_match_score_extra_team_2():
     match = Match(['ABC', 'DEF', 'GHI', 'JKL'])
 
     bad_score = {
