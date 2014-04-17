@@ -97,6 +97,35 @@ def test_validate_match_all():
     assert 'not exist' in error
 
 
+def test_validate_match_score_empty_corner():
+    match = Match([None, 'ABC', 'DEF', 'GHI'])
+
+    ok_score = {
+        'ABC': 1,
+        'DEF': 1,
+        'GHI': 1,
+    }
+
+    errors = validate_match_score(ok_score, match)
+    assert len(errors) == 0
+
+def test_validate_match_score_empty_corner_2():
+    match = Match([None, 'ABC', 'DEF', 'GHI'])
+
+    bad_score = {
+        'ABC': 1,
+        'DEF': 1,
+        'GHI': 1,
+        'NOP': 1,
+    }
+
+    errors = validate_match_score(bad_score, match)
+    assert len(errors) == 1
+    error = '\n'.join(errors)
+
+    assert 'not scheduled in this match' in error
+    assert 'NOP' in error
+
 def test_validate_match_score_extra_team():
     match = Match(['ABC', 'DEF', 'GHI', 'JKL'])
 

@@ -111,7 +111,11 @@ def validate_scores(scores, schedule):
 def validate_match_score(match_score, scheduled_match):
     """Check that the match awards points to the right teams, by checking
     that the teams with points were scheduled to appear in the match."""
-    expected_teams = set(scheduled_match.teams)
+    # only remove the empty corner marker -- we shouldn't have unknowable
+    # teams in the match schedule by the time there's a score for it.
+    expected_teams = set(scheduled_match.teams) - set([NO_TEAM])
+    # don't remove meta teams from the score's teams -- they shouldn't
+    # be there to start with.
     actual_teams = set(match_score.keys())
 
     extra = actual_teams - expected_teams
