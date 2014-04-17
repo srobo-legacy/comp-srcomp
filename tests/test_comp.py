@@ -14,7 +14,8 @@ def test_load():
     assert instance.root
     assert instance.teams
     assert instance.schedule
-    assert instance.schedule.knockout_max_teams
     assert instance.scores
     assert instance.arenas
     assert instance.corners
+    assert instance.knockout
+    assert instance.knockout.max_entrants

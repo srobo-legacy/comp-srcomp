@@ -134,10 +134,7 @@ class KnockoutScheduler(object):
 
         matches = []
 
-        first_seeding = knockout.first_round_seeding(len(teams))
-        self.max_teams = len(first_seeding)
-
-        for seeds in first_seeding:
+        for seeds in knockout.first_round_seeding(len(teams)):
             match_teams = [teams[seed] for seed in seeds]
             matches.append( match_teams )
 
@@ -170,7 +167,6 @@ class MatchSchedule(object):
         k.add_knockouts()
 
         schedule.knockout_rounds = k.knockout_rounds
-        schedule.knockout_max_teams = k.max_teams
 
         return schedule
 
