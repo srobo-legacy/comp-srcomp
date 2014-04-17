@@ -17,5 +17,3 @@ def test_load():
     assert instance.scores
     assert instance.arenas
     assert instance.corners
-    assert instance.knockout
-    assert instance.knockout.max_entrants
