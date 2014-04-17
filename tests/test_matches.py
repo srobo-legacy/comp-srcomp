@@ -38,11 +38,8 @@ def get_basic_data():
     return the_data
 
 def load_data(the_data):
-    with mock.patch('matches.yaml_loader.load') as mock_loader:
-        mock_loader.return_value = the_data
-
-        matches = MatchSchedule('')
-        return matches
+    matches = MatchSchedule(the_data)
+    return matches
 
 def load_basic_data():
     matches = load_data(get_basic_data())

@@ -14,6 +14,7 @@ class SRComp(object):
         self.scores = scores.Scores(root,
                                     self.teams.keys())
         self.arenas = arenas.load_arenas(os.path.join(root, "arenas.yaml"))
-        self.schedule = matches.MatchSchedule(os.path.join(root, "schedule.yaml"),
-                                              self.scores, self.arenas)
+        schedule_fname = os.path.join(root, "schedule.yaml")
+        self.schedule = matches.MatchSchedule.create(schedule_fname,
+                                                     self.scores, self.arenas)
         self.corners = arenas.load_corners(os.path.join(root, "arenas.yaml"))

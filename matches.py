@@ -156,9 +156,20 @@ class KnockoutScheduler(object):
             self._add_round()
 
 class MatchSchedule(object):
-    def __init__(self, config_fname, scores, arenas):
+    @classmethod
+    def create(cls, config_fname, scores, arenas):
         y = yaml_loader.load(config_fname)
 
+        schedule = cls(y)
+
+        k = KnockoutScheduler(schedule, scores, arenas, y)
+        k.add_knockouts()
+
+        schedule.knockout_rounds = k.knockout_rounds
+
+        return schedule
+
+    def __init__(self, y):
         self.match_periods = []
         for e in y["match_periods"]["league"]:
             if "max_end_time" in e:
@@ -174,10 +185,6 @@ class MatchSchedule(object):
 
         self._build_delaylist(y["delays"])
         self._build_matchlist(y["matches"])
-
-        k = KnockoutScheduler(self, scores, arenas, y)
-        k.add_knockouts()
-        self.knockout_rounds = k.knockout_rounds
 
     def _build_delaylist(self, yamldata):
         delays = []
