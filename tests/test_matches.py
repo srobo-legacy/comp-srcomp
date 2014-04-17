@@ -78,8 +78,11 @@ def test_no_matches():
     n_matches = matches.n_matches()
     assert n_matches == 0, "Number actually scheduled"
 
-    n_planned_matches = matches.n_planned_matches
-    assert n_planned_matches == 0, "Number originally planned"
+    n_planned_matches = matches.n_planned_league_matches
+    assert n_planned_matches == 0, "Number originally planned for the league"
+
+    n_league_matches = matches.n_league_matches
+    assert n_league_matches == 0, "Number actually scheduled for the league"
 
 def test_basic_delay():
     matches = load_basic_data()
@@ -182,5 +185,8 @@ def test_planned_matches():
     n_matches = matches.n_matches()
     assert n_matches == 2, "Number actually scheduled"
 
-    n_planned_matches = matches.n_planned_matches
-    assert n_planned_matches == 3, "Number originally planned"
+    n_planned_matches = matches.n_planned_league_matches
+    assert n_planned_matches == 3, "Number originally planned for the league"
+
+    n_league_matches = matches.n_league_matches
+    assert n_league_matches == 2, "Number actually scheduled for the league"

@@ -187,6 +187,8 @@ class MatchSchedule(object):
         self._build_delaylist(y["delays"])
         self._build_matchlist(y["matches"])
 
+        self.n_league_matches = self.n_matches()
+
     def _build_delaylist(self, yamldata):
         delays = []
         if yamldata is None:
@@ -209,11 +211,11 @@ class MatchSchedule(object):
         "Build the match list"
         self.matches = []
         if yamldata is None:
-            self.n_planned_matches = 0
+            self.n_planned_league_matches = 0
             return
 
         match_numbers = sorted(yamldata.keys())
-        self.n_planned_matches = len(match_numbers)
+        self.n_planned_league_matches = len(match_numbers)
 
         if match_numbers != range(len(match_numbers)):
             raise Exception("Matches are not a complete 0-N range")
