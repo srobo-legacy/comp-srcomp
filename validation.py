@@ -40,8 +40,8 @@ def validate_schedule(schedule, possible_teams):
     return count
 
 def validate_match(match, possible_teams):
-    """Check that the teams feature in a match exist and are only required
-    in one arena at a time."""
+    """Check that the teams featuring in a match exist and are only
+    required in one arena at a time."""
     errors = []
     all_teams = []
 
