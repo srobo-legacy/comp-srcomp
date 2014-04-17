@@ -34,7 +34,7 @@ def validate_schedule(schedule, possible_teams):
     planned = schedule.n_planned_league_matches
     actual = schedule.n_league_matches
     errors = []
-    if planned != actual:
+    if planned > actual:
         msg = "Only contains enough time for {0} matches, {1} are planned" \
                 .format(actual, planned)
         errors.append(msg)
