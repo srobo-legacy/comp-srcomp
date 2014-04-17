@@ -16,6 +16,8 @@ MatchPeriod = namedtuple("MatchPeriod",
 
 LEAGUE_MATCH = "league"
 KNOCKOUT_MATCH = "knockout"
+# Use "???" as the "we don't know yet" marker
+UNKNOWABLE_TEAM = "???"
 
 Match = namedtuple("Match",
                    ["num", "arena", "teams", "start_time", "end_time", "type"])
@@ -59,8 +61,7 @@ class KnockoutScheduler(object):
         team_scores = self.scores.league.teams
 
         if not self._played_all_league_matches():
-            # Use "???" as the "we don't know yet marker"
-            return ["???"] * len(team_scores)
+            return [UNKNOWABLE_TEAM] * len(team_scores)
 
         def score_cmp(x,y):
             return cmp(x[1].league_points,y[1].league_points)
@@ -109,7 +110,7 @@ class KnockoutScheduler(object):
 
                 if desc not in self.scores.knockout.ranked_points:
                     "Parent match hasn't been scored yet"
-                    winners += [ "???", "???" ]
+                    winners += [ UNKNOWABLE_TEAM, UNKNOWABLE_TEAM ]
                 else:
                     s = self.scores.knockout.ranked_points[desc].items()
 
