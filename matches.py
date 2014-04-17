@@ -1,11 +1,13 @@
 "Match schedule library"
+
 from collections import namedtuple
 from datetime import timedelta
 import datetime
-import knockout
 import math
-import stable_random
 import sys
+
+import knockout
+import stable_random
 import yaml_loader
 
 MatchPeriod = namedtuple("MatchPeriod",
