@@ -32,6 +32,9 @@ def get_basic_data():
             1: {
                 "A": ["WYC", "QMS", "LSS", "EMM"],
                 "B": ["BPV", "BDF", "NHS", "MEA"]
+            },
+            2: {
+                "A": ["WYC", "QMS", "LSS", "EMM"]
             }
         }
     }
@@ -44,7 +47,7 @@ def load_data(the_data):
 def load_basic_data():
     matches = load_data(get_basic_data())
     assert len(matches.match_periods) == 1
-    assert len(matches.matches) == 2
+    assert len(matches.matches) == 3
     return matches
 
 def test_basic_data():
@@ -146,9 +149,12 @@ def test_match_at():
     yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  5)
     yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  9, 59)
 
-    yield check, None,                      datetime(2014, 03, 26,  13, 10)
+    yield check, matches.matches[2][arena], datetime(2014, 03, 26,  13,  10)
+    yield check, matches.matches[2][arena], datetime(2014, 03, 26,  13,  14, 59)
 
-def test_match_at_with_delays():
+    yield check, None,                      datetime(2014, 03, 26,  13, 15)
+
+def test_match_at_with_delays_a():
     matches = load_basic_data()
 
     arena = 'A'
@@ -165,7 +171,30 @@ def test_match_at_with_delays():
     yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  5, 15)
     yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13, 10, 14)
 
+    yield check, matches.matches[2][arena], datetime(2014, 03, 26,  13, 10, 15)
+    yield check, matches.matches[2][arena], datetime(2014, 03, 26,  13, 15, 14)
+
+    yield check, None,                      datetime(2014, 03, 26,  13, 15, 15)
+
+def test_match_at_with_delays_b():
+    matches = load_basic_data()
+
+    arena = 'B'
+
+    def check(expected, when):
+        actual = matches.match_at(arena, when)
+        assert expected == actual
+
+    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  13)
+    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  13,  4, 59)
+
+    yield check, None,                      datetime(2014, 03, 26,  13,  5, 14)
+
+    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  5, 15)
+    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13, 10, 14)
+
     yield check, None,                      datetime(2014, 03, 26,  13, 10, 15)
+    yield check, None,                      datetime(2014, 03, 26,  13, 15, 15)
 
 def test_planned_matches():
     the_data = get_basic_data()
