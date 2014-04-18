@@ -77,6 +77,9 @@ class KnockoutScheduler(object):
         self.knockout_rounds += [[]]
 
         while len(matches):
+            while len(self.delays) and self.delays[0].time <= self.next_time:
+                self.delay += self.delays.pop(0).delay
+
             new_matches = {}
             for arena in arenas:
                 teams = matches.pop(0)
@@ -88,7 +91,7 @@ class KnockoutScheduler(object):
                 # Randomise the zones
                 self.R.shuffle(teams)
 
-                start_time = self.next_time
+                start_time = self.next_time + self.delay
                 end_time = start_time + self.schedule.match_period
                 num = len(self.schedule.matches)
 
@@ -152,6 +155,16 @@ class KnockoutScheduler(object):
         self.period = MatchPeriod(self.next_time, period["end_time"], \
                                   period["end_time"], period["description"], \
                                   [])
+
+        self.delays = []
+        for delay in self.schedule.delays:
+            "Find delays that occur in the knockouts period"
+            if delay.time < self.period.start_time:
+                continue
+            self.delays.append(delay)
+
+        # The current delay
+        self.delay = timedelta()
 
         self._add_first_round()
 
