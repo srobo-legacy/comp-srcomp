@@ -135,7 +135,7 @@ class KnockoutScheduler(object):
         # Seed the random generator with the seeded team list
         # This makes it unpredictable which teams will be in which zones
         # until the league scores have been established
-        self.R.seed(tuple(teams))
+        self.R.seed("".join(teams).encode("utf-8"))
 
         matches = []
 
