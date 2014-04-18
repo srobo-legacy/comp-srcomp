@@ -69,7 +69,7 @@ class KnockoutScheduler(object):
         seeded_teams = sorted(team_scores.items(), cmp=score_cmp, reverse=True)
         return [x[0] for x in seeded_teams]
 
-    def _add_round_of_matches(self, matches):
+    def _add_round_of_matches(self, matches, arenas):
         """Add a whole round of matches
 
         matches is a list of lists of teams for each match"""
@@ -78,7 +78,7 @@ class KnockoutScheduler(object):
 
         while len(matches):
             new_matches = {}
-            for arena in self.arenas:
+            for arena in arenas:
                 teams = matches.pop(0)
 
                 if len(teams) < 4:
@@ -103,7 +103,7 @@ class KnockoutScheduler(object):
             self.schedule.matches.append(new_matches)
             self.period.matches.append(new_matches)
 
-    def _add_round(self):
+    def _add_round(self, arenas):
         prev_round = self.knockout_rounds[-1]
         matches = []
 
@@ -127,7 +127,7 @@ class KnockoutScheduler(object):
 
             matches.append(winners)
 
-        self._add_round_of_matches(matches)
+        self._add_round_of_matches(matches, arenas)
 
     def _add_first_round(self):
         teams = self._seed_teams()
@@ -143,7 +143,7 @@ class KnockoutScheduler(object):
             match_teams = [teams[seed] for seed in seeds]
             matches.append( match_teams )
 
-        self._add_round_of_matches(matches)
+        self._add_round_of_matches(matches, self.arenas)
 
     def add_knockouts(self):
         period = self.config["match_periods"]["knockout"][0]
@@ -155,16 +155,26 @@ class KnockoutScheduler(object):
 
         self._add_first_round()
 
+        knockout_conf = self.config["knockout"]
+
         while len(self.knockout_rounds[-1]) > 1:
 
             # Add the delay between rounds
-            self.next_time += timedelta(seconds=self.config["knockout"]["round_spacing"])
+            self.next_time += timedelta(seconds=knockout_conf["round_spacing"])
+
+            # Number of rounds remaining to be added
+            rounds_remaining = int(math.log(len(self.knockout_rounds[-1]), 2))
+
+            if rounds_remaining <= knockout_conf["single_arena"]["rounds"]:
+                arenas = knockout_conf["single_arena"]["arenas"]
+            else:
+                arenas = self.arenas
 
             if len(self.knockout_rounds[-1]) == 2:
                 "Extra delay before the final match"
                 self.next_time += timedelta(seconds=self.config["knockout"]["final_delay"])
 
-            self._add_round()
+            self._add_round(arenas)
 
 class MatchSchedule(object):
     @classmethod
