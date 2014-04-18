@@ -97,6 +97,7 @@ class KnockoutScheduler(object):
 
             self.next_time += self.schedule.match_period
             self.schedule.matches.append(new_matches)
+            self.period.matches.append(new_matches)
 
     def _add_round(self):
         prev_round = self.knockout_rounds[-1]
@@ -141,7 +142,12 @@ class KnockoutScheduler(object):
         self._add_round_of_matches(matches)
 
     def add_knockouts(self):
-        self.next_time = self.config["match_periods"]["knockout"][0]["start_time"]
+        period = self.config["match_periods"]["knockout"][0]
+        self.next_time = period["start_time"]
+
+        self.period = MatchPeriod(self.next_time, period["end_time"], \
+                                  period["end_time"], period["description"], \
+                                  [])
 
         self._add_first_round()
 
@@ -167,6 +173,7 @@ class MatchSchedule(object):
         k.add_knockouts()
 
         schedule.knockout_rounds = k.knockout_rounds
+        schedule.match_periods.append(k.period)
 
         return schedule
 
