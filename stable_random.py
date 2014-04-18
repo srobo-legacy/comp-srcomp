@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import hashlib
 # Python's random number generator's stability across Python versions
 # is complicated.
@@ -46,3 +47,9 @@ class Random(object):
             # pick an element in x[:i+1] with which to exchange x[i]
             j = int(self.random() * (i+1))
             x[i], x[j] = x[j], x[i]
+
+if __name__ == "__main__":
+    R = Random()
+    R.seed("hello".encode("utf-8"))
+    for n in range(10):
+        print R.random()
