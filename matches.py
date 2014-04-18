@@ -81,6 +81,10 @@ class KnockoutScheduler(object):
             for arena in self.arenas:
                 teams = matches.pop(0)
 
+                if len(teams) < 4:
+                    "Fill empty zones with None"
+                    teams += [None] * (4-len(teams))
+
                 # Randomise the zones
                 self.R.shuffle(teams)
 
