@@ -283,11 +283,12 @@ class MatchSchedule(object):
 
     def match_at(self, arena, when):
         for arenas in self.matches:
-            if arena in arenas:
-                match = arenas[arena]
+            match = arenas.get(arena, None)
 
-                if when >= match.start_time and when < match.end_time:
-                    return match
+            if match is not None and \
+                when >= match.start_time and \
+                when < match.end_time:
+                return match
 
         # No match at that time
         return None
@@ -301,9 +302,9 @@ class MatchSchedule(object):
 
         If there's no next match, returns None."""
         for arenas in self.matches:
-            match = arenas[arena]
+            match = arenas.get(arena, None)
 
-            if match.start_time > when:
+            if match is not None and match.start_time > when:
                 return match
 
         return None

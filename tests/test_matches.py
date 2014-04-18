@@ -196,6 +196,53 @@ def test_match_at_with_delays_b():
     yield check, None,                      datetime(2014, 03, 26,  13, 10, 15)
     yield check, None,                      datetime(2014, 03, 26,  13, 15, 15)
 
+def test_match_after_a():
+    matches = load_basic_data()
+
+    arena = 'A'
+
+    def check(expected, when):
+        actual = matches.match_after(arena, when)
+        assert expected == actual
+
+    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  11)
+    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  12)
+    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  12, 59, 59)
+
+    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13)
+    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  4, 59)
+    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  5, 14)
+
+    yield check, matches.matches[2][arena], datetime(2014, 03, 26,  13,  5, 15)
+    yield check, matches.matches[2][arena], datetime(2014, 03, 26,  13, 10, 14)
+
+    yield check, None,                      datetime(2014, 03, 26,  13, 10, 15)
+    yield check, None,                      datetime(2014, 03, 26,  14)
+
+def test_match_after_b():
+    matches = load_basic_data()
+
+    arena = 'B'
+
+    def check(expected, when):
+        actual = matches.match_after(arena, when)
+        assert expected == actual
+
+    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  11)
+    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  12)
+    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  12, 59, 59)
+
+    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13)
+    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  4, 59)
+    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  5, 14)
+
+    yield check, None,                      datetime(2014, 03, 26,  13,  5, 15)
+    yield check, None,                      datetime(2014, 03, 26,  13, 10, 14)
+
+    yield check, None,                      datetime(2014, 03, 26,  13, 10, 15)
+    yield check, None,                      datetime(2014, 03, 26,  14)
+
+
 def test_planned_matches():
     the_data = get_basic_data()
 
