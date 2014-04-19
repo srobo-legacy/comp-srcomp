@@ -1,5 +1,6 @@
 
 from collections import namedtuple
+from datetime import datetime
 import os
 import subprocess
 
@@ -7,10 +8,11 @@ import subprocess
 import helpers as test_helpers
 
 import matches
-from validation import validate_match, validate_match_score, \
-                        find_missing_scores
+from validation import validate_match, validate_schedule_timings, \
+                        validate_match_score, find_missing_scores
 
 Match = namedtuple("Match", ["teams"])
+Match2 = namedtuple("Match2", ["num", "start_time"])
 
 def test_dummy_is_valid():
     test_dir = os.path.dirname(os.path.abspath(__file__))
@@ -269,3 +271,27 @@ def test_find_missing_scores_ignore_future_matches():
     missing = find_missing_scores(match_ids, last_match, schedule)
 
     assert missing == []
+
+
+def test_validate_schedule_timings_ok():
+
+    matches = [{'A': Match2(1, datetime(2014, 04, 01, 12, 0, 0))},
+               {'A': Match2(2, datetime(2014, 04, 01, 13, 0, 0))}]
+
+    errors = validate_schedule_timings(matches)
+    assert len(errors) == 0
+
+def test_validate_schedule_timings_clash():
+
+    time = datetime(2014, 04, 03, 12, 0, 0)
+    # choose match ids not in the date
+    matches = [{'A': Match2(8, time)},
+               {'A': Match2(9, time)}]
+
+    errors = validate_schedule_timings(matches)
+    assert len(errors) == 1
+    error = errors[0]
+    assert "Multiple matches" in error
+    assert str(time) in error
+    assert "8" in error
+    assert "9" in error

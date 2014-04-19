@@ -34,6 +34,12 @@ def validate_schedule(schedule, possible_teams):
     warnings = validate_schedule_count(schedule)
     report_errors('Schedule', '', warnings)
 
+    errors = validate_schedule_timings(schedule.matches)
+    count += len(errors)
+    if len(errors):
+        errors.append("This usually indicates that the scheduled periods overlap.")
+    report_errors('Schedule', 'timing', errors)
+
     return count
 
 def validate_schedule_count(schedule):
@@ -46,6 +52,24 @@ def validate_schedule_count(schedule):
         errors.append(msg)
     if planned == 0:
         errors.append("Doesn't contain any matches")
+
+    return errors
+
+def validate_schedule_timings(scheduled_matches):
+    timing_map = defaultdict(list)
+    matches_different_times = []
+    for match in scheduled_matches:
+        game = match.values()[0]
+        time = game.start_time
+        timing_map[time].append(game.num)
+
+    errors = []
+    for time, match_numbers in timing_map.items():
+        if len(match_numbers) == 1:
+            continue
+
+        ids = ", ".join(str(num) for num in match_numbers)
+        errors.append("Multiple matches scheduled for {0}: {1}.".format(time, ids))
 
     return errors
 
