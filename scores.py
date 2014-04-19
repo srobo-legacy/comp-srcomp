@@ -63,7 +63,7 @@ class LeagueScores(object):
         for match in self.match_league_points.values():
             for tla, score in match.iteritems():
                 if tla not in self.teams:
-                    raise InvalidTeam()
+                    raise InvalidTeam("Team {} does not exist.".format(tla))
                 self.teams[tla].league_points += D(score)
 
         # Sum the game for each team
