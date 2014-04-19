@@ -1,6 +1,6 @@
 
 from collections import namedtuple
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 import subprocess
 
@@ -277,21 +277,66 @@ def test_validate_schedule_timings_ok():
 
     matches = [{'A': Match2(1, datetime(2014, 04, 01, 12, 0, 0))},
                {'A': Match2(2, datetime(2014, 04, 01, 13, 0, 0))}]
+    match_period = timedelta(minutes = 5)
 
-    errors = validate_schedule_timings(matches)
+    errors = validate_schedule_timings(matches, match_period)
     assert len(errors) == 0
 
-def test_validate_schedule_timings_clash():
+def test_validate_schedule_timings_same_time():
 
     time = datetime(2014, 04, 03, 12, 0, 0)
+    time = datetime(2014, 04, 03, 12, 0, 0)
+    match_period = timedelta(minutes = 5)
     # choose match ids not in the date
     matches = [{'A': Match2(8, time)},
                {'A': Match2(9, time)}]
 
-    errors = validate_schedule_timings(matches)
+    errors = validate_schedule_timings(matches, match_period)
+
     assert len(errors) == 1
     error = errors[0]
     assert "Multiple matches" in error
     assert str(time) in error
     assert "8" in error
     assert "9" in error
+
+def test_validate_schedule_timings_overlap():
+
+    time_8 = datetime(2014, 04, 03, 12, 0, 0)
+    time_9 = datetime(2014, 04, 03, 12, 0, 1)
+    match_period = timedelta(minutes = 5)
+    # choose match ids not in the date
+    matches = [{'A': Match2(8, time_8)},
+               {'A': Match2(9, time_9)}]
+
+    errors = validate_schedule_timings(matches, match_period)
+
+    assert len(errors) == 1
+    error = errors[0]
+    assert "Matches 9 start" in error
+    assert "before matches 8 have finished" in error
+    assert str(time_9) in error
+
+def test_validate_schedule_timings_overlap_2():
+
+    time_7 = datetime(2014, 04, 03, 12, 0, 0)
+    time_8 = datetime(2014, 04, 03, 12, 0, 3)
+    time_9 = datetime(2014, 04, 03, 12, 0, 6)
+    match_period = timedelta(minutes = 5)
+    # choose match ids not in the date
+    matches = [{'A': Match2(7, time_7)},
+               {'A': Match2(8, time_8)},
+               {'A': Match2(9, time_9)}]
+
+    errors = validate_schedule_timings(matches, match_period)
+
+    assert len(errors) == 2
+    error = errors[0]
+    assert "Matches 8 start" in error
+    assert "before matches 7 have finished" in error
+    assert str(time_8) in error
+
+    error = errors[1]
+    assert "Matches 9 start" in error
+    assert "before matches 8 have finished" in error
+    assert str(time_9) in error

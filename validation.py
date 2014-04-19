@@ -34,7 +34,7 @@ def validate_schedule(schedule, possible_teams):
     warnings = validate_schedule_count(schedule)
     report_errors('Schedule', '', warnings)
 
-    errors = validate_schedule_timings(schedule.matches)
+    errors = validate_schedule_timings(schedule.matches, schedule.match_period)
     count += len(errors)
     if len(errors):
         errors.append("This usually indicates that the scheduled periods overlap.")
@@ -55,7 +55,7 @@ def validate_schedule_count(schedule):
 
     return errors
 
-def validate_schedule_timings(scheduled_matches):
+def validate_schedule_timings(scheduled_matches, match_period):
     timing_map = defaultdict(list)
     matches_different_times = []
     for match in scheduled_matches:
@@ -64,12 +64,18 @@ def validate_schedule_timings(scheduled_matches):
         timing_map[time].append(game.num)
 
     errors = []
-    for time, match_numbers in timing_map.items():
-        if len(match_numbers) == 1:
-            continue
+    last_time = None
+    for time, match_numbers in sorted(timing_map.items()):
+        if len(match_numbers) != 1:
+            ids = ", ".join(str(num) for num in match_numbers)
+            errors.append("Multiple matches scheduled for {0}: {1}.".format(time, ids))
 
-        ids = ", ".join(str(num) for num in match_numbers)
-        errors.append("Multiple matches scheduled for {0}: {1}.".format(time, ids))
+        if last_time is not None and time - last_time < match_period:
+            prev_ids = ", ".join(str(num) for num in timing_map[last_time])
+            ids = ", ".join(str(num) for num in match_numbers)
+            errors.append("Matches {0} start at {1} before matches {2} have finished.".format(ids, time, prev_ids))
+
+        last_time = time
 
     return errors
 
