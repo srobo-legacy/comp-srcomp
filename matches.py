@@ -185,7 +185,7 @@ class KnockoutScheduler(object):
 
             if len(self.knockout_rounds[-1]) == 2:
                 "Extra delay before the final match"
-                self.next_time += timedelta(seconds=self.config["knockout"]["final_delay"])
+                self.next_time += timedelta(seconds=knockout_conf["final_delay"])
 
             self._add_round(arenas)
 
