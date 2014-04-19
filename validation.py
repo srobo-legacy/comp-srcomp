@@ -31,6 +31,12 @@ def validate_schedule(schedule, possible_teams):
         count += len(errors)
         report_errors('Match', num, errors)
 
+    warnings = validate_schedule_count(schedule)
+    report_errors('Schedule', '', warnings)
+
+    return count
+
+def validate_schedule_count(schedule):
     planned = schedule.n_planned_league_matches
     actual = schedule.n_league_matches
     errors = []
@@ -40,9 +46,8 @@ def validate_schedule(schedule, possible_teams):
         errors.append(msg)
     if planned == 0:
         errors.append("Doesn't contain any matches")
-    report_errors('Schedule', '', errors)
 
-    return count
+    return errors
 
 def validate_match(match, possible_teams):
     """Check that the teams featuring in a match exist and are only
