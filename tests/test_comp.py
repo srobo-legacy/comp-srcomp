@@ -12,6 +12,7 @@ def test_load():
     instance = SRComp(my_dir + '/dummy')
 
     assert instance.root
+    assert instance.state
     assert instance.teams
     assert instance.schedule
     assert instance.scores
