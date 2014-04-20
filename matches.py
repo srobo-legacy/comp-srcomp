@@ -3,6 +3,7 @@
 from collections import namedtuple
 from datetime import timedelta
 import datetime
+from dateutil.tz import tzlocal
 import math
 import sys
 
@@ -325,7 +326,7 @@ class MatchSchedule(object):
         return None
 
     def current_match(self, arena):
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(tzlocal())
         return self.match_at(arena, now)
 
     def match_after(self, arena, when):
