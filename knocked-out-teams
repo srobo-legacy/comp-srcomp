@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+
+from argparse import ArgumentParser
+import os
+import sys
+
+from comp import SRComp
+
+parser = ArgumentParser(description = "Shows the teams knocked out of each knockout round")
+parser.add_argument("compstate", help = "Competition state git repository path")
+
+args = parser.parse_args()
+
+comp = SRComp(args.compstate)
+
+teams_last_round = set()
+
+for i, matches in enumerate(comp.schedule.knockout_rounds):
+    teams_this_round = set()
+    for game in matches:
+        for t in game.teams:
+            teams_this_round.add(t)
+
+    print "Teams not in round {0}:".format(i)
+    out = teams_last_round - teams_this_round
+    print ", ".join(t for t in out if t is not None)
+    teams_last_round = teams_this_round
+    print
