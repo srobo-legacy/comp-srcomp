@@ -34,6 +34,16 @@ def results_finder(root):
         for resfile in glob.glob(os.path.join(dname, "*.yaml")):
             yield resfile
 
+'''
+The scorer that these classes consume should be a class that:
+* accepts a dictionary equivalent to value of the 'teams' key from a Proton
+  compatible input as its only constructor argument.
+* has a 'calculate_scores' method which returns a dictionary of TLAs (ie
+  the same keys as the input) to the numeric scores for each team.
+
+Proton refers to [Proton 1.0.0-rc2](https://github.com/samphippen/proton)
+'''
+
 class LeagueScores(object):
     def __init__(self, resultdir, teams, scorer):
         self._scorer = scorer
@@ -43,11 +53,11 @@ class LeagueScores(object):
         # keys are (arena_id, match_num) tuples
         self.game_points = {}
 
-        # League points in each match
+        # Ranked points in each match
         # keys are (arena_id, match_num) tuples
         self.ranked_points = {}
 
-        # League points for each team
+        # Points for each team (TeamScore objects)
         # keys are team tlas
         self.teams = {}
 
