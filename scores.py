@@ -8,10 +8,16 @@ import ranker
 import yaml_loader
 
 class InvalidTeam(Exception):
-    pass
+    def __init__(self, tla):
+        message = "Team {0} does not exist.".format(tla)
+        super(InvalidTeam, self).__init__(message)
+        self.tla = tla
 
 class DuplicateScoresheet(Exception):
-    pass
+    def __init__(self, match_id):
+        message = "Scoresheet for {0} has already been added.".format(match_id)
+        super(DuplicateScoresheet, self).__init__(message)
+        self.match_id = match_id
 
 class TeamScore(object):
     def __init__(self, league = 0, game = 0):
@@ -72,14 +78,14 @@ class LeagueScores(object):
         for match in self.ranked_points.values():
             for tla, score in match.iteritems():
                 if tla not in self.teams:
-                    raise InvalidTeam("Team {} does not exist.".format(tla))
+                    raise InvalidTeam(tla)
                 self.teams[tla].league_points += D(score)
 
         # Sum the game for each team
         for match in self.game_points.values():
             for tla, score in match.iteritems():
                 if tla not in self.teams:
-                    raise InvalidTeam()
+                    raise InvalidTeam(tla)
                 self.teams[tla].game_points += score
 
     def _load_resfile(self, fname):
@@ -87,7 +93,7 @@ class LeagueScores(object):
 
         match_id = (y["arena_id"], y["match_number"])
         if match_id in self.game_points:
-            raise DuplicateScoresheet()
+            raise DuplicateScoresheet(match_id)
 
         game_points = self._scorer(y["teams"]).calculate_scores()
         self.game_points[match_id] = game_points
@@ -133,7 +139,7 @@ class KnockoutScores(object):
 
         match_id = (y["arena_id"], y["match_number"])
         if match_id in self.game_points:
-            raise DuplicateScoresheet()
+            raise DuplicateScoresheet(match_id)
 
         game_points = self._scorer(y["teams"]).calculate_scores()
         self.game_points[match_id] = game_points
