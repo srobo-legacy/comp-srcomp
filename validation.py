@@ -138,7 +138,7 @@ def validate_scores(scores, schedule):
     for match_id, match in scores.game_points.items():
         count += check('Game Score', match_id, match)
 
-    for match_id, match in scores.match_league_points.items():
+    for match_id, match in scores.ranked_points.items():
         count += check('League Points', match_id, match)
 
     return count
@@ -169,7 +169,7 @@ def validate_match_score(match_score, scheduled_match):
 
 def warn_missing_scores(scores, schedule):
     """Check that the scores up to the most recent are all present."""
-    match_ids = scores.match_league_points.keys()
+    match_ids = scores.ranked_points.keys()
     last_match = scores.last_scored_match
 
     missing = find_missing_scores(match_ids, last_match, schedule)

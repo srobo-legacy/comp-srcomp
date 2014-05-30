@@ -85,7 +85,7 @@ def test_game_points():
 def test_league_points():
     scores = load_basic_data()
 
-    leagues = scores.match_league_points
+    leagues = scores.ranked_points
     assert len(leagues) == 1
 
     id_ = ('A', 123)

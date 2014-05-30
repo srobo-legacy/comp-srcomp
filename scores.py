@@ -45,7 +45,7 @@ class LeagueScores(object):
 
         # League points in each match
         # keys are (arena_id, match_num) tuples
-        self.match_league_points = {}
+        self.ranked_points = {}
 
         # League points for each team
         # keys are team tlas
@@ -60,7 +60,7 @@ class LeagueScores(object):
             self._load_resfile(resfile)
 
         # Sum the league scores for each team
-        for match in self.match_league_points.values():
+        for match in self.ranked_points.values():
             for tla, score in match.iteritems():
                 if tla not in self.teams:
                     raise InvalidTeam("Team {} does not exist.".format(tla))
@@ -93,14 +93,14 @@ class LeagueScores(object):
                 dsq.append(tla)
 
         league_points = ranker.get_ranked_points(game_points, dsq)
-        self.match_league_points[match_id] = league_points
+        self.ranked_points[match_id] = league_points
 
     @property
     def last_scored_match(self):
         """The most match with the highest id for which we have score data"""
-        if len(self.match_league_points) == 0:
+        if len(self.ranked_points) == 0:
             return None
-        matches = self.match_league_points.keys()
+        matches = self.ranked_points.keys()
         return max(num for arena, num in matches)
 
 class KnockoutScores(object):
