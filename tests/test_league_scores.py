@@ -5,6 +5,7 @@ import mock
 # Hack the path
 import helpers as test_helpers
 
+from scorer import Scorer
 from scores import LeagueScores, TeamScore
 
 def get_basic_data():
@@ -62,7 +63,7 @@ def load_datas(the_datas, teams):
         mock_finder.return_value = the_files
         mock_loader.side_effect = loader
 
-        scores = LeagueScores('somewhere', teams)
+        scores = LeagueScores('somewhere', teams, Scorer)
         return scores
 
 def load_basic_data():

@@ -5,7 +5,6 @@ import os
 import sys
 
 import ranker
-from scorer import Scorer
 import yaml_loader
 
 class InvalidTeam(Exception):
@@ -36,7 +35,8 @@ def results_finder(root):
             yield resfile
 
 class LeagueScores(object):
-    def __init__(self, resultdir, teams):
+    def __init__(self, resultdir, teams, scorer):
+        self._scorer = scorer
         self.resultdir = resultdir
 
         # Game points in each match
@@ -80,7 +80,7 @@ class LeagueScores(object):
         if match_id in self.game_points:
             raise DuplicateScoresheet()
 
-        game_points = Scorer(y["teams"]).calculate_scores()
+        game_points = self._scorer(y["teams"]).calculate_scores()
         self.game_points[match_id] = game_points
 
         # Build the disqualification dict
@@ -104,7 +104,9 @@ class LeagueScores(object):
         return max(num for arena, num in matches)
 
 class KnockoutScores(object):
-    def __init__(self, resultdir):
+    def __init__(self, resultdir, scorer):
+        self._scorer = scorer
+
         # Game points in each match
         # keys are (arena_id, match_num) tuples
         self.game_points = {}
@@ -124,7 +126,7 @@ class KnockoutScores(object):
         if match_id in self.game_points:
             raise DuplicateScoresheet()
 
-        game_points = Scorer(y["teams"]).calculate_scores()
+        game_points = self._scorer(y["teams"]).calculate_scores()
         self.game_points[match_id] = game_points
 
         # Build the disqualification dict
@@ -139,7 +141,7 @@ class KnockoutScores(object):
         self.ranked_points[match_id] = ranker.get_ranked_points(game_points, dsq)
 
 class Scores(object):
-    def __init__(self, root, teams):
+    def __init__(self, root, teams, scorer):
         self.root = root
-        self.league = LeagueScores(os.path.join(root, "league"), teams)
-        self.knockout = KnockoutScores(os.path.join(root, "knockout"))
+        self.league = LeagueScores(os.path.join(root, "league"), teams, scorer)
+        self.knockout = KnockoutScores(os.path.join(root, "knockout"), scorer)
