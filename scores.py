@@ -47,7 +47,6 @@ Proton refers to [Proton 1.0.0-rc2](https://github.com/samphippen/proton)
 class LeagueScores(object):
     def __init__(self, resultdir, teams, scorer):
         self._scorer = scorer
-        self.resultdir = resultdir
 
         # Game points in each match
         # keys are (arena_id, match_num) tuples
