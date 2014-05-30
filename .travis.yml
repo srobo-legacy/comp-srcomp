@@ -1,5 +1,5 @@
 language: python
 python:
   - "2.7"
-install: pip install nose PyYAML mock
+install: pip install python-dateutil nose PyYAML mock
 script: ./run-tests

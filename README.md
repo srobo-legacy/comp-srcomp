@@ -7,6 +7,7 @@ Yet Another attempt at some Competition Software for [Student Robotics](http://s
 ## Requirements
 
 * Python 2.7
+* python-dateutil
 * nose
 * mock
 * PyYAML
