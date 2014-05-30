@@ -5,7 +5,6 @@ import mock
 # Hack the path
 import helpers as test_helpers
 
-from scorer import Scorer
 from scores import LeagueScores, TeamScore
 
 def get_basic_data():
@@ -14,32 +13,21 @@ def get_basic_data():
         'arena_id': 'A',
         'teams': {
             'JMS': {
-                'zone_tokens': {0: 0, 1: 0, 2: 0, 3: 2},
-                'slot_bottoms': {0: 0, 1: 0, 2: 0, 3: 1, 4: 0, 5: 1, 6: 0, 7: 0},
-                'robot_moved': False,
-                'upright_tokens': 1,
+                'score': 4,
                 'disqualified': True,
                 'zone': 3
             },
             'PAS': {
-                'zone_tokens': {0: 0, 1: 0, 2: 0, 3: 0},
-                'slot_bottoms': {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0},
+                'score': 0,
                 'present': False,
-                'robot_moved': False,
-                'upright_tokens': 0,
                 'zone': 4
             },
             'RUN': {
-                'zone_tokens': {0: 0, 1: 0, 2: 0, 3: 0},
-                'slot_bottoms': {0: 1, 1: 1, 2: 1, 3: 0, 4: 1, 5: 0, 6: 0, 7: 0},
-                'robot_moved': False,
-                'upright_tokens': 1,
+                'score': 8,
                 'zone': 1
             },
-            'ICE': {'zone_tokens': {0: 0, 1: 0, 2: 0, 3: 0},
-                'slot_bottoms': {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 1},
-                'robot_moved': True,
-                'upright_tokens': 0,
+            'ICE': {
+                'score': 2,
                 'zone': 2
             }
         }
@@ -63,7 +51,7 @@ def load_datas(the_datas, teams):
         mock_finder.return_value = the_files
         mock_loader.side_effect = loader
 
-        scores = LeagueScores('somewhere', teams, Scorer)
+        scores = LeagueScores('somewhere', teams, test_helpers.FakeScorer)
         return scores
 
 def load_basic_data():
