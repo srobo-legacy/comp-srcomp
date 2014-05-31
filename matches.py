@@ -97,18 +97,21 @@ class KnockoutScheduler(object):
         "Find the parent match's winners"
         desc = (game.arena, game.num)
 
-        winners = []
-        if desc not in self.scores.knockout.ranked_points:
+        # Get the score if present (will be a tla -> 'league points' map)
+        points = self.scores.knockout.ranked_points.get(desc, None)
+
+        if points is None:
             "Parent match hasn't been scored yet"
-            winners += [ UNKNOWABLE_TEAM, UNKNOWABLE_TEAM ]
-        else:
-            s = self.scores.knockout.ranked_points[desc].items()
+            return [UNKNOWABLE_TEAM, UNKNOWABLE_TEAM]
 
-            def srt(x,y):
-                return cmp(x[1],y[1])
+        def srt(x, y):
+            return cmp(x[1], y[1])
 
-            w = sorted(s, cmp=srt)[-2:]
-            winners += [x[0] for x in w]
+        # Extract the two teams who scored highest
+        w = sorted(points.items(), cmp=srt)[-2:]
+
+        # Extract just TLAs
+        winners = [x[0] for x in w]
         return winners
 
     def _add_round(self, arenas):
