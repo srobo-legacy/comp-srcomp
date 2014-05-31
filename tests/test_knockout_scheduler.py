@@ -7,13 +7,16 @@ import mock
 import helpers as test_helpers
 
 from scores import TeamScore
-from matches import KnockoutScheduler, Match, KNOCKOUT_MATCH, UNKNOWABLE_TEAM
+from matches import KnockoutScheduler, Match, UNKNOWABLE_TEAM, \
+                        KNOCKOUT_MATCH, LEAGUE_MATCH
 
 def get_scheduler(matches = None, positions = None, \
-                    knockout_points = None, delays = None):
+                    knockout_points = None, league_game_points = None, \
+                    delays = None):
     matches = matches or []
     delays = delays or []
     match_period = timedelta(minutes = 5)
+    league_game_points = league_game_points or {}
     knockout_points = knockout_points or {}
     if not positions:
         positions = OrderedDict()
@@ -22,7 +25,7 @@ def get_scheduler(matches = None, positions = None, \
 
     league_schedule = mock.Mock(matches = matches, delays = delays, \
                                 match_period = match_period)
-    league_scores = mock.Mock(positions = positions)
+    league_scores = mock.Mock(positions = positions, game_points = league_game_points)
     knockout_scores = mock.Mock(ranked_points = knockout_points)
     scores = mock.Mock(league = league_scores, knockout = knockout_scores)
 
@@ -102,6 +105,46 @@ def test_knockout_match_winners_irrelevant_tie_1():
 
     assert set(winners) == set(['GHI', 'JKL'])
 
+
+def test_first_round_before_league_end():
+    positions = OrderedDict()
+    positions['ABC'] = 1
+    positions['CDE'] = 2
+    positions['EFG'] = 3
+    positions['GHI'] = 4
+
+    # Fake a couple of league matches that won't have been scored
+    matches = [
+        {'A':Match(0, 'A', [], None, None, LEAGUE_MATCH)},
+        {'A':Match(1, 'A', [], None, None, LEAGUE_MATCH)},
+    ]
+    scheduler = get_scheduler(matches, positions = positions)
+
+    def seeder(*args):
+        assert args[0] == 4, "Wrong number of teams"
+        return [[0,1,2,3]]
+
+    # Mock the random (even thought it's not really random)
+    scheduler.R = mock.Mock()
+    # Mock the seeder to make it less interesting
+    with mock.patch('knockout.first_round_seeding') as first_round_seeding:
+        first_round_seeding.side_effect = seeder
+        scheduler.add_knockouts()
+
+    knockout_rounds = scheduler.knockout_rounds
+    period = scheduler.period
+
+    assert len(knockout_rounds) == 1, "Should be finals only"
+    finals = knockout_rounds[0]
+
+    assert len(finals) == 1, "Should be one final"
+    final = finals[0]
+    final_teams = final.teams
+
+    # No scores yet -- should just list as ???
+    expected_teams = [UNKNOWABLE_TEAM] * 4
+
+    assert expected_teams == final_teams, "Should not show teams until league complete"
 
 def test_first_round():
     positions = OrderedDict()
