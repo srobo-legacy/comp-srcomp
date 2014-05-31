@@ -116,6 +116,22 @@ class BaseScores(object):
         return max(num for arena, num in matches)
 
 class LeagueScores(BaseScores):
+    @staticmethod
+    def rank_league(team_scores):
+        # Reverse sort the (tla, score) pairs so the biggest scores are at the top
+        ranking = sorted(team_scores.items(),
+                         lambda x, y: cmp(x[1], y[1]),
+                         reverse = True)
+        positions = {}
+        pos = 1
+        last_score = None
+        for i, (tla, score) in enumerate(ranking, start = 1):
+            if score != last_score:
+                pos = i
+            positions[tla] = pos
+            last_score = score
+        return positions
+
     def __init__(self, resultdir, teams, scorer):
         super(LeagueScores, self).__init__(resultdir, teams, scorer)
 
@@ -125,6 +141,8 @@ class LeagueScores(BaseScores):
                 if tla not in self.teams:
                     raise InvalidTeam(tla)
                 self.teams[tla].league_points += D(score)
+
+        self.positions = self.rank_league(self.teams)
 
 class KnockoutScores(BaseScores):
     pass

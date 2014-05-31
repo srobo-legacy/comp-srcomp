@@ -129,3 +129,62 @@ def test_last_scored_match_many_scores():
     lsm = scores.last_scored_match
 
     assert lsm == 2, "Should latest match id, even when in other arena."
+
+
+def test_league_ranker_simple():
+    team_scores = { 'ABC': TeamScore(), 'DEF': TeamScore(4, 5) }
+    ranking = LeagueScores.rank_league(team_scores)
+    expected = {
+        'DEF': 1,
+        'ABC': 2,
+    }
+
+    assert expected == ranking
+
+def test_league_ranker_league_tie():
+    team_scores = {
+        'ABC': TeamScore(4, 0),
+        'DEF': TeamScore(4, 5),
+        'GHI': TeamScore(),
+    }
+    ranking = LeagueScores.rank_league(team_scores)
+    expected = {
+        'DEF': 1,
+        'ABC': 2,
+        'GHI': 3,
+    }
+
+    assert expected == ranking
+
+def test_league_ranker_game_tie():
+    team_scores = {
+        'ABC': TeamScore(0, 5),
+        'DEF': TeamScore(4, 5),
+        'GHI': TeamScore(),
+    }
+    ranking = LeagueScores.rank_league(team_scores)
+    expected = {
+        'DEF': 1,
+        'ABC': 2,
+        'GHI': 3,
+    }
+
+    assert expected == ranking
+
+## TODO: how do we resolve full ties?
+## TODO: build something to alert us that we have a full tie.
+
+def test_league_ranker_full_tie():
+    team_scores = {
+        'ABC': TeamScore(4, 5),
+        'DEF': TeamScore(4, 5),
+        'GHI': TeamScore(),
+    }
+    ranking = LeagueScores.rank_league(team_scores)
+    expected = {
+        'DEF': 1,
+        'ABC': 1,
+        'GHI': 3,
+    }
+
+    assert expected == ranking
