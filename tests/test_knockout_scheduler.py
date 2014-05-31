@@ -6,7 +6,7 @@ import mock
 import helpers as test_helpers
 
 from scores import TeamScore
-from matches import KnockoutScheduler, KNOCKOUT_MATCH, UNKNOWABLE_TEAM
+from matches import KnockoutScheduler, Match, KNOCKOUT_MATCH, UNKNOWABLE_TEAM
 
 def get_scheduler(matches = None, team_scores = None, \
                     knockout_points = None, delays = None):
@@ -101,6 +101,61 @@ def test_team_seed_league_tie_2():
     teams = scheduler.seed_teams(scores)
 
     assert teams == expected
+
+
+def test_knockout_match_winners_empty():
+    scheduler = get_scheduler()
+    game = Match(2, 'A', [], None, None, None)
+    winners = scheduler.get_winners(game)
+    assert winners == [UNKNOWABLE_TEAM] * 2
+
+def test_knockout_match_winners_simple():
+    knockout_points = {
+        ('A', 2): {
+            'ABC': 1.0,
+            'DEF': 2.0,
+            'GHI': 3.0,
+            'JKL': 4.0,
+        }
+    }
+    scheduler = get_scheduler(knockout_points = knockout_points)
+
+    game = Match(2, 'A', [], None, None, None)
+    winners = scheduler.get_winners(game)
+
+    assert set(winners) == set(['GHI', 'JKL'])
+
+def test_knockout_match_winners_irrelevant_tie_1():
+    knockout_points = {
+        ('A', 2): {
+            'ABC': 1.5,
+            'DEF': 1.5,
+            'GHI': 3,
+            'JKL': 4,
+        }
+    }
+    scheduler = get_scheduler(knockout_points = knockout_points)
+
+    game = Match(2, 'A', [], None, None, None)
+    winners = scheduler.get_winners(game)
+
+    assert set(winners) == set(['GHI', 'JKL'])
+
+def test_knockout_match_winners_irrelevant_tie_1():
+    knockout_points = {
+        ('A', 2): {
+            'ABC': 1,
+            'DEF': 2,
+            'GHI': 3.5,
+            'JKL': 3.5,
+        }
+    }
+    scheduler = get_scheduler(knockout_points = knockout_points)
+
+    game = Match(2, 'A', [], None, None, None)
+    winners = scheduler.get_winners(game)
+
+    assert set(winners) == set(['GHI', 'JKL'])
 
 
 def test_first_round():

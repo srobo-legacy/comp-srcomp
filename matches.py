@@ -110,6 +110,24 @@ class KnockoutScheduler(object):
             self.schedule.matches.append(new_matches)
             self.period.matches.append(new_matches)
 
+    def get_winners(self, game):
+        "Find the parent match's winners"
+        desc = (game.arena, game.num)
+
+        winners = []
+        if desc not in self.scores.knockout.ranked_points:
+            "Parent match hasn't been scored yet"
+            winners += [ UNKNOWABLE_TEAM, UNKNOWABLE_TEAM ]
+        else:
+            s = self.scores.knockout.ranked_points[desc].items()
+
+            def srt(x,y):
+                return cmp(x[1],y[1])
+
+            w = sorted(s, cmp=srt)[-2:]
+            winners += [x[0] for x in w]
+        return winners
+
     def _add_round(self, arenas):
         prev_round = self.knockout_rounds[-1]
         matches = []
@@ -117,20 +135,7 @@ class KnockoutScheduler(object):
         for i in range(0,len(prev_round),2):
             winners = []
             for parent in prev_round[i:i+2]:
-                "Find the parent match's winners"
-                desc = (parent.arena, parent.num)
-
-                if desc not in self.scores.knockout.ranked_points:
-                    "Parent match hasn't been scored yet"
-                    winners += [ UNKNOWABLE_TEAM, UNKNOWABLE_TEAM ]
-                else:
-                    s = self.scores.knockout.ranked_points[desc].items()
-
-                    def srt(x,y):
-                        return cmp(x[1],y[1])
-
-                    w = sorted(s, cmp=srt)[-2:]
-                    winners += [x[0] for x in w]
+                winners += self.get_winners(parent)
 
             matches.append(winners)
 
