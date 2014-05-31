@@ -285,9 +285,9 @@ class MatchSchedule(object):
 
                 m = {}
 
+                start_time = start + delay
+                end_time = start_time + self.match_period
                 for arena_name, teams in arenas.iteritems():
-                    start_time = start + delay
-                    end_time = start_time + self.match_period
                     match = Match(match_n, arena_name, teams, start_time, end_time, LEAGUE_MATCH)
                     m[arena_name] = match
 
