@@ -8,6 +8,19 @@ import helpers as test_helpers
 
 from matches import MatchSchedule
 
+def assert_times(expected, matches, message):
+    def times(dts):
+        return [dt.strftime("%H:%M") for dt in dts]
+
+    starts = [m['A'].start_time for m in matches]
+    expected_times = times(expected)
+    start_times = times(starts)
+
+    # Times alone are easier to debug
+    assert expected_times == start_times, message + " (times)"
+
+    assert expected == starts, message + " (datetimes)"
+
 def get_basic_data():
     the_data = {
         "match_period_length_seconds": 300,
@@ -241,6 +254,166 @@ def test_match_after_b():
 
     yield check, None,                      datetime(2014, 03, 26,  13, 10, 15)
     yield check, None,                      datetime(2014, 03, 26,  14)
+
+
+def test_period_end_simple():
+    the_data = get_basic_data()
+    # Don't care about delays for now
+    the_data["delays"] = None
+    # for a total of 4 matches
+    the_data["matches"][3] = { "A": ["SRZ", "SRZ1", "SRZ2", "SRZ3"] }
+
+    # Period is 12 minutes long. Since we measure by the start of matches
+    # this is enough time to start 3 matches (at 5 minutes each)
+    league = the_data['match_periods']['league'][0]
+    start_time = league['start_time']
+    league['end_time'] = start_time + timedelta(minutes=12)
+    del league['max_end_time']
+
+    matches = load_data(the_data)
+
+    expected = [
+        start_time,
+        start_time + timedelta(minutes=5),
+        start_time + timedelta(minutes=10),
+    ]
+
+    assert_times(expected, matches.matches, "4 matches planned in a 12 minute period, no delay")
+
+def test_period_end_with_delay():
+    the_data = get_basic_data()
+    # Simple delay
+    the_data["delays"] = [
+        { "delay": 60, "time": datetime(2014, 03, 26,  13, 02) },
+    ]
+    # for a total of 4 matches
+    the_data["matches"][3] = { "A": ["SRZ", "SRZ1", "SRZ2", "SRZ3"] }
+
+    # Period is 12 minutes long. Since we measure by the start of matches
+    # this is enough time to start 3 matches (at 5 minutes each)
+    league = the_data['match_periods']['league'][0]
+    start_time = league['start_time']
+    league['end_time'] = start_time + timedelta(minutes=12)
+    del league['max_end_time']
+
+    matches = load_data(the_data)
+
+    expected = [
+        start_time,
+        # 5 minute matches, 1 minute delay
+        start_time + timedelta(minutes=6),
+        start_time + timedelta(minutes=11),
+    ]
+
+    assert_times(expected, matches.matches, "4 matches planned in a 12 minute period, simple delay")
+
+def test_period_end_with_large_delay():
+    the_data = get_basic_data()
+    # Simple delay
+    the_data["delays"] = [
+        { "delay": 300, "time": datetime(2014, 03, 26,  13, 01) },
+    ]
+    # for a total of 4 matches
+    the_data["matches"][3] = { "A": ["SRZ", "SRZ1", "SRZ2", "SRZ3"] }
+
+    # Period is 12 minutes long. Since we measure by the start of matches
+    # this is enough time to start 3 matches (at 5 minutes each)
+    league = the_data['match_periods']['league'][0]
+    start_time = league['start_time']
+    league['end_time'] = start_time + timedelta(minutes=12)
+    del league['max_end_time']
+
+    matches = load_data(the_data)
+
+    expected = [
+        start_time,
+        # 5 minute matches, 5 minute delay
+        start_time + timedelta(minutes=10),
+    ]
+
+    assert_times(expected, matches.matches, "4 matches planned in a 12 minute period, large delay")
+
+def test_period_max_end_simple():
+    the_data = get_basic_data()
+    # Don't care about delays for now
+    the_data["delays"] = None
+    # for a total of 4 matches
+    the_data["matches"][3] = { "A": ["SRZ", "SRZ1", "SRZ2", "SRZ3"] }
+
+    # Period is 12 minutes long. Since we measure by the start of matches
+    # this is enough time to start 3 matches (at 5 minutes each)
+    league = the_data['match_periods']['league'][0]
+    start_time = league['start_time']
+    league['end_time'] = start_time + timedelta(minutes=12)
+    # Allow 5 minutes for overrun
+    league['max_end_time'] =  start_time + timedelta(minutes=17)
+
+    matches = load_data(the_data)
+
+    expected = [
+        start_time,
+        start_time + timedelta(minutes=5),
+        start_time + timedelta(minutes=10),
+    ]
+
+    assert_times(expected, matches.matches, "4 matches planned in a 12 minute period, overrun allowed, no delay")
+
+def test_period_max_end_with_delay():
+    the_data = get_basic_data()
+    # Simple delay
+    the_data["delays"] = [
+        { "delay": 60, "time": datetime(2014, 03, 26,  13, 02) },
+    ]
+    # for a total of 4 matches
+    the_data["matches"][3] = { "A": ["SRZ", "SRZ1", "SRZ2", "SRZ3"] }
+
+    # Period is 12 minutes long. Since we measure by the start of matches
+    # this is enough time to start 3 matches (at 5 minutes each)
+    league = the_data['match_periods']['league'][0]
+    start_time = league['start_time']
+    league['end_time'] = start_time + timedelta(minutes=12)
+    # Allow 5 minutes for overrun
+    league['max_end_time'] =  start_time + timedelta(minutes=17)
+
+    matches = load_data(the_data)
+
+    expected = [
+        start_time,
+        # 5 minute matches, 1 minute delay
+        start_time + timedelta(minutes=6),
+        start_time + timedelta(minutes=11),
+    ]
+
+    assert_times(expected, matches.matches, "4 matches planned in a 12 minute period, overrun allowed, simple delay")
+
+def test_period_max_end_with_large_delay():
+    the_data = get_basic_data()
+    # Simple delay
+    the_data["delays"] = [
+        { "delay": 300, "time": datetime(2014, 03, 26,  13, 01) },
+    ]
+    # for a total of 4 matches
+    the_data["matches"][3] = { "A": ["SRZ", "SRZ1", "SRZ2", "SRZ3"] }
+
+    # Period is 12 minutes long. Since we measure by the start of matches
+    # this is enough time to start 3 matches (at 5 minutes each)
+    league = the_data['match_periods']['league'][0]
+    start_time = league['start_time']
+    league['end_time'] = start_time + timedelta(minutes=12)
+    # Allow 5 minutes for overrun
+    league['max_end_time'] =  start_time + timedelta(minutes=17)
+
+    matches = load_data(the_data)
+
+    expected = [
+        start_time,
+        # 5 minute matches, 5 minute delay
+        start_time + timedelta(minutes=10),
+        # Third match would have originally been at start+10, so is allowed to occur in the overrun period
+        start_time + timedelta(minutes=15),
+    ]
+
+    assert_times(expected, matches.matches, "4 matches planned in a 12 minute period, overrun allowed, large delay")
 
 
 def test_planned_matches():
