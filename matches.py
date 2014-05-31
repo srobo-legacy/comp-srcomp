@@ -268,13 +268,21 @@ class MatchSchedule(object):
 
         for period in self.match_periods:
             # Fill this period with matches
+
+            # The start time for the current match slot we're looking to
+            # fill. This value includes all of the relevant delays.
             start = period.start_time
-            delay = timedelta()
+
+            # The total delay so far. Needed so that we can tell when we
+            # get to the end of the original slot for the period.
+            total_delay = timedelta()
 
             # Fill this match period with matches
             while True:
                 while len(delays) and delays[0].time <= start:
-                    delay += delays.pop(0).delay
+                    delay = delays.pop(0).delay
+                    total_delay += delay
+                    start += delay
 
                 try:
                     arenas = arena_info.pop(0)
@@ -284,10 +292,9 @@ class MatchSchedule(object):
 
                 m = {}
 
-                start_time = start + delay
-                end_time = start_time + self.match_period
+                end_time = start + self.match_period
                 for arena_name, teams in arenas.iteritems():
-                    match = Match(match_n, arena_name, teams, start_time, end_time, LEAGUE_MATCH)
+                    match = Match(match_n, arena_name, teams, start, end_time, LEAGUE_MATCH)
                     m[arena_name] = match
 
                 period.matches.append(m)
@@ -298,13 +305,13 @@ class MatchSchedule(object):
 
                 # Ensure we haven't exceeded the maximum time limit
                 # (if we have then matches will get pushed into the next period)
-                if start + delay > period.max_end_time:
+                if start > period.max_end_time:
                     "We've filled this up to the maximum end time"
                     break
 
                 # Ensure we haven't attempted to pack in more matches than will
                 # fit in this period
-                if start > period.end_time:
+                if start - total_delay > period.end_time:
                     "We've filled up this period"
                     break
 

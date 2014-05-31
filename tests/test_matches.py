@@ -139,6 +139,43 @@ def test_no_delays():
     assert a_end == datetime(2014, 03, 26,  13, 05)
     assert a_end == b_end
 
+def test_two_overlapping_delays():
+    the_data = get_basic_data()
+    the_data['delays'] = [
+        { "delay": 5*60, "time": datetime(2014, 03, 26,  13, 02) },
+        # Second delay 'starts' part-way through the first
+        { "delay": 5*60, "time": datetime(2014, 03, 26,  13, 06) },
+    ]
+    the_data["matches"][3] = { "A": ["SRZ", "SRZ1", "SRZ2", "SRZ3"] }
+    matches = load_data(the_data)
+
+    expected = [
+        datetime(2014, 03, 26,  13, 00), # first match unaffected by delays
+        datetime(2014, 03, 26,  13, 15), # second match gets both delays
+        datetime(2014, 03, 26,  13, 20),
+        datetime(2014, 03, 26,  13, 25),
+    ]
+
+    assert_times(expected, matches.matches, "Wrong compound match delays")
+
+def test_two_sepearate_delays():
+    the_data = get_basic_data()
+    the_data['delays'] = [
+        { "delay": 5*60, "time": datetime(2014, 03, 26,  13, 02) },
+        { "delay": 5*60, "time": datetime(2014, 03, 26,  13, 12) },
+    ]
+    the_data["matches"][3] = { "A": ["SRZ", "SRZ1", "SRZ2", "SRZ3"] }
+    matches = load_data(the_data)
+
+    expected = [
+        datetime(2014, 03, 26,  13, 00), # first match unaffected by delays
+        datetime(2014, 03, 26,  13, 10), # second match gets first delay
+        datetime(2014, 03, 26,  13, 20), # third match gets first and second delays
+        datetime(2014, 03, 26,  13, 25), # fourth match gets no extra delays
+    ]
+
+    assert_times(expected, matches.matches, "Wrong compound match delays")
+
 def test_match_at():
     the_data = get_basic_data()
 
