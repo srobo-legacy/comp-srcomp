@@ -23,10 +23,16 @@ class TeamScore(object):
         self.league_points = D(league)
         self.game_points = game
 
-    def __eq__(self, other):
-        return isinstance(other, TeamScore) and \
-                other.league_points == self.league_points and \
-                other.game_points == self.game_points
+    def __cmp__(self, other):
+        if not isinstance(other, TeamScore):
+            # TeamScores are greater than other things (that have no score)
+            return 1
+
+        league_cmp = cmp(self.league_points, other.league_points)
+        if league_cmp == 0:
+            return cmp(self.game_points, other.game_points)
+
+        return league_cmp
 
     def __repr__(self):
         return "TeamScore({0}, {1})".format(self.league_points, self.game_points)
