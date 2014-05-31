@@ -56,23 +56,6 @@ class KnockoutScheduler(object):
 
         return True
 
-    def seed_teams(self, team_scores):
-        """Sort teams by their league scores.
-
-        team_scores: a dictionary of tla to TeamScore for that team"""
-
-        if not self._played_all_league_matches():
-            return [UNKNOWABLE_TEAM] * len(team_scores)
-
-        def score_cmp(x,y):
-            league = cmp(x[1].league_points, y[1].league_points)
-            if league == 0: # tie -- use game points
-                return cmp(x[1].game_points, y[1].game_points)
-            return league
-
-        seeded_teams = sorted(team_scores.items(), cmp=score_cmp, reverse=True)
-        return [x[0] for x in seeded_teams]
-
     def _add_round_of_matches(self, matches, arenas):
         """Add a whole round of matches
 
@@ -142,7 +125,10 @@ class KnockoutScheduler(object):
         self._add_round_of_matches(matches, arenas)
 
     def _add_first_round(self):
-        teams = self.seed_teams(self.scores.league.teams)
+        teams = self.scores.league.positions.keys()
+
+        if not self._played_all_league_matches():
+            teams = [UNKNOWABLE_TEAM] * len(teams)
 
         # Seed the random generator with the seeded team list
         # This makes it unpredictable which teams will be in which zones

@@ -1,4 +1,5 @@
 
+from collections import OrderedDict
 from datetime import datetime, timedelta
 import mock
 
@@ -8,20 +9,20 @@ import helpers as test_helpers
 from scores import TeamScore
 from matches import KnockoutScheduler, Match, KNOCKOUT_MATCH, UNKNOWABLE_TEAM
 
-def get_scheduler(matches = None, team_scores = None, \
+def get_scheduler(matches = None, positions = None, \
                     knockout_points = None, delays = None):
     matches = matches or []
     delays = delays or []
-    team_scores = team_scores or {
-        'ABC': TeamScore(4, 0),
-        'DEF': TeamScore(10, 0),
-    }
     match_period = timedelta(minutes = 5)
     knockout_points = knockout_points or {}
+    if not positions:
+        positions = OrderedDict()
+        positions['ABC'] = 1
+        positions['DEF'] = 2
 
     league_schedule = mock.Mock(matches = matches, delays = delays, \
                                 match_period = match_period)
-    league_scores = mock.Mock(teams = team_scores)
+    league_scores = mock.Mock(positions = positions)
     knockout_scores = mock.Mock(ranked_points = knockout_points)
     scores = mock.Mock(league = league_scores, knockout = knockout_scores)
 
@@ -45,62 +46,6 @@ def get_scheduler(matches = None, team_scores = None, \
     arenas = ['A']
     scheduler = KnockoutScheduler(league_schedule, scores, arenas, config)
     return scheduler
-
-def test_team_seed_simple_1():
-    scheduler = get_scheduler([])
-
-    scores = {
-        'ABC': TeamScore(0, 0),
-        'DEF': TeamScore(5, 5)
-    }
-
-    expected = ['DEF', 'ABC']
-
-    teams = scheduler.seed_teams(scores)
-
-    assert teams == expected
-
-def test_team_seed_simple_2():
-    scheduler = get_scheduler([])
-
-    scores = {
-        'ABC': TeamScore(10, 10),
-        'DEF': TeamScore(5, 5)
-    }
-
-    expected = ['ABC', 'DEF']
-
-    teams = scheduler.seed_teams(scores)
-
-    assert teams == expected
-
-def test_team_seed_league_tie_1():
-    scheduler = get_scheduler([])
-
-    scores = {
-        'ABC': TeamScore(5, 0),
-        'DEF': TeamScore(5, 5)
-    }
-
-    expected = ['DEF', 'ABC']
-
-    teams = scheduler.seed_teams(scores)
-
-    assert teams == expected
-
-def test_team_seed_league_tie_2():
-    scheduler = get_scheduler([])
-
-    scores = {
-        'ABC': TeamScore(5, 10),
-        'DEF': TeamScore(5, 5)
-    }
-
-    expected = ['ABC', 'DEF']
-
-    teams = scheduler.seed_teams(scores)
-
-    assert teams == expected
 
 
 def test_knockout_match_winners_empty():
@@ -159,19 +104,19 @@ def test_knockout_match_winners_irrelevant_tie_1():
 
 
 def test_first_round():
-    team_scores = {
-        'ABC': TeamScore(1, 0),
-        'CDE': TeamScore(2, 0),
-        'EFG': TeamScore(3, 0),
-        'GHI': TeamScore(5, 0),
-        'IJK': TeamScore(5, 3),
-        'KLM': TeamScore(6, 0),
-        'MNO': TeamScore(7, 0),
-        'OPQ': TeamScore(8, 0),
-    }
+    positions = OrderedDict()
+    positions['ABC'] = 1
+    positions['CDE'] = 2
+    positions['EFG'] = 3
+    positions['GHI'] = 4
+    positions['IJK'] = 5
+    positions['KLM'] = 6
+    positions['MNO'] = 7
+    positions['OPQ'] = 8
+
     # Fake a couple of league matches
     matches = [{},{}]
-    scheduler = get_scheduler(matches, team_scores = team_scores)
+    scheduler = get_scheduler(matches, positions = positions)
 
     def seeder(*args):
         assert args[0] == 8, "Wrong number of teams"
@@ -194,7 +139,7 @@ def test_first_round():
     semi_0 = semis[0]
     semi_0_teams = semi_0.teams
     # Thanks to our mocking of the seeder...
-    expected_0_teams = sorted(team_scores.keys(), reverse=True)[:4]
+    expected_0_teams = positions.keys()[:4]
 
     assert semi_0.num == 2, "Match number should carry on above league matches"
     assert semi_0.type == KNOCKOUT_MATCH
