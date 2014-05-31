@@ -96,6 +96,7 @@ class KnockoutScheduler(object):
     def get_winners(self, game):
         "Find the parent match's winners"
         desc = (game.arena, game.num)
+        positions = self.scores.league.positions
 
         # Get the score if present (will be a tla -> 'league points' map)
         points = self.scores.knockout.ranked_points.get(desc, None)
@@ -105,7 +106,14 @@ class KnockoutScheduler(object):
             return [UNKNOWABLE_TEAM, UNKNOWABLE_TEAM]
 
         def srt(x, y):
-            return cmp(x[1], y[1])
+            pts_cmp = cmp(x[1], y[1])
+            if pts_cmp == 0:
+                "Teams tied in this game -- use league position"
+                x_league_pos = positions[x[0]]
+                y_league_pos = positions[y[0]]
+                # compare the other way around since better positions are smaller numbers
+                return cmp(y_league_pos, x_league_pos)
+            return pts_cmp
 
         # Extract the two teams who scored highest
         w = sorted(points.items(), cmp=srt)[-2:]

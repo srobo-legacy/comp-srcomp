@@ -98,12 +98,45 @@ def test_knockout_match_winners_irrelevant_tie_1():
             'JKL': 3.5,
         }
     }
-    scheduler = get_scheduler(knockout_points = knockout_points)
+    positions = {
+        'ABC': 1,
+        'DEF': 2,
+        'GHI': 3,
+        'JKL': 4,
+    }
+    scheduler = get_scheduler(knockout_points = knockout_points, \
+                                positions = positions)
 
     game = Match(2, 'A', [], None, None, None)
     winners = scheduler.get_winners(game)
 
     assert set(winners) == set(['GHI', 'JKL'])
+
+def test_knockout_match_winners_tie():
+    knockout_points = {
+        ('A', 2): {
+            'ABC': 1,
+            'DEF': 2.5,
+            'GHI': 2.5,
+            'JKL': 4,
+        }
+    }
+    # Deliberately out of order as some python implementations
+    # use the creation order of the tuples as a fallback sort comparison
+    positions = {
+        'ABC': 1,
+        'DEF': 4,
+        'GHI': 3,
+        'JKL': 2,
+    }
+    scheduler = get_scheduler(knockout_points = knockout_points, \
+                                positions = positions)
+
+    game = Match(2, 'A', [], None, None, None)
+    winners = scheduler.get_winners(game)
+
+    assert set(winners) == set(['GHI', 'JKL']), \
+            "Should used the league positions to resolve the tie"
 
 
 def test_first_round_before_league_end():
