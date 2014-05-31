@@ -1,4 +1,5 @@
 
+from collections import OrderedDict
 from decimal import Decimal as D
 import glob
 import os
@@ -122,7 +123,7 @@ class LeagueScores(BaseScores):
         ranking = sorted(team_scores.items(),
                          lambda x, y: cmp(x[1], y[1]),
                          reverse = True)
-        positions = {}
+        positions = OrderedDict()
         pos = 1
         last_score = None
         for i, (tla, score) in enumerate(ranking, start = 1):

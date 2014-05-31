@@ -134,12 +134,15 @@ def test_last_scored_match_many_scores():
 def test_league_ranker_simple():
     team_scores = { 'ABC': TeamScore(), 'DEF': TeamScore(4, 5) }
     ranking = LeagueScores.rank_league(team_scores)
-    expected = {
+    expected_map = {
         'DEF': 1,
         'ABC': 2,
     }
+    expected_order = ['DEF', 'ABC']
 
-    assert expected == ranking
+    assert expected_map == ranking
+    order = ranking.keys()
+    assert expected_order == order
 
 def test_league_ranker_league_tie():
     team_scores = {
@@ -148,13 +151,16 @@ def test_league_ranker_league_tie():
         'GHI': TeamScore(),
     }
     ranking = LeagueScores.rank_league(team_scores)
-    expected = {
+    expected_map = {
         'DEF': 1,
         'ABC': 2,
         'GHI': 3,
     }
+    expected_order = ['DEF', 'ABC', 'GHI']
 
-    assert expected == ranking
+    assert expected_map == ranking
+    order = ranking.keys()
+    assert expected_order == order
 
 def test_league_ranker_game_tie():
     team_scores = {
@@ -163,13 +169,16 @@ def test_league_ranker_game_tie():
         'GHI': TeamScore(),
     }
     ranking = LeagueScores.rank_league(team_scores)
-    expected = {
+    expected_map = {
         'DEF': 1,
         'ABC': 2,
         'GHI': 3,
     }
+    expected_order = ['DEF', 'ABC', 'GHI']
 
-    assert expected == ranking
+    assert expected_map == ranking
+    order = ranking.keys()
+    assert expected_order == order
 
 ## TODO: how do we resolve full ties?
 ## TODO: build something to alert us that we have a full tie.
@@ -181,10 +190,13 @@ def test_league_ranker_full_tie():
         'GHI': TeamScore(),
     }
     ranking = LeagueScores.rank_league(team_scores)
-    expected = {
+    expected_map = {
         'DEF': 1,
         'ABC': 1,
         'GHI': 3,
     }
+    expected_order = ['ABC', 'DEF', 'GHI']
 
-    assert expected == ranking
+    assert expected_map == ranking
+    order = ranking.keys()
+    assert expected_order == order
