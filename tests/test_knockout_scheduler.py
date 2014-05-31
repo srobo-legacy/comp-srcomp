@@ -1,7 +1,5 @@
 
-from datetime import datetime, timedelta
 import mock
-import os
 
 # Hack the path
 import helpers as test_helpers

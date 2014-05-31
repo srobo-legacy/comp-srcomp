@@ -1,5 +1,4 @@
 
-from collections import namedtuple
 import os
 from subprocess import check_output
 

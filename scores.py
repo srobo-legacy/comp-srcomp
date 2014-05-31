@@ -2,7 +2,6 @@
 from decimal import Decimal as D
 import glob
 import os
-import sys
 
 import ranker
 import yaml_loader

@@ -5,7 +5,6 @@ from datetime import timedelta
 import datetime
 from dateutil.tz import tzlocal
 import math
-import sys
 
 import knockout
 import stable_random

@@ -1,5 +1,4 @@
 
-import os
 import mock
 
 # Hack the path
