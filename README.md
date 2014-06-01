@@ -16,7 +16,7 @@ Python clients should submodule this repo and then import it.
 Only the `SRComp` is class directly exposed, and it should be constructed
 around the path to a local working copy of a _compstate repo_.
 
-~~~
+~~~ python
 from srcomp import SRComp
 comp = SRComp('/path/to/compstate')
 ~~~
