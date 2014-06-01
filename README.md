@@ -32,9 +32,9 @@ for an example of the structure and values expected in a _compstate repo_.
 
 * Python 2.7
 * python-dateutil
-* nose
-* mock
 * PyYAML
+* nose (for testing)
+* mock (for testing)
 
 ## Test with
 `./run-tests`
