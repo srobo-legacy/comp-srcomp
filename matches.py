@@ -197,12 +197,12 @@ class KnockoutScheduler(object):
 
 class MatchSchedule(object):
     @classmethod
-    def create(cls, config_fname, scores, arenas):
+    def create(cls, config_fname, scores, arenas, knockout_scheduler = KnockoutScheduler):
         y = yaml_loader.load(config_fname)
 
         schedule = cls(y)
 
-        k = KnockoutScheduler(schedule, scores, arenas, y)
+        k = knockout_scheduler(schedule, scores, arenas, y)
         k.add_knockouts()
 
         schedule.knockout_rounds = k.knockout_rounds
