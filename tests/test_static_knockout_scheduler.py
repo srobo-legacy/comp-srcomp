@@ -109,18 +109,18 @@ def test_start():
     helper([
         ['CCC', 'EEE', 'HHH', 'JJJ'],
         ['DDD', 'FFF', 'GGG', 'III'],
-        ['BBB', '???', '???', '???'],
-        ['AAA', '???', '???', '???'],
-        ['???', '???', '???', '???'],
+        ['BBB'] + [UNKNOWABLE_TEAM] * 3,
+        ['AAA'] + [UNKNOWABLE_TEAM] * 3,
+        [UNKNOWABLE_TEAM] * 4,
     ])
 
 def test_partial_1():
     helper([
         ['CCC', 'EEE', 'HHH', 'JJJ'],
         ['DDD', 'FFF', 'GGG', 'III'],
-        ['BBB', 'JJJ', 'EEE', '???'],
-        ['AAA', 'HHH', '???', '???'],
-        ['???', '???', '???', '???'],
+        ['BBB', 'JJJ', 'EEE', UNKNOWABLE_TEAM],
+        ['AAA', 'HHH', UNKNOWABLE_TEAM, UNKNOWABLE_TEAM],
+        [UNKNOWABLE_TEAM] * 4,
     ], {
         # QF 1
         ('A', 0): { 'CCC': 1.0, 'EEE': 2.0, 'HHH': 3.0, 'JJJ': 4.0, }
@@ -132,7 +132,7 @@ def test_partial_2():
         ['DDD', 'FFF', 'GGG', 'III'],
         ['BBB', 'JJJ', 'EEE', 'GGG'],
         ['AAA', 'HHH', 'III', 'FFF'],
-        ['???', '???', '???', '???'],
+        [UNKNOWABLE_TEAM] * 4,
     ], {
         # QF 1
         ('A', 0): { 'CCC': 1.0, 'EEE': 2.0, 'HHH': 3.0, 'JJJ': 4.0, },
