@@ -105,6 +105,28 @@ def helper(places, knockout_points = None):
 
         assert e == a, "Match {0} in the knockouts".format(i)
 
+def test_before():
+    league_matches = [{'A': Match(0, 'A', [], datetime(2014, 4, 27, 12, 30), datetime(2014, 4, 27, 12, 35), LEAGUE_MATCH) }]
+
+    scheduler = get_scheduler(matches = league_matches)
+    scheduler.add_knockouts()
+
+    period = scheduler.period
+
+    expected = [
+        {'A': Match(1, 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 30), datetime(2014, 4, 27, 14, 35), KNOCKOUT_MATCH) },
+        {'A': Match(2, 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 35), datetime(2014, 4, 27, 14, 40), KNOCKOUT_MATCH) },
+        {'A': Match(3, 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 45), datetime(2014, 4, 27, 14, 50), KNOCKOUT_MATCH) },
+        {'A': Match(4, 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 50), datetime(2014, 4, 27, 14, 55), KNOCKOUT_MATCH) },
+        {'A': Match(5, 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 15, 00), datetime(2014, 4, 27, 15, 05), KNOCKOUT_MATCH) },
+    ]
+
+    for i in range(len(expected)):
+        e = expected[i]
+        a = period.matches[i]
+
+        assert e == a, "Match {0} in the knockouts".format(i)
+
 def test_start():
     helper([
         ['CCC', 'EEE', 'HHH', 'JJJ'],
