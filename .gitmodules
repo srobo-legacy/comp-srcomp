@@ -3,7 +3,7 @@
 	url = https://github.com/PeterJCLaw/scoring-2014.git
 [submodule "ranker"]
 	path = ranker
-	url = git://github.com/PeterJCLaw/ranker.git
+	url = git://srobo.org/comp/ranker.git
 [submodule "tests/dummy"]
 	path = tests/dummy
 	url = git://srobo.org/comp/dummy-comp
