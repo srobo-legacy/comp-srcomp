@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-import yaml_loader
+from . import yaml_loader
 
 Corner = namedtuple("Corner", ["number", "colour"])
 

@@ -2,7 +2,7 @@
 # Hack the path
 import helpers as test_helpers
 
-from scores import TeamScore
+from sr.comp.scores import TeamScore
 
 def test_empty_ctor():
     ts = TeamScore()

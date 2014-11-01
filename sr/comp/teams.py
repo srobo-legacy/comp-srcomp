@@ -1,7 +1,7 @@
 "Team metadata library"
 from collections import namedtuple
 
-import yaml_loader
+from . import yaml_loader
 
 Team = namedtuple("Team",
                   ["tla", "name"])

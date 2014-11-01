@@ -4,7 +4,7 @@ import mock
 # Hack the path
 import helpers as test_helpers
 
-from scores import LeagueScores, TeamScore
+from sr.comp.scores import LeagueScores, TeamScore
 
 def get_basic_data():
     the_data = {
@@ -44,8 +44,8 @@ def load_datas(the_datas, teams):
         assert len(my_datas), "Should not be loading additional files"
         return my_datas.pop(0)
 
-    with mock.patch('matches.yaml_loader.load') as mock_loader, \
-            mock.patch('scores.results_finder') as mock_finder:
+    with mock.patch('sr.comp.matches.yaml_loader.load') as mock_loader, \
+            mock.patch('sr.comp.scores.results_finder') as mock_finder:
 
         mock_finder.return_value = the_files
         mock_loader.side_effect = loader
@@ -80,16 +80,16 @@ def test_league_points():
 
     league = leagues[id_]
 
-    assert league == {'JMS': 0.0, 'PAS': 0.0, 'RUN': 4.0, 'ICE': 3.0}
+    assert league == {'JMS': 0, 'PAS': 0, 'RUN': 8, 'ICE': 6}
 
 def test_team_points():
     scores = load_basic_data()
 
     expected = {
-        'JMS': TeamScore(0.0, 4),
-        'PAS': TeamScore(0.0, 0),
-        'RUN': TeamScore(4.0, 8),
-        'ICE': TeamScore(3.0, 2),
+        'JMS': TeamScore(0, 4),
+        'PAS': TeamScore(0, 0),
+        'RUN': TeamScore(8, 8),
+        'ICE': TeamScore(6, 2),
     }
 
     teams_data = scores.teams
