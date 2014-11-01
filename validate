@@ -2,8 +2,8 @@
 
 from argparse import ArgumentParser
 
-from comp import SRComp
-from validation import validate
+from sr.comp.comp import SRComp
+from sr.comp.validation import validate
 
 parser = ArgumentParser(description = "SR Competition State validator")
 parser.add_argument("compstate", help = "Competition state git repository path")

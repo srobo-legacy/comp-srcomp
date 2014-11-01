@@ -6,8 +6,8 @@ import mock
 # Hack the path
 import helpers as test_helpers
 
-from scores import TeamScore
-from matches import KnockoutScheduler, Match, UNKNOWABLE_TEAM, \
+from sr.comp.scores import TeamScore
+from sr.comp.matches import KnockoutScheduler, Match, UNKNOWABLE_TEAM, \
                         KNOCKOUT_MATCH, LEAGUE_MATCH
 
 def get_scheduler(matches = None, positions = None, \
@@ -160,7 +160,7 @@ def test_first_round_before_league_end():
     # Mock the random (even thought it's not really random)
     scheduler.R = mock.Mock()
     # Mock the seeder to make it less interesting
-    with mock.patch('knockout.first_round_seeding') as first_round_seeding:
+    with mock.patch('sr.comp.knockout.first_round_seeding') as first_round_seeding:
         first_round_seeding.side_effect = seeder
         scheduler.add_knockouts()
 
@@ -201,7 +201,7 @@ def test_first_round():
     # Mock the random (even thought it's not really random)
     scheduler.R = mock.Mock()
     # Mock the seeder to make it less interesting
-    with mock.patch('knockout.first_round_seeding') as first_round_seeding:
+    with mock.patch('sr.comp.knockout.first_round_seeding') as first_round_seeding:
         first_round_seeding.side_effect = seeder
         scheduler.add_knockouts()
 
