@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 import sys
 import yaml
 
-from comp import SRComp
+from sr.comp.comp import SRComp
 
 ARENAS = ['A', 'B']
 TEAMS_PER_GAME = 4

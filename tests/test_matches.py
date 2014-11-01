@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 # Hack the path
 import helpers as test_helpers
 
-from matches import MatchSchedule
+from sr.comp.matches import MatchSchedule
 
 def assert_times(expected, matches, message):
     def times(dts):
