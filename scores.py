@@ -121,7 +121,7 @@ class LeagueScores(BaseScores):
     def rank_league(team_scores):
         # Reverse sort the (tla, score) pairs so the biggest scores are at the top
         ranking = sorted(team_scores.items(),
-                         lambda x, y: cmp(x[1], y[1]),
+                         key = lambda x: x[1],
                          reverse = True)
         positions = OrderedDict()
         pos = 1

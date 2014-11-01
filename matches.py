@@ -105,20 +105,15 @@ class KnockoutScheduler(object):
             "Given match hasn't been scored yet"
             return [UNKNOWABLE_TEAM] * 4
 
-        def srt(x, y):
-            pts_cmp = cmp(x[1], y[1])
-            if pts_cmp == 0:
-                "Teams tied in this game -- use league position"
-                x_league_pos = positions[x[0]]
-                y_league_pos = positions[y[0]]
-                # compare the other way around since better positions are smaller numbers
-                return cmp(y_league_pos, x_league_pos)
-            return pts_cmp
+        def key(item):
+            # Lexicographically sort by game result, then by league position
+            # League positions are sorted in the opposite direction
+            return item[1], -positions.get(item[0], 0)
 
         # Sort by points with tie resolution
         # Note that this list is upside down compared to what might be
         # expected, ie the winner is at the end of the list
-        with_points = sorted(points.items(), cmp=srt)
+        with_points = sorted(points.items(), key=key)
 
         # Extract just TLAs
         ranking = [x[0] for x in with_points]
@@ -250,11 +245,8 @@ class MatchSchedule(object):
                       info["time"])
             delays.append(d)
 
-        # Ensure the delays are sorted by time
-        def cmpdelay(x,y):
-            return cmp(x.time, y.time)
-
-        self.delays = sorted(delays, cmp = cmpdelay)
+        delays.sort(key=lambda x: x.time)
+        self.delays = delays
 
     def _build_matchlist(self, yamldata):
         "Build the match list"
