@@ -82,7 +82,7 @@ class BaseScores(object):
 
         # Sum the game for each team
         for match in self.game_points.values():
-            for tla, score in match.iteritems():
+            for tla, score in match.items():
                 if tla not in self.teams:
                     raise InvalidTeam(tla)
                 self.teams[tla].game_points += score
@@ -99,7 +99,7 @@ class BaseScores(object):
 
         # Build the disqualification dict
         dsq = []
-        for tla, scoreinfo in y["teams"].iteritems():
+        for tla, scoreinfo in y["teams"].items():
             # disqualifications and non-presence are effectively the same
             # in terms of league points awarding.
             if scoreinfo.get("disqualified", False) or \
@@ -138,7 +138,7 @@ class LeagueScores(BaseScores):
 
         # Sum the league scores for each team
         for match in self.ranked_points.values():
-            for tla, score in match.iteritems():
+            for tla, score in match.items():
                 if tla not in self.teams:
                     raise InvalidTeam(tla)
                 self.teams[tla].league_points += D(score)

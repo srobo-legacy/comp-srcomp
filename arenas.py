@@ -21,7 +21,7 @@ def load_corners(fname):
     y = yaml_loader.load(fname)
 
     corners = {}
-    for n, colour in y["corner_colours"].iteritems():
+    for n, colour in y["corner_colours"].items():
         c = Corner(n, colour)
         corners[n] = c
 

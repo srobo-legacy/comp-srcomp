@@ -12,7 +12,7 @@ def load_teams(fname):
     y = yaml_loader.load(fname)
 
     teams = {}
-    for tla, info in y["teams"].iteritems():
+    for tla, info in y["teams"].items():
         tla = tla.upper()
         teams[tla] = Team(tla,info["name"])
 
