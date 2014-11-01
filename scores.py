@@ -5,7 +5,7 @@ from decimal import Decimal as D
 import glob
 import os
 
-import ranker
+from sr.comp import ranker
 import yaml_loader
 
 class InvalidTeam(Exception):
