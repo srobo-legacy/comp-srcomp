@@ -11,8 +11,6 @@ class Random(object):
         self.state = 0
 
     def seed(self, s):
-        assert isinstance(s, str)
-
         h = hashlib.md5()
         h.update(s)
 
