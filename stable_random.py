@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import hashlib
 # Python's random number generator's stability across Python versions
 # is complicated.
@@ -50,4 +51,4 @@ if __name__ == "__main__":
     R = Random()
     R.seed("hello".encode("utf-8"))
     for n in range(10):
-        print R.random()
+        print(R.random())

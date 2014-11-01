@@ -1,3 +1,4 @@
+from __future__ import print_function
 
 from collections import defaultdict
 import sys
@@ -11,9 +12,9 @@ def report_errors(type_, id_, errors):
     if len(errors) == 0:
         return
 
-    print >>sys.stderr, "{0} {1} has the following errors:".format(type_, id_)
+    print("{0} {1} has the following errors:".format(type_, id_), file=sys.stderr)
     for error in errors:
-        print >>sys.stderr, "    {0}".format(error)
+        print("    {0}".format(error), file=sys.stderr)
 
 def validate(comp):
     count = 0
@@ -175,11 +176,11 @@ def warn_missing_scores(scores, schedule):
     if len(missing) == 0:
         return
 
-    print >>sys.stderr, "The following scores are missing:"
-    print >>sys.stderr, "Match   | Arena "
+    print("The following scores are missing:", file=sys.stderr)
+    print("Match   | Arena ", file=sys.stderr)
     for m in missing:
         arenas = ", ".join(sorted(m[1]))
-        print >>sys.stderr, " {0:>3}    | {1}".format(m[0], arenas)
+        print(" {0:>3}    | {1}".format(m[0], arenas), file=sys.stderr)
 
 def find_missing_scores(match_ids, last_match, schedule):
     expected = set()
