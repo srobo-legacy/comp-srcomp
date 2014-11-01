@@ -3,7 +3,7 @@
 
 from collections import defaultdict
 
-from matches import KnockoutScheduler, Match, MatchPeriod, \
+from .matches import KnockoutScheduler, Match, MatchPeriod, \
                     UNKNOWABLE_TEAM, KNOCKOUT_MATCH, LEAGUE_MATCH
 
 class StaticScheduler(KnockoutScheduler):
