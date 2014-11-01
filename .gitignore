@@ -1,2 +1,4 @@
 *.pyc
 
+dist
+sr_comp.egg-info
