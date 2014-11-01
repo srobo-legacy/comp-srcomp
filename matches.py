@@ -258,7 +258,7 @@ class MatchSchedule(object):
         match_numbers = sorted(yamldata.keys())
         self.n_planned_league_matches = len(match_numbers)
 
-        if match_numbers != range(len(match_numbers)):
+        if tuple(match_numbers) != tuple(range(len(match_numbers))):
             raise Exception("Matches are not a complete 0-N range")
 
         # Effectively just the .values(), except that it's ordered by number
