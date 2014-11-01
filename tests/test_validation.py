@@ -7,8 +7,8 @@ import subprocess
 # Hack the path
 import helpers as test_helpers
 
-import matches
-from validation import validate_match, validate_schedule_timings, \
+from sr.comp import matches
+from sr.comp.validation import validate_match, validate_schedule_timings, \
                         validate_match_score, find_missing_scores
 
 Match = namedtuple("Match", ["teams"])
