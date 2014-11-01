@@ -6,9 +6,9 @@ import mock
 # Hack the path
 import helpers as test_helpers
 
-from scores import TeamScore
-from matches import Match, UNKNOWABLE_TEAM, KNOCKOUT_MATCH, LEAGUE_MATCH
-from static_knockout_scheduler import StaticScheduler
+from sr.comp.scores import TeamScore
+from sr.comp.matches import Match, UNKNOWABLE_TEAM, KNOCKOUT_MATCH, LEAGUE_MATCH
+from sr.comp.static_knockout_scheduler import StaticScheduler
 
 def get_config():
     return {
