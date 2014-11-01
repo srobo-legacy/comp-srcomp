@@ -140,7 +140,7 @@ class KnockoutScheduler(object):
         self._add_round_of_matches(matches, arenas)
 
     def _add_first_round(self):
-        teams = self.scores.league.positions.keys()
+        teams = list(self.scores.league.positions.keys())
 
         if not self._played_all_league_matches():
             teams = [UNKNOWABLE_TEAM] * len(teams)

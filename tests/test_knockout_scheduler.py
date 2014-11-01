@@ -215,7 +215,7 @@ def test_first_round():
     semi_0 = semis[0]
     semi_0_teams = semi_0.teams
     # Thanks to our mocking of the seeder...
-    expected_0_teams = positions.keys()[:4]
+    expected_0_teams = list(positions.keys())[:4]
 
     assert semi_0.num == 2, "Match number should carry on above league matches"
     assert semi_0.type == KNOCKOUT_MATCH

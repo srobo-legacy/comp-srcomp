@@ -16,7 +16,7 @@ class StaticScheduler(KnockoutScheduler):
 
         if team_ref.startswith('S'):
             # get a seeded position
-            positions = self.scores.league.positions.keys()
+            positions = list(self.scores.league.positions.keys())
             pos = int(team_ref[1:])
             pos -= 1 # seed numbers are 1 based
             return positions[pos]

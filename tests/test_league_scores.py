@@ -141,7 +141,7 @@ def test_league_ranker_simple():
     expected_order = ['DEF', 'ABC']
 
     assert expected_map == ranking
-    order = ranking.keys()
+    order = list(ranking.keys())
     assert expected_order == order
 
 def test_league_ranker_league_tie():
@@ -159,7 +159,7 @@ def test_league_ranker_league_tie():
     expected_order = ['DEF', 'ABC', 'GHI']
 
     assert expected_map == ranking
-    order = ranking.keys()
+    order = list(ranking.keys())
     assert expected_order == order
 
 def test_league_ranker_game_tie():
@@ -177,7 +177,7 @@ def test_league_ranker_game_tie():
     expected_order = ['DEF', 'ABC', 'GHI']
 
     assert expected_map == ranking
-    order = ranking.keys()
+    order = list(ranking.keys())
     assert expected_order == order
 
 ## TODO: how do we resolve full ties?
@@ -198,5 +198,5 @@ def test_league_ranker_full_tie():
     expected_order = ['ABC', 'DEF', 'GHI']
 
     assert expected_map == ranking
-    order = ranking.keys()
+    order = list(ranking.keys())
     assert expected_order == order
