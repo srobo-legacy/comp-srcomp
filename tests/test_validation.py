@@ -275,8 +275,8 @@ def test_find_missing_scores_ignore_future_matches():
 
 def test_validate_schedule_timings_ok():
 
-    matches = [{'A': Match2(1, datetime(2014, 04, 01, 12, 0, 0))},
-               {'A': Match2(2, datetime(2014, 04, 01, 13, 0, 0))}]
+    matches = [{'A': Match2(1, datetime(2014, 4, 1, 12, 0, 0))},
+               {'A': Match2(2, datetime(2014, 4, 1, 13, 0, 0))}]
     match_period = timedelta(minutes = 5)
 
     errors = validate_schedule_timings(matches, match_period)
@@ -284,8 +284,8 @@ def test_validate_schedule_timings_ok():
 
 def test_validate_schedule_timings_same_time():
 
-    time = datetime(2014, 04, 03, 12, 0, 0)
-    time = datetime(2014, 04, 03, 12, 0, 0)
+    time = datetime(2014, 4, 3, 12, 0, 0)
+    time = datetime(2014, 4, 3, 12, 0, 0)
     match_period = timedelta(minutes = 5)
     # choose match ids not in the date
     matches = [{'A': Match2(8, time)},
@@ -302,8 +302,8 @@ def test_validate_schedule_timings_same_time():
 
 def test_validate_schedule_timings_overlap():
 
-    time_8 = datetime(2014, 04, 03, 12, 0, 0)
-    time_9 = datetime(2014, 04, 03, 12, 0, 1)
+    time_8 = datetime(2014, 4, 3, 12, 0, 0)
+    time_9 = datetime(2014, 4, 3, 12, 0, 1)
     match_period = timedelta(minutes = 5)
     # choose match ids not in the date
     matches = [{'A': Match2(8, time_8)},
@@ -319,9 +319,9 @@ def test_validate_schedule_timings_overlap():
 
 def test_validate_schedule_timings_overlap_2():
 
-    time_7 = datetime(2014, 04, 03, 12, 0, 0)
-    time_8 = datetime(2014, 04, 03, 12, 0, 3)
-    time_9 = datetime(2014, 04, 03, 12, 0, 6)
+    time_7 = datetime(2014, 4, 3, 12, 0, 0)
+    time_8 = datetime(2014, 4, 3, 12, 0, 3)
+    time_9 = datetime(2014, 4, 3, 12, 0, 6)
     match_period = timedelta(minutes = 5)
     # choose match ids not in the date
     matches = [{'A': Match2(7, time_7)},

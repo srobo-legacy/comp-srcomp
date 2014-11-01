@@ -39,7 +39,7 @@ def get_config():
         2: {
             0: {
                 'arena': 'A',
-                'start_time': datetime(2014, 4, 27, 15, 00),
+                'start_time': datetime(2014, 4, 27, 15, 0),
                 'teams': ['100', '101', '110', '111']
             }
         }
@@ -74,8 +74,8 @@ def get_scheduler(matches = None, positions = None, \
 
     period_config = {
         "description": "A description of the period",
-        "start_time":   datetime(2014, 03, 27,  13),
-        "end_time":     datetime(2014, 03, 27,  17, 30),
+        "start_time":   datetime(2014, 3, 27,  13),
+        "end_time":     datetime(2014, 3, 27,  17, 30),
     }
     config = {
         'match_periods': { 'knockout': [period_config] },
@@ -96,7 +96,7 @@ def helper(places, knockout_points = None):
         {'A': Match(1, 'A', places[1], datetime(2014, 4, 27, 14, 35), datetime(2014, 4, 27, 14, 40), KNOCKOUT_MATCH) },
         {'A': Match(2, 'A', places[2], datetime(2014, 4, 27, 14, 45), datetime(2014, 4, 27, 14, 50), KNOCKOUT_MATCH) },
         {'A': Match(3, 'A', places[3], datetime(2014, 4, 27, 14, 50), datetime(2014, 4, 27, 14, 55), KNOCKOUT_MATCH) },
-        {'A': Match(4, 'A', places[4], datetime(2014, 4, 27, 15, 00), datetime(2014, 4, 27, 15, 05), KNOCKOUT_MATCH) },
+        {'A': Match(4, 'A', places[4], datetime(2014, 4, 27, 15,  0), datetime(2014, 4, 27, 15,  5), KNOCKOUT_MATCH) },
     ]
 
     for i in range(len(expected)):
@@ -118,7 +118,7 @@ def test_before():
         {'A': Match(2, 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 35), datetime(2014, 4, 27, 14, 40), KNOCKOUT_MATCH) },
         {'A': Match(3, 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 45), datetime(2014, 4, 27, 14, 50), KNOCKOUT_MATCH) },
         {'A': Match(4, 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 50), datetime(2014, 4, 27, 14, 55), KNOCKOUT_MATCH) },
-        {'A': Match(5, 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 15, 00), datetime(2014, 4, 27, 15, 05), KNOCKOUT_MATCH) },
+        {'A': Match(5, 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 15,  0), datetime(2014, 4, 27, 15,  5), KNOCKOUT_MATCH) },
     ]
 
     for i in range(len(expected)):

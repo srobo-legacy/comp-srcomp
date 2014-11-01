@@ -31,8 +31,8 @@ def get_scheduler(matches = None, positions = None, \
 
     period_config = {
         "description": "A description of the period",
-        "start_time":   datetime(2014, 03, 27,  13),
-        "end_time":     datetime(2014, 03, 27,  17, 30),
+        "start_time":   datetime(2014, 3, 27,  13),
+        "end_time":     datetime(2014, 3, 27,  17, 30),
     }
     knockout_config = {
         'round_spacing': 300,

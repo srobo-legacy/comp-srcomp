@@ -24,14 +24,14 @@ def get_basic_data():
         "match_period_length_seconds": 300,
         "delays": [ {
             "delay": 15,
-            "time":         datetime(2014, 03, 26,  13, 02)
+            "time":         datetime(2014, 3, 26,  13, 2)
         } ],
         "match_periods": {
             "league": [ {
                 "description": "A description of the period",
-                "start_time":   datetime(2014, 03, 26,  13),
-                "end_time":     datetime(2014, 03, 26,  17, 30),
-                "max_end_time": datetime(2014, 03, 26,  17, 40, 00)
+                "start_time":   datetime(2014, 3, 26,  13),
+                "end_time":     datetime(2014, 3, 26,  17, 30),
+                "max_end_time": datetime(2014, 3, 26,  17, 40, 0)
             } ],
             "knockout": []
         },
@@ -74,12 +74,12 @@ def test_basic_data():
 
     a_start = a.start_time
     b_start = b.start_time
-    assert a_start == datetime(2014, 03, 26,  13)
+    assert a_start == datetime(2014, 3, 26,  13)
     assert a_start == b_start
 
     a_end = a.end_time
     b_end = b.end_time
-    assert a_end == datetime(2014, 03, 26,  13, 05)
+    assert a_end == datetime(2014, 3, 26,  13, 5)
     assert a_end == b_end
 
 def test_no_matches():
@@ -108,12 +108,12 @@ def test_basic_delay():
 
     a_start = a.start_time
     b_start = b.start_time
-    assert a_start == datetime(2014, 03, 26,  13, 05, 15)
+    assert a_start == datetime(2014, 3, 26,  13, 5, 15)
     assert a_start == b_start
 
     a_end = a.end_time
     b_end = b.end_time
-    assert a_end == datetime(2014, 03, 26,  13, 10, 15)
+    assert a_end == datetime(2014, 3, 26,  13, 10, 15)
     assert a_end == b_end
 
 def test_no_delays():
@@ -131,12 +131,12 @@ def test_no_delays():
 
     a_start = a.start_time
     b_start = b.start_time
-    assert a_start == datetime(2014, 03, 26,  13)
+    assert a_start == datetime(2014, 3, 26,  13)
     assert a_start == b_start
 
     a_end = a.end_time
     b_end = b.end_time
-    assert a_end == datetime(2014, 03, 26,  13, 05)
+    assert a_end == datetime(2014, 3, 26,  13, 5)
     assert a_end == b_end
 
 def test_match_at():
@@ -152,18 +152,18 @@ def test_match_at():
         actual = matches.match_at(arena, when)
         assert expected == actual
 
-    yield check, None,                      datetime(2014, 03, 26,  12, 59, 59)
+    yield check, None,                      datetime(2014, 3, 26,  12, 59, 59)
 
-    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  13)
-    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  13,  4, 59)
+    yield check, matches.matches[0][arena], datetime(2014, 3, 26,  13)
+    yield check, matches.matches[0][arena], datetime(2014, 3, 26,  13,  4, 59)
 
-    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  5)
-    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  9, 59)
+    yield check, matches.matches[1][arena], datetime(2014, 3, 26,  13,  5)
+    yield check, matches.matches[1][arena], datetime(2014, 3, 26,  13,  9, 59)
 
-    yield check, matches.matches[2][arena], datetime(2014, 03, 26,  13,  10)
-    yield check, matches.matches[2][arena], datetime(2014, 03, 26,  13,  14, 59)
+    yield check, matches.matches[2][arena], datetime(2014, 3, 26,  13,  10)
+    yield check, matches.matches[2][arena], datetime(2014, 3, 26,  13,  14, 59)
 
-    yield check, None,                      datetime(2014, 03, 26,  13, 15)
+    yield check, None,                      datetime(2014, 3, 26,  13, 15)
 
 def test_match_at_with_delays_a():
     matches = load_basic_data()
@@ -174,18 +174,18 @@ def test_match_at_with_delays_a():
         actual = matches.match_at(arena, when)
         assert expected == actual
 
-    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  13)
-    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  13,  4, 59)
+    yield check, matches.matches[0][arena], datetime(2014, 3, 26,  13)
+    yield check, matches.matches[0][arena], datetime(2014, 3, 26,  13,  4, 59)
 
-    yield check, None,                      datetime(2014, 03, 26,  13,  5, 14)
+    yield check, None,                      datetime(2014, 3, 26,  13,  5, 14)
 
-    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  5, 15)
-    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13, 10, 14)
+    yield check, matches.matches[1][arena], datetime(2014, 3, 26,  13,  5, 15)
+    yield check, matches.matches[1][arena], datetime(2014, 3, 26,  13, 10, 14)
 
-    yield check, matches.matches[2][arena], datetime(2014, 03, 26,  13, 10, 15)
-    yield check, matches.matches[2][arena], datetime(2014, 03, 26,  13, 15, 14)
+    yield check, matches.matches[2][arena], datetime(2014, 3, 26,  13, 10, 15)
+    yield check, matches.matches[2][arena], datetime(2014, 3, 26,  13, 15, 14)
 
-    yield check, None,                      datetime(2014, 03, 26,  13, 15, 15)
+    yield check, None,                      datetime(2014, 3, 26,  13, 15, 15)
 
 def test_match_at_with_delays_b():
     matches = load_basic_data()
@@ -196,16 +196,16 @@ def test_match_at_with_delays_b():
         actual = matches.match_at(arena, when)
         assert expected == actual
 
-    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  13)
-    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  13,  4, 59)
+    yield check, matches.matches[0][arena], datetime(2014, 3, 26,  13)
+    yield check, matches.matches[0][arena], datetime(2014, 3, 26,  13,  4, 59)
 
-    yield check, None,                      datetime(2014, 03, 26,  13,  5, 14)
+    yield check, None,                      datetime(2014, 3, 26,  13,  5, 14)
 
-    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  5, 15)
-    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13, 10, 14)
+    yield check, matches.matches[1][arena], datetime(2014, 3, 26,  13,  5, 15)
+    yield check, matches.matches[1][arena], datetime(2014, 3, 26,  13, 10, 14)
 
-    yield check, None,                      datetime(2014, 03, 26,  13, 10, 15)
-    yield check, None,                      datetime(2014, 03, 26,  13, 15, 15)
+    yield check, None,                      datetime(2014, 3, 26,  13, 10, 15)
+    yield check, None,                      datetime(2014, 3, 26,  13, 15, 15)
 
 def test_match_after_a():
     matches = load_basic_data()
@@ -216,19 +216,19 @@ def test_match_after_a():
         actual = matches.match_after(arena, when)
         assert expected == actual
 
-    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  11)
-    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  12)
-    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  12, 59, 59)
+    yield check, matches.matches[0][arena], datetime(2014, 3, 26,  11)
+    yield check, matches.matches[0][arena], datetime(2014, 3, 26,  12)
+    yield check, matches.matches[0][arena], datetime(2014, 3, 26,  12, 59, 59)
 
-    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13)
-    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  4, 59)
-    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  5, 14)
+    yield check, matches.matches[1][arena], datetime(2014, 3, 26,  13)
+    yield check, matches.matches[1][arena], datetime(2014, 3, 26,  13,  4, 59)
+    yield check, matches.matches[1][arena], datetime(2014, 3, 26,  13,  5, 14)
 
-    yield check, matches.matches[2][arena], datetime(2014, 03, 26,  13,  5, 15)
-    yield check, matches.matches[2][arena], datetime(2014, 03, 26,  13, 10, 14)
+    yield check, matches.matches[2][arena], datetime(2014, 3, 26,  13,  5, 15)
+    yield check, matches.matches[2][arena], datetime(2014, 3, 26,  13, 10, 14)
 
-    yield check, None,                      datetime(2014, 03, 26,  13, 10, 15)
-    yield check, None,                      datetime(2014, 03, 26,  14)
+    yield check, None,                      datetime(2014, 3, 26,  13, 10, 15)
+    yield check, None,                      datetime(2014, 3, 26,  14)
 
 def test_match_after_b():
     matches = load_basic_data()
@@ -239,19 +239,19 @@ def test_match_after_b():
         actual = matches.match_after(arena, when)
         assert expected == actual
 
-    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  11)
-    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  12)
-    yield check, matches.matches[0][arena], datetime(2014, 03, 26,  12, 59, 59)
+    yield check, matches.matches[0][arena], datetime(2014, 3, 26,  11)
+    yield check, matches.matches[0][arena], datetime(2014, 3, 26,  12)
+    yield check, matches.matches[0][arena], datetime(2014, 3, 26,  12, 59, 59)
 
-    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13)
-    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  4, 59)
-    yield check, matches.matches[1][arena], datetime(2014, 03, 26,  13,  5, 14)
+    yield check, matches.matches[1][arena], datetime(2014, 3, 26,  13)
+    yield check, matches.matches[1][arena], datetime(2014, 3, 26,  13,  4, 59)
+    yield check, matches.matches[1][arena], datetime(2014, 3, 26,  13,  5, 14)
 
-    yield check, None,                      datetime(2014, 03, 26,  13,  5, 15)
-    yield check, None,                      datetime(2014, 03, 26,  13, 10, 14)
+    yield check, None,                      datetime(2014, 3, 26,  13,  5, 15)
+    yield check, None,                      datetime(2014, 3, 26,  13, 10, 14)
 
-    yield check, None,                      datetime(2014, 03, 26,  13, 10, 15)
-    yield check, None,                      datetime(2014, 03, 26,  14)
+    yield check, None,                      datetime(2014, 3, 26,  13, 10, 15)
+    yield check, None,                      datetime(2014, 3, 26,  14)
 
 
 def test_period_end_simple():
@@ -282,7 +282,7 @@ def test_period_end_with_delay():
     the_data = get_basic_data()
     # Simple delay
     the_data["delays"] = [
-        { "delay": 60, "time": datetime(2014, 03, 26,  13, 02) },
+        { "delay": 60, "time": datetime(2014, 3, 26,  13, 2) },
     ]
     # for a total of 4 matches
     the_data["matches"][3] = { "A": ["SRZ", "SRZ1", "SRZ2", "SRZ3"] }
@@ -309,7 +309,7 @@ def test_period_end_with_large_delay():
     the_data = get_basic_data()
     # Simple delay
     the_data["delays"] = [
-        { "delay": 300, "time": datetime(2014, 03, 26,  13, 01) },
+        { "delay": 300, "time": datetime(2014, 3, 26,  13, 1) },
     ]
     # for a total of 4 matches
     the_data["matches"][3] = { "A": ["SRZ", "SRZ1", "SRZ2", "SRZ3"] }
@@ -360,7 +360,7 @@ def test_period_max_end_with_delay():
     the_data = get_basic_data()
     # Simple delay
     the_data["delays"] = [
-        { "delay": 60, "time": datetime(2014, 03, 26,  13, 02) },
+        { "delay": 60, "time": datetime(2014, 3, 26,  13, 2) },
     ]
     # for a total of 4 matches
     the_data["matches"][3] = { "A": ["SRZ", "SRZ1", "SRZ2", "SRZ3"] }
@@ -388,7 +388,7 @@ def test_period_max_end_with_large_delay():
     the_data = get_basic_data()
     # Simple delay
     the_data["delays"] = [
-        { "delay": 300, "time": datetime(2014, 03, 26,  13, 01) },
+        { "delay": 300, "time": datetime(2014, 3, 26,  13, 1) },
     ]
     # for a total of 4 matches
     the_data["matches"][3] = { "A": ["SRZ", "SRZ1", "SRZ2", "SRZ3"] }
