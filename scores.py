@@ -123,8 +123,9 @@ class LeagueScores(BaseScores):
     @staticmethod
     def rank_league(team_scores):
         # Reverse sort the (tla, score) pairs so the biggest scores are at the top
+        # We break perfect ties by TLA, which is not fair but is deterministic.
         ranking = sorted(team_scores.items(),
-                         key = lambda x: x[1],
+                         key = lambda x: (x[1], x[0]),
                          reverse = True)
         positions = OrderedDict()
         pos = 1

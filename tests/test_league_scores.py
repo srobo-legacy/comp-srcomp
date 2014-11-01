@@ -195,7 +195,7 @@ def test_league_ranker_full_tie():
         'ABC': 1,
         'GHI': 3,
     }
-    expected_order = ['ABC', 'DEF', 'GHI']
+    expected_order = ['DEF', 'ABC', 'GHI']
 
     assert expected_map == ranking
     order = list(ranking.keys())
