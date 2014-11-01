@@ -6,9 +6,9 @@ import datetime
 from dateutil.tz import tzlocal
 import math
 
-import knockout
-import stable_random
-import yaml_loader
+from . import knockout
+from . import stable_random
+from . import yaml_loader
 
 MatchPeriod = namedtuple("MatchPeriod",
                          ["start_time", "end_time", "max_end_time", \
