@@ -1,5 +1,6 @@
 
 from collections import OrderedDict
+from functools import total_ordering
 from decimal import Decimal as D
 import glob
 import os
@@ -19,21 +20,23 @@ class DuplicateScoresheet(Exception):
         super(DuplicateScoresheet, self).__init__(message)
         self.match_id = match_id
 
+@total_ordering
 class TeamScore(object):
     def __init__(self, league = 0, game = 0):
         self.league_points = D(league)
         self.game_points = game
 
-    def __cmp__(self, other):
-        if not isinstance(other, TeamScore):
-            # TeamScores are greater than other things (that have no score)
-            return 1
+    @property
+    def _ordering_key(self):
+        # Sort lexicographically by league points, then game points
+        return self.league_points, self.game_points
 
-        league_cmp = cmp(self.league_points, other.league_points)
-        if league_cmp == 0:
-            return cmp(self.game_points, other.game_points)
+    def __eq__(self, other):
+        return (isinstance(other, type(self)) and
+                self._ordering_key == other._ordering_key)
 
-        return league_cmp
+    def __lt__(self, other):
+        return self._ordering_key < other._ordering_key
 
     def __repr__(self):
         return "TeamScore({0}, {1})".format(self.league_points, self.game_points)

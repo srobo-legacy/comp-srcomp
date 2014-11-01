@@ -44,7 +44,6 @@ def test_equal_other_same_values():
     assert ts2 == ts1
     assert not ts1 != ts2
     assert not ts2 != ts1
-    assert cmp(ts1, ts2) == 0
 
 def test_not_equal_other_similar_values():
     ts1 = TeamScore(game = 5, league = 4)
@@ -53,7 +52,6 @@ def test_not_equal_other_similar_values():
     assert ts2 != ts1
     assert not ts1 == ts2
     assert not ts2 == ts1
-    assert cmp(ts1, ts2) != 0
 
 # Scores with more points are greater than those with fewer
 
@@ -66,8 +64,6 @@ def assert_rich_comparisons(smaller, larger):
     assert not smaller >= larger
     assert not larger < smaller
     assert not larger <= smaller
-    assert cmp(smaller, larger) < 0
-    assert cmp(larger, smaller) > 0
 
 def test_rich_comparisons_helper():
     assert_rich_comparisons(1, 2)
@@ -79,10 +75,6 @@ def test_rich_comparisons_helper_fail():
         pass
     else:
         assert False, "Should have found 1 < 2"
-
-def test_rich_comparisons_none():
-    ts = TeamScore(game = 5, league = 4)
-    assert_rich_comparisons(None, ts)
 
 def test_rich_comparisons_empty():
     ts = TeamScore(game = 5, league = 4)
