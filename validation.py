@@ -58,7 +58,7 @@ def validate_schedule_count(schedule):
 def validate_schedule_timings(scheduled_matches, match_period):
     timing_map = defaultdict(list)
     for match in scheduled_matches:
-        game = match.values()[0]
+        game = list(match.values())[0]
         time = game.start_time
         timing_map[time].append(game.num)
 
