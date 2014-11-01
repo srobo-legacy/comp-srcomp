@@ -39,7 +39,7 @@ def load_data(the_data):
 
 def load_datas(the_datas, teams):
     my_datas = the_datas[:]
-    the_files = ['whatever-{0}.yaml'.format(i) for i in xrange(len(the_datas))]
+    the_files = ['whatever-{0}.yaml'.format(i) for i in range(len(the_datas))]
     def loader(*args):
         assert len(my_datas), "Should not be loading additional files"
         return my_datas.pop(0)

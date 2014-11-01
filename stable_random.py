@@ -43,7 +43,7 @@ class Random(object):
     def shuffle(self, x):
         "Based on python's shuffle function"
 
-        for i in reversed(xrange(1, len(x))):
+        for i in reversed(range(1, len(x))):
             # pick an element in x[:i+1] with which to exchange x[i]
             j = int(self.random() * (i+1))
             x[i], x[j] = x[j], x[i]
