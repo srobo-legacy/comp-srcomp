@@ -4,7 +4,7 @@ import os
 # Hack the path
 import helpers as test_helpers
 
-from comp import SRComp
+from sr.comp.comp import SRComp
 
 def test_load():
     "Test that loading the dummy state works"

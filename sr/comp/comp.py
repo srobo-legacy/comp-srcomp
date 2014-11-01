@@ -2,10 +2,10 @@
 import os
 from subprocess import check_output
 
-import arenas
-import matches
-import scores
-import teams
+from . import arenas
+from . import matches
+from . import scores
+from . import teams
 
 from scorer import Scorer
 
