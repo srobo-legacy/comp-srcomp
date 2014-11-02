@@ -1,7 +1,6 @@
 
 from collections import OrderedDict
 from functools import total_ordering
-from decimal import Decimal as D
 import glob
 import os
 
@@ -23,7 +22,7 @@ class DuplicateScoresheet(Exception):
 @total_ordering
 class TeamScore(object):
     def __init__(self, league = 0, game = 0):
-        self.league_points = D(league)
+        self.league_points = league
         self.game_points = game
 
     @property
@@ -152,7 +151,7 @@ class LeagueScores(BaseScores):
             for tla, score in match.items():
                 if tla not in self.teams:
                     raise InvalidTeam(tla)
-                self.teams[tla].league_points += D(score)
+                self.teams[tla].league_points += score
 
         self.positions = self.rank_league(self.teams)
 
