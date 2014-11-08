@@ -40,6 +40,9 @@ class TeamScore(object):
         return not (self == other)
 
     def __lt__(self, other):
+        if not isinstance(other, type(self)):
+            # TeamScores are greater than other things (that have no score)
+            return False
         return self._ordering_key < other._ordering_key
 
     def __repr__(self):

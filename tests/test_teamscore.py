@@ -76,6 +76,10 @@ def test_rich_comparisons_helper_fail():
     else:
         assert False, "Should have found 1 < 2"
 
+def test_rich_comparisons_none():
+    ts = TeamScore(game = 5, league = 4)
+    assert_rich_comparisons(None, ts)
+
 def test_rich_comparisons_empty():
     ts = TeamScore(game = 5, league = 4)
     empty = TeamScore()
