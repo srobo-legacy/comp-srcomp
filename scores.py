@@ -35,6 +35,10 @@ class TeamScore(object):
         return (isinstance(other, type(self)) and
                 self._ordering_key == other._ordering_key)
 
+    # total_ordering doesn't provide this!
+    def __ne__(self, other):
+        return not (self == other)
+
     def __lt__(self, other):
         return self._ordering_key < other._ordering_key
 
