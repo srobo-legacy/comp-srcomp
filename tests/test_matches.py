@@ -160,8 +160,8 @@ def test_match_at():
     yield check, matches.matches[1][arena], datetime(2014, 3, 26,  13,  5)
     yield check, matches.matches[1][arena], datetime(2014, 3, 26,  13,  9, 59)
 
-    yield check, matches.matches[2][arena], datetime(2014, 3, 26,  13,  10)
-    yield check, matches.matches[2][arena], datetime(2014, 3, 26,  13,  14, 59)
+    yield check, matches.matches[2][arena], datetime(2014, 3, 26,  13, 10)
+    yield check, matches.matches[2][arena], datetime(2014, 3, 26,  13, 14, 59)
 
     yield check, None,                      datetime(2014, 3, 26,  13, 15)
 
