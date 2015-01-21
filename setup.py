@@ -12,8 +12,9 @@ setup(name='sr.comp',
       description=description,
       author='Student Robotics Competition Software SIG',
       author_email='srobo-devel@googlegroups.com',
-      install_requires=['nose >=1.3, <2',
-                        'PyYAML >=3.11, <4',
+      install_requires=['PyYAML >=3.11, <4',
                         'sr.comp.ranker >=1.0, <2',
                         'mock >=1.0.1, <2',
-                        'python-dateutil >=2.2, <3'])
+                        'python-dateutil >=2.2, <3'],
+      setup_requires=['nose >=1.3, <2'],
+      test_suite='nose.collector')
