@@ -2,6 +2,8 @@ from collections import namedtuple
 
 from . import yaml_loader
 
+
+Arena = namedtuple('Arena', ['name', 'display_name'])
 Corner = namedtuple("Corner", ["number", "colour"])
 
 def load_arenas(fname):
@@ -11,7 +13,8 @@ def load_arenas(fname):
 
     arenas = []
     for name in y["arenas"]:
-        arenas.append(name)
+        arena = Arena(name, name)
+        arenas.append(arena)
 
     return arenas
 
