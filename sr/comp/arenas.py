@@ -11,10 +11,9 @@ def load_arenas(fname):
 
     y = yaml_loader.load(fname)
 
-    arenas = []
-    for name in y["arenas"]:
-        arena = Arena(name, name)
-        arenas.append(arena)
+    arenas = {}
+    for name, arena in y['arenas'].items():
+        arenas[name] = Arena(name, arena['display_name'])
 
     return arenas
 
@@ -24,8 +23,7 @@ def load_corners(fname):
     y = yaml_loader.load(fname)
 
     corners = {}
-    for n, colour in y["corner_colours"].items():
-        c = Corner(n, colour)
-        corners[n] = c
+    for number, corner in y['corners'].items():
+        corners[number] = Corner(number, corner['colour'])
 
     return corners
