@@ -21,7 +21,12 @@ def assert_times(expected, matches, message):
 
 def get_basic_data():
     the_data = {
-        "match_period_length_seconds": 300,
+        "match_period_lengths": {
+            "pre": 90,
+            "match": 180,
+            "post": 30,
+            "total": 300
+        },
         "delays": [ {
             "delay": 15,
             "time":         datetime(2014, 3, 26,  13, 2)

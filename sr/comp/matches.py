@@ -226,12 +226,25 @@ class MatchSchedule(object):
                                     e["description"], [])
             self.match_periods.append(period)
 
-        self.match_period = datetime.timedelta(0, y["match_period_length_seconds"])
+        self._configure_match_periods(y)
 
         self._build_delaylist(y["delays"])
         self._build_matchlist(y["matches"])
 
         self.n_league_matches = self.n_matches()
+
+    def _configure_match_periods(self, yamldata):
+        print(list(yamldata.keys()))
+        raw_data = yamldata['match_period_lengths']
+        periods = {key: datetime.timedelta(0, value) for key, value in raw_data.items()}
+        pre = periods['pre']
+        post = periods['post']
+        match = periods['match']
+        total = periods['total']
+        if total != pre + post + match:
+            raise ValueError('Match period lengths are inconsistent.')
+        self.match_period_lengths = periods
+        self.match_period = total
 
     def _build_delaylist(self, yamldata):
         delays = []
