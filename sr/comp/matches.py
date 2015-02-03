@@ -234,7 +234,6 @@ class MatchSchedule(object):
         self.n_league_matches = self.n_matches()
 
     def _configure_match_periods(self, yamldata):
-        print(list(yamldata.keys()))
         raw_data = yamldata['match_period_lengths']
         periods = {key: datetime.timedelta(0, value) for key, value in raw_data.items()}
         pre = periods['pre']
