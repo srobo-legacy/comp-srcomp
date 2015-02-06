@@ -4,6 +4,16 @@ from setuptools import find_packages, setup
 with open('README.rst') as f:
     description = f.read()
 
+install_requires = [
+    'PyYAML >=3.11, <4',
+    'sr.comp.ranker >=1.0, <2',
+    'mock >=1.0.1, <2',
+    'python-dateutil >=2.2, <3'
+]
+
+import sys
+if sys.version_info < (3, 4):
+    install_requires.append('enum34 >=1.0.4, <2')
 
 setup(name='sr.comp',
       version='1.0.0',
@@ -12,9 +22,6 @@ setup(name='sr.comp',
       description=description,
       author='Student Robotics Competition Software SIG',
       author_email='srobo-devel@googlegroups.com',
-      install_requires=['PyYAML >=3.11, <4',
-                        'sr.comp.ranker >=1.0, <2',
-                        'mock >=1.0.1, <2',
-                        'python-dateutil >=2.2, <3'],
+      install_requires=install_requires,
       setup_requires=['nose >=1.3, <2'],
       test_suite='nose.collector')

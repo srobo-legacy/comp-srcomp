@@ -3,7 +3,7 @@ from __future__ import print_function
 from collections import defaultdict
 import sys
 
-from .matches import UNKNOWABLE_TEAM
+from .knockout_scheduler import UNKNOWABLE_TEAM
 NO_TEAM = None
 
 META_TEAMS = set([NO_TEAM, UNKNOWABLE_TEAM])

@@ -7,8 +7,8 @@ import mock
 import helpers as test_helpers
 
 from sr.comp.scores import TeamScore
-from sr.comp.matches import KnockoutScheduler, Match, UNKNOWABLE_TEAM, \
-                        KNOCKOUT_MATCH, LEAGUE_MATCH
+from sr.comp.match_period import Match, MatchType
+from sr.comp.knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
 
 def get_scheduler(matches = None, positions = None, \
                     knockout_points = None, league_game_points = None, \
@@ -148,8 +148,8 @@ def test_first_round_before_league_end():
 
     # Fake a couple of league matches that won't have been scored
     matches = [
-        {'A':Match(0, 'A', [], None, None, LEAGUE_MATCH)},
-        {'A':Match(1, 'A', [], None, None, LEAGUE_MATCH)},
+        {'A':Match(0, 'A', [], None, None, MatchType.league)},
+        {'A':Match(1, 'A', [], None, None, MatchType.league)},
     ]
     scheduler = get_scheduler(matches, positions = positions)
 
@@ -218,7 +218,7 @@ def test_first_round():
     expected_0_teams = list(positions.keys())[:4]
 
     assert semi_0.num == 2, "Match number should carry on above league matches"
-    assert semi_0.type == KNOCKOUT_MATCH
+    assert semi_0.type == MatchType.knockout
     assert semi_0_teams == expected_0_teams
 
     period_matches = period.matches
