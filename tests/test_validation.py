@@ -11,6 +11,8 @@ from sr.comp import matches
 from sr.comp.validation import validate_match, validate_schedule_timings, \
                         validate_match_score, find_missing_scores
 
+from sr.comp.knockout_scheduler import UNKNOWABLE_TEAM
+
 Match = namedtuple("Match", ["teams"])
 Match2 = namedtuple("Match2", ["num", "start_time"])
 
@@ -26,8 +28,8 @@ def test_dummy_is_valid():
         assert cpe.returncode == 0, cpe.output
 
 def test_validate_match_unknowable_entrants():
-    teams_a = [matches.UNKNOWABLE_TEAM] * 4
-    teams_b = [matches.UNKNOWABLE_TEAM] * 4
+    teams_a = [UNKNOWABLE_TEAM] * 4
+    teams_b = [UNKNOWABLE_TEAM] * 4
     teams = set()
     knockout_match = {
         'A': Match(teams_a),

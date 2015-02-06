@@ -3,8 +3,8 @@
 
 from collections import defaultdict
 
-from .matches import KnockoutScheduler, Match, MatchPeriod, \
-                    UNKNOWABLE_TEAM, KNOCKOUT_MATCH, LEAGUE_MATCH
+from .match_period import Match, MatchPeriod
+from .knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
 
 class StaticScheduler(KnockoutScheduler):
     def __init__(self, schedule, scores, arenas, config):
@@ -49,7 +49,7 @@ class StaticScheduler(KnockoutScheduler):
             "Fill empty zones with None"
             teams += [None] * (4-len(teams))
 
-        match = Match(num, arena, teams, start_time, end_time, KNOCKOUT_MATCH)
+        match = Match(num, arena, teams, start_time, end_time, 'knockout')
         self.knockout_rounds[-1].append(match)
 
         new_matches[match_info['arena']] = match
