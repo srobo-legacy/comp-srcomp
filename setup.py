@@ -23,5 +23,8 @@ setup(name='sr.comp',
       author='Student Robotics Competition Software SIG',
       author_email='srobo-devel@googlegroups.com',
       install_requires=install_requires,
-      setup_requires=['nose >=1.3, <2'],
+      setup_requires=[
+          'nose >=1.3, <2',
+          'Sphinx >=1.3b, <2'
+      ],
       test_suite='nose.collector')
