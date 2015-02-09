@@ -122,7 +122,7 @@ class KnockoutScheduler(object):
 
         self._add_round_of_matches(matches, arenas)
 
-    def _add_first_round(self):
+    def _add_first_round(self, arity):
         teams = list(self.scores.league.positions.keys())
 
         if not self._played_all_league_matches():
@@ -135,7 +135,7 @@ class KnockoutScheduler(object):
 
         matches = []
 
-        for seeds in knockout.first_round_seeding(len(teams)):
+        for seeds in knockout.first_round_seeding(arity):
             match_teams = [teams[seed] for seed in seeds]
             matches.append( match_teams )
 
@@ -159,9 +159,14 @@ class KnockoutScheduler(object):
         # The current delay
         self.delay = timedelta()
 
-        self._add_first_round()
-
         knockout_conf = self.config["knockout"]
+
+        n_teams = len(self.scores.league.positions)
+        if 'arity' in knockout_conf:
+            arity = min(n_teams, knockout_conf['arity'])
+        else:
+            arity = n_teams
+        self._add_first_round(arity)
 
         while len(self.knockout_rounds[-1]) > 1:
 
@@ -181,5 +186,3 @@ class KnockoutScheduler(object):
                 self.next_time += timedelta(seconds=knockout_conf["final_delay"])
 
             self._add_round(arenas)
-
-
