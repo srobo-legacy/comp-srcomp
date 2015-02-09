@@ -146,31 +146,3 @@ class MatchSchedule(object):
 
     def n_matches(self):
         return len(self.matches)
-
-    def match_at(self, arena, when):
-        for arenas in self.matches:
-            match = arenas.get(arena, None)
-
-            if match is not None and \
-                when >= match.start_time and \
-                when < match.end_time:
-                return match
-
-        # No match at that time
-        return None
-
-    def current_match(self, arena):
-        now = datetime.datetime.now(tzlocal())
-        return self.match_at(arena, now)
-
-    def match_after(self, arena, when):
-        """Return the next match starting after the given time
-
-        If there's no next match, returns None."""
-        for arenas in self.matches:
-            match = arenas.get(arena, None)
-
-            if match is not None and match.start_time > when:
-                return match
-
-        return None
