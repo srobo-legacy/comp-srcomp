@@ -9,9 +9,10 @@ try:
     from yaml import CLoader as YAML_Loader
 except ImportError:
     from yaml import Loader as YAML_Loader
-    print("Warning: using pure-python PyYAML. srcomp reads many YAML "
-          "files, this is liable to be very slow. Installing libyaml "
-          "is highly recommended.", file=sys.stderr)
+    from warnings import warn
+    warn("Using pure-python PyYAML (without libyaml)."
+         " srcomp reads many YAML files, this is liable to be very slow. "
+         "Installing libyaml is highly recommended.")
 
 
 def time_constructor(loader, node):
