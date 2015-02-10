@@ -6,6 +6,7 @@ from collections import defaultdict
 from .matches import KnockoutScheduler, Match, MatchPeriod, \
                     UNKNOWABLE_TEAM, KNOCKOUT_MATCH, LEAGUE_MATCH
 
+
 class StaticScheduler(KnockoutScheduler):
     def __init__(self, schedule, scores, arenas, config):
         super(StaticScheduler, self).__init__(schedule, scores, arenas, config)
@@ -18,7 +19,7 @@ class StaticScheduler(KnockoutScheduler):
             # get a seeded position
             positions = list(self.scores.league.positions.keys())
             pos = int(team_ref[1:])
-            pos -= 1 # seed numbers are 1 based
+            pos -= 1  # seed numbers are 1 based
             return positions[pos]
 
         # get a position from a match
@@ -26,7 +27,9 @@ class StaticScheduler(KnockoutScheduler):
         round_num, match_num, pos = [int(x) for x in team_ref]
         match = self.knockout_rounds[round_num][match_num]
 
-        assert match is not None, "Reference '{0}' to unscheduled match!".format(team_ref)
+        if match is None:
+            message = "Reference '{}' to unscheduled match!".format(team_ref)
+            raise AssertionError(message)
 
         ranking = self.get_ranking(match)
         # move the winner to the front of the list
@@ -59,8 +62,8 @@ class StaticScheduler(KnockoutScheduler):
 
     def add_knockouts(self):
         period = self.config["match_periods"]["knockout"][0]
-        self.period = MatchPeriod(period["start_time"], period["end_time"], \
-                                  period["end_time"], period["description"], \
+        self.period = MatchPeriod(period["start_time"], period["end_time"],
+                                  period["end_time"], period["description"],
                                   [])
 
         knockout_conf = self.config["static_knockout"]
