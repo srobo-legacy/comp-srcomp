@@ -25,6 +25,6 @@ setup(name='sr.comp',
       install_requires=install_requires,
       setup_requires=[
           'nose >=1.3, <2',
-          'Sphinx >=1.3b, <2'
+          'Sphinx >=1.2, <2'
       ],
       test_suite='nose.collector')
