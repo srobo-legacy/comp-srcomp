@@ -6,6 +6,7 @@ from . import yaml_loader
 Team = namedtuple("Team",
                   ["tla", "name"])
 
+
 def load_teams(fname):
     "Load teams from a YAML file"
 
@@ -14,7 +15,6 @@ def load_teams(fname):
     teams = {}
     for tla, info in y["teams"].items():
         tla = tla.upper()
-        teams[tla] = Team(tla,info["name"])
+        teams[tla] = Team(tla, info["name"])
 
     return teams
-
