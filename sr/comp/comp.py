@@ -30,8 +30,8 @@ def load_scorer(root):
 class SRComp(object):
     def __init__(self, root):
         self.root = root
-        self.state = check_output("git rev-parse HEAD",
-                                  shell=True,
+        self.state = check_output(('git', 'rev-parse', 'HEAD'),
+                                  universal_newlines=True,
                                   cwd=root).strip()
         self.teams = teams.load_teams(os.path.join(root, "teams.yaml"))
         scorer = load_scorer(root)
