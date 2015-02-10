@@ -8,13 +8,16 @@ NO_TEAM = None
 
 META_TEAMS = set([NO_TEAM, UNKNOWABLE_TEAM])
 
+
 def report_errors(type_, id_, errors):
     if len(errors) == 0:
         return
 
-    print("{0} {1} has the following errors:".format(type_, id_), file=sys.stderr)
+    print("{0} {1} has the following errors:".format(type_, id_),
+          file=sys.stderr)
     for error in errors:
         print("    {0}".format(error), file=sys.stderr)
+
 
 def validate(comp):
     count = 0
@@ -22,6 +25,7 @@ def validate(comp):
     count += validate_scores(comp.scores.league, comp.schedule.matches)
     warn_missing_scores(comp.scores.league, comp.schedule.matches)
     return count
+
 
 def validate_schedule(schedule, possible_teams):
     """Check that the schedule contains enough time for all the matches,
@@ -38,10 +42,12 @@ def validate_schedule(schedule, possible_teams):
     errors = validate_schedule_timings(schedule.matches, schedule.match_period)
     count += len(errors)
     if len(errors):
-        errors.append("This usually indicates that the scheduled periods overlap.")
+        errors.append("This usually indicates that the scheduled periods "
+                      "overlap.")
     report_errors('Schedule', 'timing', errors)
 
     return count
+
 
 def validate_schedule_count(schedule):
     planned = schedule.n_planned_league_matches
@@ -56,6 +62,7 @@ def validate_schedule_count(schedule):
 
     return errors
 
+
 def validate_schedule_timings(scheduled_matches, match_period):
     timing_map = defaultdict(list)
     for match in scheduled_matches:
@@ -68,16 +75,21 @@ def validate_schedule_timings(scheduled_matches, match_period):
     for time, match_numbers in sorted(timing_map.items()):
         if len(match_numbers) != 1:
             ids = ", ".join(str(num) for num in match_numbers)
-            errors.append("Multiple matches scheduled for {0}: {1}.".format(time, ids))
+            errors.append("Multiple matches scheduled for {0}:"
+                          " {1}.".format(time, ids))
 
         if last_time is not None and time - last_time < match_period:
             prev_ids = ", ".join(str(num) for num in timing_map[last_time])
             ids = ", ".join(str(num) for num in match_numbers)
-            errors.append("Matches {0} start at {1} before matches {2} have finished.".format(ids, time, prev_ids))
+            errors.append("Matches {0} start at {1} "
+                          "before matches {2} have finished.".format(ids,
+                                                                     time,
+                                                                     prev_ids))
 
         last_time = time
 
     return errors
+
 
 def validate_match(match, possible_teams):
     """Check that the teams featuring in a match exist and are only
@@ -105,9 +117,11 @@ def validate_match(match, possible_teams):
 
     return errors
 
+
 def validate_scores(scores, schedule):
     # NB: more specific validation is already done during the scoring,
-    # so all we need to do is check that the right teams are being awarded points
+    # so all we need to do is check that the right teams are being awarded
+    # points
 
     count = 0
 
@@ -143,6 +157,7 @@ def validate_scores(scores, schedule):
 
     return count
 
+
 def validate_match_score(match_score, scheduled_match):
     """Check that the match awards points to the right teams, by checking
     that the teams with points were scheduled to appear in the match."""
@@ -167,6 +182,7 @@ def validate_match_score(match_score, scheduled_match):
 
     return errors
 
+
 def warn_missing_scores(scores, schedule):
     """Check that the scores up to the most recent are all present."""
     match_ids = scores.ranked_points.keys()
@@ -181,6 +197,7 @@ def warn_missing_scores(scores, schedule):
     for m in missing:
         arenas = ", ".join(sorted(m[1]))
         print(" {0:>3}    | {1}".format(m[0], arenas), file=sys.stderr)
+
 
 def find_missing_scores(match_ids, last_match, schedule):
     expected = set()
