@@ -1,16 +1,23 @@
 
 import os
+import datetime
 
 # Hack the path
 import helpers as test_helpers
 
+from nose.plugins.skip import SkipTest
+
 from sr.comp.comp import SRComp
+
+DUMMY_PATH = os.path.dirname(os.path.abspath(__file__)) + '/dummy'
+
+# Only instantiate SRComp once: it is a slow process!
+instance = None
 
 def test_load():
     "Test that loading the dummy state works"
-    my_dir = os.path.dirname(os.path.abspath(__file__))
-    instance = SRComp(my_dir + '/dummy')
-
+    global instance
+    instance = SRComp(DUMMY_PATH)
     assert instance.root
     assert instance.state
     assert instance.teams
@@ -18,3 +25,11 @@ def test_load():
     assert instance.scores
     assert instance.arenas
     assert instance.corners
+
+def test_timezone():
+    # Test that one can get the timezone from the dummy state
+    global instance
+    if instance is None:
+        raise SkipTest("Timezone test skipped due to srcomp load failure.")
+    assert (instance.timezone.utcoffset(datetime.datetime(2014, 4, 26)) ==
+            datetime.timedelta(seconds=3600))

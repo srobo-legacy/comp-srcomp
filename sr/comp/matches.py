@@ -3,7 +3,7 @@
 from collections import namedtuple
 from datetime import timedelta
 import datetime
-from dateutil.tz import tzlocal
+from dateutil.tz import gettz
 
 from . import yaml_loader
 from .match_period import MatchPeriod, Match, MatchType
@@ -43,6 +43,8 @@ class MatchSchedule(object):
 
         self._build_delaylist(y["delays"])
         self._build_matchlist(y["matches"])
+
+        self.timezone = gettz(y.get('timezone', 'UTC'))
 
         self.n_league_matches = self.n_matches()
 
