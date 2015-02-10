@@ -11,6 +11,7 @@ from . import matches
 from . import scores
 from . import teams
 
+
 def load_scorer(root):
     # Deep path hacks
     score_directory = os.path.join(root, 'scoring')
@@ -25,10 +26,13 @@ def load_scorer(root):
 
     return imported_library.Scorer
 
+
 class SRComp(object):
     def __init__(self, root):
         self.root = root
-        self.state = check_output("git rev-parse HEAD", shell=True, cwd=root).strip()
+        self.state = check_output("git rev-parse HEAD",
+                                  shell=True,
+                                  cwd=root).strip()
         self.teams = teams.load_teams(os.path.join(root, "teams.yaml"))
         scorer = load_scorer(root)
         self.scores = scores.Scores(root, self.teams.keys(), scorer)
