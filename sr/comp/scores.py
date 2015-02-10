@@ -7,11 +7,13 @@ import os
 from sr.comp import ranker
 from . import yaml_loader
 
+
 class InvalidTeam(Exception):
     def __init__(self, tla):
         message = "Team {0} does not exist.".format(tla)
         super(InvalidTeam, self).__init__(message)
         self.tla = tla
+
 
 class DuplicateScoresheet(Exception):
     def __init__(self, match_id):
@@ -19,9 +21,10 @@ class DuplicateScoresheet(Exception):
         super(DuplicateScoresheet, self).__init__(message)
         self.match_id = match_id
 
+
 @total_ordering
 class TeamScore(object):
-    def __init__(self, league = 0, game = 0):
+    def __init__(self, league=0, game=0):
         self.league_points = league
         self.game_points = game
 
@@ -45,7 +48,9 @@ class TeamScore(object):
         return self._ordering_key < other._ordering_key
 
     def __repr__(self):
-        return "TeamScore({0}, {1})".format(self.league_points, self.game_points)
+        return "TeamScore({0}, {1})".format(self.league_points,
+                                            self.game_points)
+
 
 def results_finder(root):
     for dname in glob.glob(os.path.join(root, "*")):
@@ -55,16 +60,14 @@ def results_finder(root):
         for resfile in glob.glob(os.path.join(dname, "*.yaml")):
             yield resfile
 
-'''
-The scorer that these classes consume should be a class that:
-* accepts a dictionary equivalent to value of the 'teams' key from a Proton
-  compatible input as its only constructor argument.
-* has a 'calculate_scores' method which returns a dictionary of TLAs (ie
-  the same keys as the input) to the numeric scores for each team.
 
-Proton refers to [Proton 1.0.0-rc2](https://github.com/samphippen/proton)
-'''
-
+# The scorer that these classes consume should be a class that:
+# * accepts a dictionary equivalent to value of the 'teams' key from a Proton
+#   compatible input as its only constructor argument.
+# * has a 'calculate_scores' method which returns a dictionary of TLAs (ie
+#   the same keys as the input) to the numeric scores for each team.
+#
+# Proton refers to [Proton 1.0.0-rc2](https://github.com/samphippen/proton)
 class BaseScores(object):
     def __init__(self, resultdir, teams, scorer):
         self._scorer = scorer
@@ -111,11 +114,12 @@ class BaseScores(object):
         for tla, scoreinfo in y["teams"].items():
             # disqualifications and non-presence are effectively the same
             # in terms of league points awarding.
-            if scoreinfo.get("disqualified", False) or \
-                not scoreinfo.get("present", True):
+            if (scoreinfo.get("disqualified", False) or
+               not scoreinfo.get("present", True)):
                 dsq.append(tla)
 
-        self.ranked_points[match_id] = ranker.get_ranked_points(game_points, dsq)
+        self.ranked_points[match_id] = ranker.get_ranked_points(game_points,
+                                                                dsq)
 
     @property
     def last_scored_match(self):
@@ -125,18 +129,20 @@ class BaseScores(object):
         matches = self.ranked_points.keys()
         return max(num for arena, num in matches)
 
+
 class LeagueScores(BaseScores):
     @staticmethod
     def rank_league(team_scores):
-        # Reverse sort the (tla, score) pairs so the biggest scores are at the top
-        # We break perfect ties by TLA, which is not fair but is deterministic.
+        # Reverse sort the (tla, score) pairs so the biggest scores are at the
+        # top. We break perfect ties by TLA, which is not fair but is
+        # deterministic.
         ranking = sorted(team_scores.items(),
-                         key = lambda x: (x[1], x[0]),
-                         reverse = True)
+                         key=lambda x: (x[1], x[0]),
+                         reverse=True)
         positions = OrderedDict()
         pos = 1
         last_score = None
-        for i, (tla, score) in enumerate(ranking, start = 1):
+        for i, (tla, score) in enumerate(ranking, start=1):
             if score != last_score:
                 pos = i
             positions[tla] = pos
@@ -155,11 +161,15 @@ class LeagueScores(BaseScores):
 
         self.positions = self.rank_league(self.teams)
 
+
 class KnockoutScores(BaseScores):
     pass
+
 
 class Scores(object):
     def __init__(self, root, teams, scorer):
         self.root = root
-        self.league = LeagueScores(os.path.join(root, "league"), teams, scorer)
-        self.knockout = KnockoutScores(os.path.join(root, "knockout"), teams, scorer)
+        self.league = LeagueScores(os.path.join(root, "league"),
+                                   teams, scorer)
+        self.knockout = KnockoutScores(os.path.join(root, "knockout"),
+                                       teams, scorer)
