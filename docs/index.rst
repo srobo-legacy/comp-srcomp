@@ -1,8 +1,8 @@
-srcomp
-======
+Student Robotics Competition
+============================
 
-Documentation
--------------
+User Guide
+----------
 
 .. toctree::
    :maxdepth: 2
@@ -28,4 +28,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
