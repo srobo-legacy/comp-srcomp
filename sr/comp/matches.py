@@ -1,4 +1,4 @@
-"Match schedule library"
+"""Match schedule library"""
 
 from collections import namedtuple
 from datetime import timedelta
@@ -9,8 +9,10 @@ from . import yaml_loader
 from .match_period import MatchPeriod, Match, MatchType
 from .knockout_scheduler import KnockoutScheduler
 
+
 Delay = namedtuple("Delay",
                    ["delay", "time"])
+
 
 class MatchSchedule(object):
     @classmethod
@@ -117,7 +119,7 @@ class MatchSchedule(object):
                 try:
                     arenas = arena_info.pop(0)
                 except IndexError:
-                    "No more matches left"
+                    # no more matches left
                     break
 
                 m = {}
@@ -136,15 +138,21 @@ class MatchSchedule(object):
                 # Ensure we haven't exceeded the maximum time limit
                 # (if we have then matches will get pushed into the next period)
                 if start > period.max_end_time:
-                    "We've filled this up to the maximum end time"
+                    # we've filled this up to the maximum end time
                     break
 
                 # Ensure we haven't attempted to pack in more matches than will
                 # fit in this period
                 if start - total_delay > period.end_time:
-                    "We've filled up this period"
+                    # we've filled up this period
                     break
 
+    def matches_at(self, date):
+        """Get all the matches that occur around a specific ``date``."""
+        for slot in self.matches:
+            for match in slot.values():
+                if match.start_time <= date <= match.end_time:
+                    yield match
 
     def n_matches(self):
         return len(self.matches)

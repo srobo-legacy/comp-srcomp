@@ -87,6 +87,10 @@ def test_basic_data():
     assert a_end == datetime(2014, 3, 26,  13, 5)
     assert a_end == b_end
 
+def test_matches_at():
+    matches = load_basic_data()
+    assert len(list(matches.matches_at(datetime(2014, 3, 26, 13, 1)))) == 2
+
 def test_no_matches():
     the_data = get_basic_data()
     the_data['matches'] = None
