@@ -10,4 +10,3 @@ Match = namedtuple('Match', 'num arena teams '
 class MatchType(Enum):
     league = 'league'
     knockout = 'knockout'
-

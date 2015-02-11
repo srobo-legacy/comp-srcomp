@@ -1,4 +1,4 @@
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 
 from . import yaml_loader
 
@@ -12,7 +12,7 @@ def load_arenas(fname):
 
     y = yaml_loader.load(fname)
 
-    arenas = {}
+    arenas = OrderedDict()
     for name, arena in y['arenas'].items():
         arenas[name] = Arena(name, arena['display_name'])
 
@@ -24,7 +24,7 @@ def load_corners(fname):
 
     y = yaml_loader.load(fname)
 
-    corners = {}
+    corners = OrderedDict()
     for number, corner in y['corners'].items():
         corners[number] = Corner(number, corner['colour'])
 
