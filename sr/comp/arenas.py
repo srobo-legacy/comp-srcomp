@@ -12,9 +12,11 @@ def load_arenas(fname):
 
     y = yaml_loader.load(fname)
 
+    arenas_data = y['arenas']
+
     arenas = OrderedDict()
-    for name, arena in y['arenas'].items():
-        arenas[name] = Arena(name, arena['display_name'])
+    for name in sorted(arenas_data.keys()):
+        arenas[name] = Arena(name, arenas_data[name]['display_name'])
 
     return arenas
 
