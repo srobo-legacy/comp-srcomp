@@ -9,6 +9,7 @@ The awards calculated are:
 
 from collections import namedtuple
 from enum import Enum, unique
+import errno
 
 from sr.comp.ranker import calc_positions
 from . import yaml_loader
@@ -64,7 +65,9 @@ def _compute_explicit_awards(path):
     """Compute awards explicitly provided in the compstate repo."""
     try:
         explicit_awards = yaml_loader.load(path)
-    except FileNotFoundError:
+    except IOError as ioe:
+        if ioe.errno != errno.ENOENT:
+            raise
         return {}
     return {Award(key): value for key, value in explicit_awards.items()}
 
