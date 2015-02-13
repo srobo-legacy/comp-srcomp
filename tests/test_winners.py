@@ -5,6 +5,7 @@ from sr.comp.winners import Award, compute_awards
 from sr.comp.match_period import Match, MatchType
 from sr.comp.teams import Team
 from sr.comp.scores import TeamScore
+from sr.comp.ranker import get_ranked_points
 
 from nose.tools import eq_
 
@@ -20,29 +21,29 @@ TEAMS = {'AAA': Team(tla='AAA', name='AAA Squad'),
          'CCC': Team(tla='CCC', name='Team CCC'),
          'DDD': Team(tla='DDD', name='DDD Robotics')}
 
-class MockLeague(object):
-    pass
-
-class MockKnockout(object):
-    def __init__(self):
-        self.teams = {'AAA': TeamScore(league=4, game=0),
-                      'BBB': TeamScore(league=8, game=3),
-                      'CCC': TeamScore(league=0, game=0),
-                      'DDD': TeamScore(league=6, game=2)}
-        self.game_points = {('A', 1): {'AAA': 0,
-                                       'BBB': 3,
-                                       'CCC': 0,
-                                       'DDD': 2}}
-        self.ranked_points = {('A', 1): {'AAA': 4,
-                                         'BBB': 8,
-                                         'CCC': 0,
-                                         'DDD': 6}}
+class MockScoreSet(object):
+    def __init__(self, arena, game, scores, dsq=()):
+        league_points = get_ranked_points(scores, dsq)
+        team_key = {}
+        gp_key = {}
+        rp_key = {}
+        for team, gp in scores.items():
+            lp = league_points[team]
+            team_key[team] = TeamScore(league=lp, game=gp)
+            gp_key[team] = gp
+            rp_key[team] = lp
+        self.teams = team_key
+        self.game_points = {(arena, game): gp_key}
+        self.ranked_points = {(arena, game): rp_key}
 
 
 class MockScores(object):
-    def __init__(self):
-        self.knockout = MockKnockout()
-        self.league = MockLeague()
+    def __init__(self, league={'AAA': 1, 'BBB': 1, 'CCC': 0, 'DDD': 0},
+                       league_dsq=(),
+                       knockout={'AAA': 0, 'BBB': 3, 'CCC': 0, 'DDD': 2},
+                       knockout_dsq=('CCC',)):
+        self.knockout = MockScoreSet('A', 1, knockout, knockout_dsq)
+        self.league = MockScoreSet('A', 0, league, league_dsq)
 
 
 def test_first():
