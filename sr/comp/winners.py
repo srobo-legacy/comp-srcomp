@@ -62,8 +62,12 @@ def _compute_rookie_award(scores, teams):
 
 def _compute_explicit_awards(path):
     """Compute awards explicitly provided in the compstate repo."""
-    explicit_awards = yaml_loader.load(path)
+    try:
+        explicit_awards = yaml_loader.load(path)
+    except FileNotFoundError:
+        return {}
     return {Award(key): value for key, value in explicit_awards.items()}
+
 
 def compute_awards(scores, knockout_rounds, teams, path=None):
     """Compute the awards handed out from configuration.

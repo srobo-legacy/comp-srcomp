@@ -92,3 +92,9 @@ def test_manual():
         eq_(compute_awards(MockScores(), KNOCKOUT_ROUNDS, TEAMS, '.').get(Award.web),
             'BBB')
         yaml_load.assert_called_with('.')
+
+def test_no_overrides_file():
+    with mock.patch('sr.comp.yaml_loader.load') as yaml_load:
+        yaml_load.side_effect = FileNotFoundError()
+        eq_(compute_awards(MockScores(), KNOCKOUT_ROUNDS, TEAMS, '.').get(Award.third),
+            'AAA')
