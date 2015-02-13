@@ -33,7 +33,9 @@ def _compute_main_awards(scores, knockout_rounds, teams):
     except KeyError:
         # We haven't scored the finals yet
         return {}
-    positions = calc_positions(last_match_points, [tla for tla, rp in last_match_ranked_points.items() if rp == 0])
+    positions = calc_positions(last_match_points, [tla
+                                                    for tla, rp in last_match_ranked_points.items()
+                                                    if rp == 0])
     awards = {}
     for award, key in ((Award.first, 1),
                        (Award.second, 2),
@@ -43,6 +45,14 @@ def _compute_main_awards(scores, knockout_rounds, teams):
             winner, = candidates
             awards[award] = winner
     return awards
+
+
+def _compute_rookie_award(scores, teams):
+    """Compute the winner of the rookie award."""
+    for tla in scores.league.positions:
+        if teams[tla].rookie:
+            return {Award.rookie: tla}
+    return {}
 
 
 def compute_awards(scores, knockout_rounds, teams):
@@ -56,4 +66,5 @@ def compute_awards(scores, knockout_rounds, teams):
     key for any award type that has not yet been determined."""
     awards = {}
     awards.update(_compute_main_awards(scores, knockout_rounds, teams))
+    awards.update(_compute_rookie_award(scores, teams))
     return awards

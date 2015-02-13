@@ -1,11 +1,12 @@
 from datetime import datetime
 from dateutil.tz import tzutc
+from collections import OrderedDict
 
 from sr.comp.winners import Award, compute_awards
 from sr.comp.match_period import Match, MatchType
 from sr.comp.teams import Team
 from sr.comp.scores import TeamScore
-from sr.comp.ranker import get_ranked_points
+from sr.comp.ranker import calc_positions, calc_ranked_points
 
 from nose.tools import eq_
 
@@ -17,13 +18,14 @@ KNOCKOUT_ROUNDS = [[Match(num=1, arena='A',
                           type=MatchType.knockout)]]
 
 TEAMS = {'AAA': Team(tla='AAA', name='AAA Squad', rookie=True),
-         'BBB': Team(tla='BBB', name='BBBees', rookie=True),
-         'CCC': Team(tla='CCC', name='Team CCC', rookie=False),
+         'BBB': Team(tla='BBB', name='BBBees', rookie=False),
+         'CCC': Team(tla='CCC', name='Team CCC', rookie=True),
          'DDD': Team(tla='DDD', name='DDD Robotics', rookie=False)}
 
 class MockScoreSet(object):
     def __init__(self, arena, game, scores, dsq=()):
-        league_points = get_ranked_points(scores, dsq)
+        positions = calc_positions(scores, dsq)
+        league_points = calc_ranked_points(positions, dsq)
         team_key = {}
         gp_key = {}
         rp_key = {}
@@ -35,10 +37,14 @@ class MockScoreSet(object):
         self.teams = team_key
         self.game_points = {(arena, game): gp_key}
         self.ranked_points = {(arena, game): rp_key}
+        self.positions = OrderedDict()
+        for position, teams in positions.items():
+            for team in teams:
+                self.positions[team] = position
 
 
 class MockScores(object):
-    def __init__(self, league={'AAA': 1, 'BBB': 1, 'CCC': 0, 'DDD': 0},
+    def __init__(self, league={'AAA': 1, 'BBB': 2, 'CCC': 0, 'DDD': 0},
                        league_dsq=(),
                        knockout={'AAA': 0, 'BBB': 3, 'CCC': 0, 'DDD': 2},
                        knockout_dsq=('CCC',)):
@@ -66,5 +72,9 @@ def test_tied():
 def test_tied_partial():
     eq_(compute_awards(MockScores(knockout={'AAA': 2, 'BBB': 1, 'CCC': 1, 'DDD': 1},
                                   knockout_dsq=()), KNOCKOUT_ROUNDS, TEAMS).get(Award.first),
+        'AAA')
+
+def test_rookie():
+    eq_(compute_awards(MockScores(), KNOCKOUT_ROUNDS, TEAMS).get(Award.rookie),
         'AAA')
 
