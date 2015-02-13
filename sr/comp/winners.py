@@ -39,9 +39,8 @@ def _compute_main_awards(scores, knockout_rounds, teams):
     except KeyError:
         # We haven't scored the finals yet
         return {}
-    positions = calc_positions(last_match_points, [tla
-                                                    for tla, rp in last_match_ranked_points.items()
-                                                    if rp == 0])
+    dsq_list = [tla for tla, rp in last_match_ranked_points.items() if rp == 0]
+    positions = calc_positions(last_match_points, dsq_list)
     awards = {}
     for award, key in ((Award.first, 1),
                        (Award.second, 2),
