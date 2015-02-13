@@ -9,6 +9,7 @@ from sr.comp.scores import TeamScore
 from sr.comp.ranker import calc_positions, calc_ranked_points
 
 from nose.tools import eq_
+import mock
 
 
 KNOCKOUT_ROUNDS = [[Match(num=1, arena='A',
@@ -78,3 +79,16 @@ def test_rookie():
     eq_(compute_awards(MockScores(), KNOCKOUT_ROUNDS, TEAMS).get(Award.rookie),
         'AAA')
 
+def test_override():
+    with mock.patch('sr.comp.yaml_loader.load') as yaml_load:
+        yaml_load.return_value = {'third': 'DDD'}
+        eq_(compute_awards(MockScores(), KNOCKOUT_ROUNDS, TEAMS, '.').get(Award.third),
+            'DDD')
+        yaml_load.assert_called_with('.')
+
+def test_manual():
+    with mock.patch('sr.comp.yaml_loader.load') as yaml_load:
+        yaml_load.return_value = {'web': 'BBB'}
+        eq_(compute_awards(MockScores(), KNOCKOUT_ROUNDS, TEAMS, '.').get(Award.web),
+            'BBB')
+        yaml_load.assert_called_with('.')

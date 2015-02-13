@@ -11,16 +11,21 @@ from collections import namedtuple
 from enum import Enum, unique
 
 from sr.comp.ranker import calc_positions
+from . import yaml_loader
 
 @unique
 class Award(Enum):
     """Award types.
 
     These correspond with awards as specified in the rulebook."""
-    first = 1
-    second = 2
-    third = 3
-    rookie = 4
+    first     = "first"        # First place
+    second    = "second"       # Second place
+    third     = "third"        # Third place
+    rookie    = "rookie"       # Rookie award
+    committee = "committee"    # Committee award
+    image     = "image"        # Robot and Team Image award
+    movement  = "movement"     # First Movement award
+    web       = "web"          # Online Presence award
 
 
 def _compute_main_awards(scores, knockout_rounds, teams):
@@ -55,7 +60,12 @@ def _compute_rookie_award(scores, teams):
     return {}
 
 
-def compute_awards(scores, knockout_rounds, teams):
+def _compute_explicit_awards(path):
+    """Compute awards explicitly provided in the compstate repo."""
+    explicit_awards = yaml_loader.load(path)
+    return {Award(key): value for key, value in explicit_awards.items()}
+
+def compute_awards(scores, knockout_rounds, teams, path=None):
     """Compute the awards handed out from configuration.
 
     ``scores`` is a ``Scores`` object. ``knockout_rounds`` is a list of
@@ -67,4 +77,6 @@ def compute_awards(scores, knockout_rounds, teams):
     awards = {}
     awards.update(_compute_main_awards(scores, knockout_rounds, teams))
     awards.update(_compute_rookie_award(scores, teams))
+    if path is not None:
+        awards.update(_compute_explicit_awards(path))
     return awards
