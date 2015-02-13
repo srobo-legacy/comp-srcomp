@@ -58,3 +58,13 @@ def test_third():
     eq_(compute_awards(MockScores(), KNOCKOUT_ROUNDS, TEAMS).get(Award.third),
         'AAA')
 
+def test_tied():
+    eq_(compute_awards(MockScores(knockout={'AAA': 1, 'BBB': 1, 'CCC': 1, 'DDD': 1},
+                                  knockout_dsq=()), KNOCKOUT_ROUNDS, TEAMS).get(Award.first),
+        None)
+
+def test_tied_partial():
+    eq_(compute_awards(MockScores(knockout={'AAA': 2, 'BBB': 1, 'CCC': 1, 'DDD': 1},
+                                  knockout_dsq=()), KNOCKOUT_ROUNDS, TEAMS).get(Award.first),
+        'AAA')
+

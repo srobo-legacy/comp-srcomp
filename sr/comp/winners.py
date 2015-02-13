@@ -10,6 +10,8 @@ The awards calculated are:
 from collections import namedtuple
 from enum import Enum, unique
 
+from sr.comp.ranker import calc_positions
+
 @unique
 class Award(Enum):
     """Award types.
@@ -26,16 +28,21 @@ def _compute_main_awards(scores, knockout_rounds, teams):
     last_match_info = knockout_rounds[-1][0]
     last_match_key = (last_match_info.arena, last_match_info.num)
     try:
-        last_match_points = scores.knockout.ranked_points[last_match_key]
+        last_match_points = scores.knockout.game_points[last_match_key]
+        last_match_ranked_points = scores.knockout.ranked_points[last_match_key]
     except KeyError:
         # We haven't scored the finals yet
         return {}
-    teams = last_match_info.teams[:]
-    teams.sort(key=lambda k: last_match_points[k],
-               reverse=True)
-    return {Award.first:  teams[0],
-            Award.second: teams[1],
-            Award.third:  teams[2]}
+    positions = calc_positions(last_match_points, [tla for tla, rp in last_match_ranked_points.items() if rp == 0])
+    awards = {}
+    for award, key in ((Award.first, 1),
+                       (Award.second, 2),
+                       (Award.third, 3)):
+        candidates = positions.get(key, ())
+        if len(candidates) == 1:
+            winner, = candidates
+            awards[award] = winner
+    return awards
 
 
 def compute_awards(scores, knockout_rounds, teams):
