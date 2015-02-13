@@ -10,6 +10,7 @@ from . import arenas
 from . import matches
 from . import scores
 from . import teams
+from .winners import compute_awards
 
 
 def load_scorer(root):
@@ -42,3 +43,7 @@ class SRComp(object):
                                                      self.scores, self.arenas)
         self.timezone = self.schedule.timezone
         self.corners = arenas.load_corners(os.path.join(root, "arenas.yaml"))
+        self.awards = compute_awards(self.scores,
+                                     self.schedule.knockout_rounds,
+                                     self.teams,
+                                     os.path.join(root, "awards.yaml"))
