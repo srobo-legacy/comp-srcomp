@@ -55,8 +55,12 @@ def _compute_rookie_award(scores, teams):
     rookie_positions = {team: position
                          for team, position in scores.league.positions.items()
                          if teams[team].rookie}
+    # It's possible there are no rookie teams, in which case nobody gets
+    # the award.
+    if not rookie_positions:
+        return {Award.rookie: []}
     # Position go from 1 upwards (1 being first), so the best is the minimum
-    best_position = min(rookie_positions.values(), default=None)
+    best_position = min(rookie_positions.values())
     return {Award.rookie: list(sorted(team for team, position in rookie_positions.items()
                                        if position == best_position))}
 
