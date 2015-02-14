@@ -25,6 +25,7 @@ def test_load():
     assert instance.scores
     assert instance.arenas
     assert instance.corners
+    assert isinstance(instance.awards, dict)
 
 def test_timezone():
     # Test that one can get the timezone from the dummy state

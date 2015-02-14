@@ -4,7 +4,7 @@ from collections import namedtuple
 from . import yaml_loader
 
 Team = namedtuple("Team",
-                  ["tla", "name"])
+                  ["tla", "name", "rookie"])
 
 
 def load_teams(fname):
@@ -15,6 +15,8 @@ def load_teams(fname):
     teams = {}
     for tla, info in y["teams"].items():
         tla = tla.upper()
-        teams[tla] = Team(tla, info["name"])
+        teams[tla] = Team(tla=tla,
+                          name=info["name"],
+                          rookie=info.get("rookie", False))
 
     return teams
