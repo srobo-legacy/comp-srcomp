@@ -79,6 +79,12 @@ def test_rookie():
     eq_(compute_awards(MockScores(), KNOCKOUT_ROUNDS, TEAMS).get(Award.rookie),
         ['AAA'])
 
+def test_tied_rookie():
+    eq_(compute_awards(MockScores(league={'AAA': 0, 'BBB': 0, 'CCC': 0, 'DDD': 0}),
+                       KNOCKOUT_ROUNDS,
+                       TEAMS).get(Award.rookie),
+        ['AAA', 'CCC'])
+
 def test_override():
     with mock.patch('sr.comp.yaml_loader.load') as yaml_load:
         yaml_load.return_value = {'third': 'DDD'}
