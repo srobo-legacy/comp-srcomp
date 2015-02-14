@@ -46,9 +46,7 @@ def _compute_main_awards(scores, knockout_rounds, teams):
                        (Award.second, 2),
                        (Award.third, 3)):
         candidates = positions.get(key, ())
-        if len(candidates) == 1:
-            winner, = candidates
-            awards[award] = winner
+        awards[award] = list(sorted(candidates))
     return awards
 
 
@@ -56,7 +54,7 @@ def _compute_rookie_award(scores, teams):
     """Compute the winner of the rookie award."""
     for tla in scores.league.positions:
         if teams[tla].rookie:
-            return {Award.rookie: tla}
+            return {Award.rookie: [tla]}
     return {}
 
 
@@ -65,7 +63,8 @@ def _compute_explicit_awards(path):
     if not os.path.exists(path):
         return {}
     explicit_awards = yaml_loader.load(path)
-    return {Award(key): value for key, value in explicit_awards.items()}
+    return {Award(key): [value] if isinstance(value, str) else value
+              for key, value in explicit_awards.items()}
 
 
 def compute_awards(scores, knockout_rounds, teams, path=None):

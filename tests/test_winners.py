@@ -55,46 +55,60 @@ class MockScores(object):
 
 def test_first():
     eq_(compute_awards(MockScores(), KNOCKOUT_ROUNDS, TEAMS).get(Award.first),
-        'BBB')
+        ['BBB'])
 
 def test_second():
     eq_(compute_awards(MockScores(), KNOCKOUT_ROUNDS, TEAMS).get(Award.second),
-        'DDD')
+        ['DDD'])
 
 def test_third():
     eq_(compute_awards(MockScores(), KNOCKOUT_ROUNDS, TEAMS).get(Award.third),
-        'AAA')
+        ['AAA'])
 
 def test_tied():
     eq_(compute_awards(MockScores(knockout={'AAA': 1, 'BBB': 1, 'CCC': 1, 'DDD': 1},
                                   knockout_dsq=()), KNOCKOUT_ROUNDS, TEAMS).get(Award.first),
-        None)
+        ['AAA', 'BBB', 'CCC', 'DDD'])
 
 def test_tied_partial():
     eq_(compute_awards(MockScores(knockout={'AAA': 2, 'BBB': 1, 'CCC': 1, 'DDD': 1},
                                   knockout_dsq=()), KNOCKOUT_ROUNDS, TEAMS).get(Award.first),
-        'AAA')
+        ['AAA'])
 
 def test_rookie():
     eq_(compute_awards(MockScores(), KNOCKOUT_ROUNDS, TEAMS).get(Award.rookie),
-        'AAA')
+        ['AAA'])
 
 def test_override():
     with mock.patch('sr.comp.yaml_loader.load') as yaml_load:
         yaml_load.return_value = {'third': 'DDD'}
         eq_(compute_awards(MockScores(), KNOCKOUT_ROUNDS, TEAMS, '.').get(Award.third),
-            'DDD')
+            ['DDD'])
         yaml_load.assert_called_with('.')
 
 def test_manual():
     with mock.patch('sr.comp.yaml_loader.load') as yaml_load:
         yaml_load.return_value = {'web': 'BBB'}
         eq_(compute_awards(MockScores(), KNOCKOUT_ROUNDS, TEAMS, '.').get(Award.web),
-            'BBB')
+            ['BBB'])
+        yaml_load.assert_called_with('.')
+
+def test_manual_no_award():
+    with mock.patch('sr.comp.yaml_loader.load') as yaml_load:
+        yaml_load.return_value = {'web': []}
+        eq_(compute_awards(MockScores(), KNOCKOUT_ROUNDS, TEAMS, '.').get(Award.web),
+            [])
+        yaml_load.assert_called_with('.')
+
+def test_manual_tie():
+    with mock.patch('sr.comp.yaml_loader.load') as yaml_load:
+        yaml_load.return_value = {'web': ['BBB', 'CCC']}
+        eq_(compute_awards(MockScores(), KNOCKOUT_ROUNDS, TEAMS, '.').get(Award.web),
+            ['BBB', 'CCC'])
         yaml_load.assert_called_with('.')
 
 def test_no_overrides_file():
     with mock.patch('os.path.exists') as test_file:
         test_file.return_value = False
         eq_(compute_awards(MockScores(), KNOCKOUT_ROUNDS, TEAMS, '.').get(Award.third),
-            'AAA')
+            ['AAA'])
