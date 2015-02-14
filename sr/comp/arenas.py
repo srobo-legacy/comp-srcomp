@@ -3,7 +3,7 @@ from collections import namedtuple, OrderedDict
 from . import yaml_loader
 
 
-Arena = namedtuple('Arena', ['name', 'display_name'])
+Arena = namedtuple('Arena', ['name', 'display_name', 'colour'])
 Corner = namedtuple("Corner", ["number", "colour"])
 
 
@@ -16,7 +16,9 @@ def load_arenas(fname):
 
     arenas = OrderedDict()
     for name in sorted(arenas_data.keys()):
-        arenas[name] = Arena(name, arenas_data[name]['display_name'])
+        d = arenas_data[name]
+        arenas[name] = Arena(name, d['display_name'],
+                             d.get('colour', '#FFFFFF'))
 
     return arenas
 
