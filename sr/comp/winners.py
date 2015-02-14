@@ -52,17 +52,13 @@ def _compute_main_awards(scores, knockout_rounds, teams):
 
 def _compute_rookie_award(scores, teams):
     """Compute the winner of the rookie award."""
-    best_rookie_points = max((scores.league.teams[team].league_points
-                               for team, team_settings in teams.items()
-                                 if team_settings.rookie), default=None)
-    candidates = []
-    for team, team_settings in teams.items():
-        if not team_settings.rookie:
-            continue
-        if scores.league.teams[team].league_points == best_rookie_points:
-            candidates.append(team)
-    candidates.sort()
-    return {Award.rookie: candidates}
+    rookie_positions = {team: position
+                         for team, position in scores.league.positions.items()
+                         if teams[team].rookie}
+    # Position go from 1 upwards (1 being first), so the best is the minimum
+    best_position = min(rookie_positions.values(), default=None)
+    return {Award.rookie: list(sorted(team for team, position in rookie_positions.items()
+                                       if position == best_position))}
 
 
 def _compute_explicit_awards(path):
