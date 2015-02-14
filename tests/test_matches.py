@@ -99,7 +99,7 @@ def test_matches_at_no_delays():
         assert expected == actual
 
     def match_list(num):
-        return matches.matches[num].values()
+        return list(matches.matches[num].values())
 
     yield check, [],            datetime(2014, 3, 26,  12, 59, 59)
 
@@ -122,7 +122,7 @@ def test_matches_at_with_delays():
         assert expected == actual
 
     def match_list(num):
-        return matches.matches[num].values()
+        return list(matches.matches[num].values())
 
     yield check, match_list(0), datetime(2014, 3, 26,  13)
     yield check, match_list(0), datetime(2014, 3, 26,  13,  4, 59)
