@@ -87,9 +87,55 @@ def test_basic_data():
     assert a_end == datetime(2014, 3, 26,  13, 5)
     assert a_end == b_end
 
-def test_matches_at():
+def test_matches_at_no_delays():
+    the_data = get_basic_data()
+
+    the_data['delays'] = []
+
+    matches = load_data(the_data)
+
+    def check(expected, when):
+        actual = list(matches.matches_at(when))
+        assert expected == actual
+
+    def match_list(num):
+        return matches.matches[num].values()
+
+    yield check, [],            datetime(2014, 3, 26,  12, 59, 59)
+
+    yield check, match_list(0), datetime(2014, 3, 26,  13)
+    yield check, match_list(0), datetime(2014, 3, 26,  13,  4, 59)
+
+    yield check, match_list(1), datetime(2014, 3, 26,  13,  5)
+    yield check, match_list(1), datetime(2014, 3, 26,  13,  9, 59)
+
+    yield check, match_list(2), datetime(2014, 3, 26,  13, 10)
+    yield check, match_list(2), datetime(2014, 3, 26,  13, 14, 59)
+
+    yield check, [],            datetime(2014, 3, 26,  13, 15)
+
+def test_matches_at_with_delays():
     matches = load_basic_data()
-    assert len(list(matches.matches_at(datetime(2014, 3, 26, 13, 1)))) == 2
+
+    def check(expected, when):
+        actual = list(matches.matches_at(when))
+        assert expected == actual
+
+    def match_list(num):
+        return matches.matches[num].values()
+
+    yield check, match_list(0), datetime(2014, 3, 26,  13)
+    yield check, match_list(0), datetime(2014, 3, 26,  13,  4, 59)
+
+    yield check, [],            datetime(2014, 3, 26,  13,  5, 14)
+
+    yield check, match_list(1), datetime(2014, 3, 26,  13,  5, 15)
+    yield check, match_list(1), datetime(2014, 3, 26,  13, 10, 14)
+
+    yield check, match_list(2), datetime(2014, 3, 26,  13, 10, 15)
+    yield check, match_list(2), datetime(2014, 3, 26,  13, 15, 14)
+
+    yield check, [],            datetime(2014, 3, 26,  13, 15, 15)
 
 def test_no_matches():
     the_data = get_basic_data()

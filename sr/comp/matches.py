@@ -151,7 +151,7 @@ class MatchSchedule(object):
         """Get all the matches that occur around a specific ``date``."""
         for slot in self.matches:
             for match in slot.values():
-                if match.start_time <= date <= match.end_time:
+                if match.start_time <= date < match.end_time:
                     yield match
 
     def n_matches(self):
