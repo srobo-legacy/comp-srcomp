@@ -21,7 +21,7 @@ def assert_times(expected, matches, message):
 
 def get_basic_data():
     the_data = {
-        "match_period_lengths": {
+        "match_slot_lengths": {
             "pre": 90,
             "match": 180,
             "post": 30,

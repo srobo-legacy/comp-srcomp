@@ -62,7 +62,7 @@ class KnockoutScheduler(object):
                 self.R.shuffle(teams)
 
                 start_time = self.next_time + self.delay
-                end_time = start_time + self.schedule.match_period
+                end_time = start_time + self.schedule.match_duration
                 num = len(self.schedule.matches)
 
                 match = Match(num, arena, teams, start_time, end_time, MatchType.knockout)
@@ -72,7 +72,7 @@ class KnockoutScheduler(object):
                 if len(matches) == 0:
                     break
 
-            self.next_time += self.schedule.match_period
+            self.next_time += self.schedule.match_duration
             self.schedule.matches.append(new_matches)
             self.period.matches.append(new_matches)
 

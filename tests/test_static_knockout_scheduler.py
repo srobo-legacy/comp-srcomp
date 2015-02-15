@@ -51,7 +51,7 @@ def get_scheduler(matches = None, positions = None, \
                     delays = None):
     matches = matches or []
     delays = delays or []
-    match_period = timedelta(minutes = 5)
+    match_duration = timedelta(minutes = 5)
     league_game_points = league_game_points or {}
     knockout_points = knockout_points or {}
     if not positions:
@@ -68,7 +68,7 @@ def get_scheduler(matches = None, positions = None, \
         positions['JJJ'] = 10
 
     league_schedule = mock.Mock(matches = matches, delays = delays, \
-                                match_period = match_period)
+                                match_duration = match_duration)
     league_scores = mock.Mock(positions = positions, game_points = league_game_points)
     knockout_scores = mock.Mock(ranked_points = knockout_points)
     scores = mock.Mock(league = league_scores, knockout = knockout_scores)

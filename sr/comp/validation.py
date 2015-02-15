@@ -39,7 +39,7 @@ def validate_schedule(schedule, possible_teams):
     warnings = validate_schedule_count(schedule)
     report_errors('Schedule', '', warnings)
 
-    errors = validate_schedule_timings(schedule.matches, schedule.match_period)
+    errors = validate_schedule_timings(schedule.matches, schedule.match_duration)
     count += len(errors)
     if len(errors):
         errors.append("This usually indicates that the scheduled periods "
@@ -63,7 +63,7 @@ def validate_schedule_count(schedule):
     return errors
 
 
-def validate_schedule_timings(scheduled_matches, match_period):
+def validate_schedule_timings(scheduled_matches, match_duration):
     timing_map = defaultdict(list)
     for match in scheduled_matches:
         game = list(match.values())[0]
@@ -78,7 +78,7 @@ def validate_schedule_timings(scheduled_matches, match_period):
             errors.append("Multiple matches scheduled for {0}:"
                           " {1}.".format(time, ids))
 
-        if last_time is not None and time - last_time < match_period:
+        if last_time is not None and time - last_time < match_duration:
             prev_ids = ", ".join(str(num) for num in timing_map[last_time])
             ids = ", ".join(str(num) for num in match_numbers)
             errors.append("Matches {0} start at {1} "

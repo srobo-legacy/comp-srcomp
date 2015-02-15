@@ -279,21 +279,21 @@ def test_validate_schedule_timings_ok():
 
     matches = [{'A': Match2(1, datetime(2014, 4, 1, 12, 0, 0))},
                {'A': Match2(2, datetime(2014, 4, 1, 13, 0, 0))}]
-    match_period = timedelta(minutes = 5)
+    match_duration = timedelta(minutes = 5)
 
-    errors = validate_schedule_timings(matches, match_period)
+    errors = validate_schedule_timings(matches, match_duration)
     assert len(errors) == 0
 
 def test_validate_schedule_timings_same_time():
 
     time = datetime(2014, 4, 3, 12, 0, 0)
     time = datetime(2014, 4, 3, 12, 0, 0)
-    match_period = timedelta(minutes = 5)
+    match_duration = timedelta(minutes = 5)
     # choose match ids not in the date
     matches = [{'A': Match2(8, time)},
                {'A': Match2(9, time)}]
 
-    errors = validate_schedule_timings(matches, match_period)
+    errors = validate_schedule_timings(matches, match_duration)
 
     assert len(errors) == 1
     error = errors[0]
@@ -306,12 +306,12 @@ def test_validate_schedule_timings_overlap():
 
     time_8 = datetime(2014, 4, 3, 12, 0, 0)
     time_9 = datetime(2014, 4, 3, 12, 0, 1)
-    match_period = timedelta(minutes = 5)
+    match_duration = timedelta(minutes = 5)
     # choose match ids not in the date
     matches = [{'A': Match2(8, time_8)},
                {'A': Match2(9, time_9)}]
 
-    errors = validate_schedule_timings(matches, match_period)
+    errors = validate_schedule_timings(matches, match_duration)
 
     assert len(errors) == 1
     error = errors[0]
@@ -324,13 +324,13 @@ def test_validate_schedule_timings_overlap_2():
     time_7 = datetime(2014, 4, 3, 12, 0, 0)
     time_8 = datetime(2014, 4, 3, 12, 0, 3)
     time_9 = datetime(2014, 4, 3, 12, 0, 6)
-    match_period = timedelta(minutes = 5)
+    match_duration = timedelta(minutes = 5)
     # choose match ids not in the date
     matches = [{'A': Match2(7, time_7)},
                {'A': Match2(8, time_8)},
                {'A': Match2(9, time_9)}]
 
-    errors = validate_schedule_timings(matches, match_period)
+    errors = validate_schedule_timings(matches, match_duration)
 
     assert len(errors) == 2
     error = errors[0]

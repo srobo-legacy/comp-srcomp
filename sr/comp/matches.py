@@ -41,7 +41,7 @@ class MatchSchedule(object):
                                     e["description"], [])
             self.match_periods.append(period)
 
-        self._configure_match_periods(y)
+        self._configure_match_slot_lengths(y)
 
         self._build_delaylist(y["delays"])
         self._build_matchlist(y["matches"])
@@ -50,17 +50,17 @@ class MatchSchedule(object):
 
         self.n_league_matches = self.n_matches()
 
-    def _configure_match_periods(self, yamldata):
-        raw_data = yamldata['match_period_lengths']
-        periods = {key: datetime.timedelta(0, value) for key, value in raw_data.items()}
-        pre = periods['pre']
-        post = periods['post']
-        match = periods['match']
-        total = periods['total']
+    def _configure_match_slot_lengths(self, yamldata):
+        raw_data = yamldata['match_slot_lengths']
+        durations = {key: datetime.timedelta(0, value) for key, value in raw_data.items()}
+        pre = durations['pre']
+        post = durations['post']
+        match = durations['match']
+        total = durations['total']
         if total != pre + post + match:
-            raise ValueError('Match period lengths are inconsistent.')
-        self.match_period_lengths = periods
-        self.match_period = total
+            raise ValueError('Match slot lengths are inconsistent.')
+        self.match_slot_lengths = durations
+        self.match_duration = total
 
     def _build_delaylist(self, yamldata):
         delays = []
@@ -124,7 +124,7 @@ class MatchSchedule(object):
 
                 m = {}
 
-                end_time = start + self.match_period
+                end_time = start + self.match_duration
                 for arena_name, teams in arenas.items():
                     match = Match(match_n, arena_name, teams, start, end_time, MatchType.league)
                     m[arena_name] = match
@@ -132,7 +132,7 @@ class MatchSchedule(object):
                 period.matches.append(m)
                 self.matches.append(m)
 
-                start += self.match_period
+                start += self.match_duration
                 match_n += 1
 
                 # Ensure we haven't exceeded the maximum time limit

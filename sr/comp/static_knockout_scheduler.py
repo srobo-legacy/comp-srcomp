@@ -41,7 +41,7 @@ class StaticScheduler(KnockoutScheduler):
 
         arena = match_info['arena']
         start_time = match_info['start_time']
-        end_time = start_time + self.schedule.match_period
+        end_time = start_time + self.schedule.match_duration
         num = len(self.schedule.matches)
 
         teams = []
