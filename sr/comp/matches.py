@@ -16,10 +16,13 @@ Delay = namedtuple("Delay",
 
 class MatchSchedule(object):
     @classmethod
-    def create(cls, config_fname, scores, arenas, knockout_scheduler = KnockoutScheduler):
+    def create(cls, config_fname, league_fname, scores, arenas,
+                    knockout_scheduler = KnockoutScheduler):
         y = yaml_loader.load(config_fname)
 
-        schedule = cls(y)
+        league = yaml_loader.load(league_fname)['matches']
+
+        schedule = cls(y, league)
 
         k = knockout_scheduler(schedule, scores, arenas, y)
         k.add_knockouts()
@@ -29,7 +32,7 @@ class MatchSchedule(object):
 
         return schedule
 
-    def __init__(self, y):
+    def __init__(self, y, league):
         self.match_periods = []
         for e in y["match_periods"]["league"]:
             if "max_end_time" in e:
@@ -44,7 +47,7 @@ class MatchSchedule(object):
         self._configure_match_slot_lengths(y)
 
         self._build_delaylist(y["delays"])
-        self._build_matchlist(y["matches"])
+        self._build_matchlist(league)
 
         self.timezone = gettz(y.get('timezone', 'UTC'))
 

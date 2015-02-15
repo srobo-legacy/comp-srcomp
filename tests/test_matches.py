@@ -57,7 +57,7 @@ def get_basic_data():
     return the_data
 
 def load_data(the_data):
-    matches = MatchSchedule(the_data)
+    matches = MatchSchedule(the_data, the_data['matches'])
     return matches
 
 def load_basic_data():
