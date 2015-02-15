@@ -188,6 +188,9 @@ def warn_missing_scores(scores, schedule):
     match_ids = scores.ranked_points.keys()
     last_match = scores.last_scored_match
 
+    if last_match is None:
+        return
+
     missing = find_missing_scores(match_ids, last_match, schedule)
     if len(missing) == 0:
         return
