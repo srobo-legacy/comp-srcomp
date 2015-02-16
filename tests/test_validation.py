@@ -274,6 +274,18 @@ def test_find_missing_scores_ignore_future_matches():
 
     assert missing == []
 
+def test_find_missing_scores_ignore_no_matches():
+    schedule = [
+        {'A': None},
+        {'A': None},
+        {'A': None},
+        {'A': None},
+        {'A': None}
+    ]
+
+    missing = find_missing_scores([], None, schedule)
+
+    assert not len(missing), "Cannot be any missing scores when none entered"
 
 def test_validate_schedule_timings_ok():
 
