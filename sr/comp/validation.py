@@ -200,6 +200,10 @@ def warn_missing_scores(scores, schedule):
 
 
 def find_missing_scores(match_ids, last_match, schedule):
+    # If no matches have been scored, no scores can be missing.
+    if last_match is None:
+        return ()
+
     expected = set()
     for num, match in enumerate(schedule):
         if num > last_match:
