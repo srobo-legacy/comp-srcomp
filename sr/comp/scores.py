@@ -173,3 +173,9 @@ class Scores(object):
                                    teams, scorer)
         self.knockout = KnockoutScores(os.path.join(root, "knockout"),
                                        teams, scorer)
+
+        lsm = self.knockout.last_scored_match
+        if lsm is None:
+            lsm = self.league.last_scored_match
+
+        self.last_scored_match = lsm
