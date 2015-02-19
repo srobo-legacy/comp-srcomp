@@ -21,13 +21,14 @@ def report_errors(type_, id_, errors):
 
 def validate(comp):
     count = 0
-    count += validate_schedule(comp.schedule, comp.teams.keys())
+    count += validate_schedule(comp.schedule, comp.teams.keys(),
+                               comp.arenas.keys())
     count += validate_scores(comp.scores.league, comp.schedule.matches)
     warn_missing_scores(comp.scores.league, comp.schedule.matches)
     return count
 
 
-def validate_schedule(schedule, possible_teams):
+def validate_schedule(schedule, possible_teams, possible_arenas):
     """Check that the schedule contains enough time for all the matches,
     and that the matches themselves are valid."""
     count = 0
@@ -45,6 +46,10 @@ def validate_schedule(schedule, possible_teams):
         errors.append("This usually indicates that the scheduled periods "
                       "overlap.")
     report_errors('Schedule', 'timing', errors)
+
+    errors = validate_schedule_arenas(schedule.matches, possible_arenas)
+    count += len(errors)
+    report_errors('Schedule', 'arenas', errors)
 
     return count
 
@@ -87,6 +92,21 @@ def validate_schedule_timings(scheduled_matches, match_duration):
                                                                      prev_ids))
 
         last_time = time
+
+    return errors
+
+
+def validate_schedule_arenas(matches, possible_arenas):
+    """Check that any arena referenced by a match actually exists."""
+    errors = []
+    error_format_string = \
+        "Match {game.num} ({game.type}) references arena '{arena}'."
+
+    for match in matches:
+        for arena, game in match.items():
+            if arena not in possible_arenas:
+                errors.append(error_format_string.format(arena=arena,
+                                                         game=game))
 
     return errors
 

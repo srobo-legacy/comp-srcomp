@@ -8,13 +8,16 @@ import subprocess
 import helpers as test_helpers
 
 from sr.comp import matches
-from sr.comp.validation import validate_match, validate_schedule_timings, \
-                        validate_match_score, find_missing_scores
+from sr.comp.validation import validate_match, validate_schedule_arenas, \
+    validate_schedule_timings, validate_match_score, find_missing_scores
 
 from sr.comp.knockout_scheduler import UNKNOWABLE_TEAM
 
+
 Match = namedtuple("Match", ["teams"])
 Match2 = namedtuple("Match2", ["num", "start_time"])
+Match3 = namedtuple('Match3', ['num', 'type'])
+
 
 def test_dummy_is_valid():
     test_dir = os.path.dirname(os.path.abspath(__file__))
@@ -354,3 +357,25 @@ def test_validate_schedule_timings_overlap_2():
     assert "Matches 9 start" in error
     assert "before matches 8 have finished" in error
     assert str(time_9) in error
+
+
+def test_validate_schedule_arenas():
+    matches = [{'B': Match3(1, 'league')},
+               {'C': Match3(2, 'knockout')},
+               {'D': Match3(3, 'custom')}]
+    arenas = ['A']
+
+    errors = validate_schedule_arenas(matches, arenas)
+    assert len(errors) == 3
+
+    error = errors[0]
+    assert '1 (league)' in error
+    assert "arena 'B'" in error
+
+    error = errors[1]
+    assert '2 (knockout)' in error
+    assert "arena 'C'" in error
+
+    error = errors[2]
+    assert '3 (custom)' in error
+    assert "arena 'D'" in error
