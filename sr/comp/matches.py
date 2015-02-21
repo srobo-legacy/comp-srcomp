@@ -8,7 +8,8 @@ from dateutil.tz import gettz
 from . import yaml_loader
 from .match_period import MatchPeriod, Match, MatchType
 from .knockout_scheduler import KnockoutScheduler
-
+from sr.comp.ranker import calc_positions
+from .stable_random import Random as StableRandom
 
 Delay = namedtuple("Delay",
                    ["delay", "time"])
@@ -29,6 +30,9 @@ class MatchSchedule(object):
 
         schedule.knockout_rounds = k.knockout_rounds
         schedule.match_periods.append(k.period)
+
+        if 'tiebreaker' in y:
+            schedule.add_tie_breaker(scores, y['tiebreaker'])
 
         return schedule
 
@@ -159,3 +163,34 @@ class MatchSchedule(object):
 
     def n_matches(self):
         return len(self.matches)
+
+    def add_tie_breaker(self, scores, time):
+        finals_info = self.knockout_rounds[-1][0]
+        finals_key = (finals_info.arena, finals_info.num)
+        try:
+            finals_points = scores.knockout.game_points[finals_key]
+            finals_ranked = scores.knockout.ranked_points[finals_key]
+        except KeyError:
+            return
+        finals_dsq = [tla for tla, rp in finals_ranked.items() if rp == 0]
+        positions = calc_positions(finals_points, finals_dsq)
+        winners = positions.get(1)
+        if not winners:
+            raise AssertionError('The only winning move is not to play.')
+        if len(winners) > 1:  # Act surprised!
+            tie_breaker_teams = list(sorted(winners))
+            while len(tie_breaker_teams) < 4:
+                tie_breaker_teams.append(None)
+            # Stably shuffle the team order
+            rng = StableRandom()
+            seed = ''.join(finals_info.teams).encode('utf-8')
+            rng.seed(seed)
+            rng.shuffle(tie_breaker_teams)
+            arena = finals_info.arena
+            match = Match(num=self.n_matches(),
+                          arena=arena,
+                          teams=tie_breaker_teams,
+                          type=MatchType.tie_breaker,
+                          start_time=time,
+                          end_time=time+self.match_duration)
+            self.matches.append({arena: match})
