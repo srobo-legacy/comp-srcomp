@@ -133,9 +133,19 @@ class BaseScores(object):
 class LeagueScores(BaseScores):
     @staticmethod
     def rank_league(team_scores):
+        """Given a mapping of TLA to TeamScore, returns a mapping of TLA
+           to league position which both allows for ties and enables their
+           resolution deterministically."""
+
         # Reverse sort the (tla, score) pairs so the biggest scores are at the
         # top. We break perfect ties by TLA, which is not fair but is
         # deterministic.
+        # Note that the unfair result is only present within the key ordering
+        # of the resulting OrderedDict -- the values it contains will admit
+        # to tied values.
+        # Both of these are used within the system -- the knockouts need
+        # a list of teams to seed with, various awards (and humans) want
+        # a result which allows for ties.
         ranking = sorted(team_scores.items(),
                          key=lambda x: (x[1], x[0]),
                          reverse=True)
