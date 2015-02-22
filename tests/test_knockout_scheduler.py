@@ -7,6 +7,7 @@ import mock
 import helpers as test_helpers
 
 from sr.comp.scores import TeamScore
+from sr.comp.matches import Delay
 from sr.comp.match_period import Match, MatchType
 from sr.comp.knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
 
@@ -35,8 +36,8 @@ def get_scheduler(matches = None, positions = None, \
         "end_time":     datetime(2014, 3, 27,  17, 30),
     }
     knockout_config = {
-        'round_spacing': 300,
-        'final_delay': 300,
+        'round_spacing': 30,
+        'final_delay': 12,
         'single_arena': {
             'rounds': 3,
             'arenas': ["A"],
@@ -229,3 +230,129 @@ def test_first_round():
     final_teams = final.teams
 
     assert final_teams == [UNKNOWABLE_TEAM] * 4
+
+def test_timings_no_delays():
+    positions = OrderedDict()
+    for i in range(16):
+        positions['team-{}'.format(i)] = i
+
+    scheduler = get_scheduler(positions = positions)
+    scheduler.add_knockouts()
+
+    knockout_rounds = scheduler.knockout_rounds
+    num_rounds = len(knockout_rounds)
+
+    assert num_rounds == 3, "Should be quarters, semis and finals"
+
+    start_times = [m['A'].start_time for m in scheduler.period.matches]
+
+    expected_times = [
+        # Quarter finals
+        datetime(2014, 3, 27,  13,  0),
+        datetime(2014, 3, 27,  13,  5),
+        datetime(2014, 3, 27,  13, 10),
+        datetime(2014, 3, 27,  13, 15),
+
+        # 30 second gap
+
+        # Semi finals
+        datetime(2014, 3, 27,  13, 20, 30),
+        datetime(2014, 3, 27,  13, 25, 30),
+
+        # 30 second gap
+        # bonus 12 second gap
+
+        # Final
+        datetime(2014, 3, 27,  13, 31, 12)
+    ]
+
+    assert expected_times == start_times, "Wrong start times"
+
+def test_timings_with_delays():
+    positions = OrderedDict()
+    for i in range(16):
+        positions['team-{}'.format(i)] = i
+
+    delays = [
+        Delay(time = datetime(2014, 3, 27,  13,  2),
+              delay = timedelta(minutes = 5)),
+        Delay(time = datetime(2014, 3, 27,  13, 12),
+              delay = timedelta(minutes = 5))
+    ]
+
+    scheduler = get_scheduler(positions = positions, delays = delays)
+    scheduler.add_knockouts()
+
+    knockout_rounds = scheduler.knockout_rounds
+    num_rounds = len(knockout_rounds)
+
+    assert num_rounds == 3, "Should be quarters, semis and finals"
+
+    start_times = [m['A'].start_time for m in scheduler.period.matches]
+
+    expected_times = [
+        # Quarter finals
+        datetime(2014, 3, 27,  13,  0),
+        datetime(2014, 3, 27,  13, 10), # affected by first delay only
+        datetime(2014, 3, 27,  13, 20), # affected by both delays
+        datetime(2014, 3, 27,  13, 25),
+
+        # 30 second gap
+
+        # Semi finals
+        datetime(2014, 3, 27,  13, 30, 30),
+        datetime(2014, 3, 27,  13, 35, 30),
+
+        # 30 second gap
+        # bonus 12 second gap
+
+        # Final
+        datetime(2014, 3, 27,  13, 41, 12)
+    ]
+
+    assert expected_times == start_times, "Wrong start times"
+
+def test_timings_with_delays_during_gaps():
+    positions = OrderedDict()
+    for i in range(16):
+        positions['team-{}'.format(i)] = i
+
+    delays = [
+        Delay(time = datetime(2014, 3, 27,  13, 20, 15),
+              delay = timedelta(minutes = 5)),
+        Delay(time = datetime(2014, 3, 27,  13, 36),
+              delay = timedelta(minutes = 5))
+    ]
+
+    scheduler = get_scheduler(positions = positions, delays = delays)
+    scheduler.add_knockouts()
+
+    knockout_rounds = scheduler.knockout_rounds
+    num_rounds = len(knockout_rounds)
+
+    assert num_rounds == 3, "Should be quarters, semis and finals"
+
+    start_times = [m['A'].start_time for m in scheduler.period.matches]
+
+    expected_times = [
+        # Quarter finals
+        datetime(2014, 3, 27,  13,  0),
+        datetime(2014, 3, 27,  13,  5),
+        datetime(2014, 3, 27,  13, 10),
+        datetime(2014, 3, 27,  13, 15),
+
+        # 30 second gap
+        # first delay
+
+        # Semi finals
+        datetime(2014, 3, 27,  13, 25, 30),
+        datetime(2014, 3, 27,  13, 30, 30),
+
+        # 30 second gap
+        # bonus 12 second gap
+
+        # Final
+        datetime(2014, 3, 27,  13, 41, 12)
+    ]
+
+    assert expected_times == start_times, "Wrong start times"
