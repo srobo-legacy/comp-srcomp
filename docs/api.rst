@@ -46,6 +46,14 @@ Match Period
     :undoc-members:
     :show-inheritance:
 
+Match Period Clock
+------------------
+
+.. automodule:: sr.comp.match_period_clock
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Matches
 -------
 
