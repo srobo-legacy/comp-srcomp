@@ -7,6 +7,7 @@ from dateutil.tz import gettz
 
 from . import yaml_loader
 from .match_period import MatchPeriod, Match, MatchType
+from .match_period_clock import MatchPeriodClock
 from .knockout_scheduler import KnockoutScheduler
 from sr.comp.ranker import calc_positions
 
@@ -107,21 +108,10 @@ class MatchSchedule(object):
         for period in self.match_periods:
             # Fill this period with matches
 
-            # The start time for the current match slot we're looking to
-            # fill. This value includes all of the relevant delays.
-            start = period.start_time
-
-            # The total delay so far. Needed so that we can tell when we
-            # get to the end of the original slot for the period.
-            total_delay = timedelta()
+            clock = MatchPeriodClock(period, self.delays)
 
             # Fill this match period with matches
-            while True:
-                while len(delays) and delays[0].time <= start:
-                    delay = delays.pop(0).delay
-                    total_delay += delay
-                    start += delay
-
+            for start in clock.iterslots(self.match_duration):
                 try:
                     arenas = arena_info.pop(0)
                 except IndexError:
@@ -138,20 +128,7 @@ class MatchSchedule(object):
                 period.matches.append(m)
                 self.matches.append(m)
 
-                start += self.match_duration
                 match_n += 1
-
-                # Ensure we haven't exceeded the maximum time limit
-                # (if we have then matches will get pushed into the next period)
-                if start > period.max_end_time:
-                    # we've filled this up to the maximum end time
-                    break
-
-                # Ensure we haven't attempted to pack in more matches than will
-                # fit in this period
-                if start - total_delay > period.end_time:
-                    # we've filled up this period
-                    break
 
     def matches_at(self, date):
         """Get all the matches that occur around a specific ``date``."""

@@ -4,6 +4,7 @@ from datetime import timedelta
 from . import stable_random
 from . import knockout
 from .match_period import MatchPeriod, Match, MatchType
+from .match_period_clock import MatchPeriodClock
 
 # Use '???' as the "we don't know yet" marker
 UNKNOWABLE_TEAM = '???'
@@ -47,10 +48,9 @@ class KnockoutScheduler(object):
         self.knockout_rounds += [[]]
 
         while len(matches):
-            while len(self.delays) and self.delays[0].time <= self.next_time:
-                self.delay += self.delays.pop(0).delay
-
-            start_time = self.next_time + self.delay
+            # Deliberately not using iterslots since we need to ensure
+            # that the time advances even after we've run out of matches
+            start_time = self.clock.current_time
             end_time = start_time + self.schedule.match_duration
 
             new_matches = {}
@@ -73,7 +73,7 @@ class KnockoutScheduler(object):
                 if len(matches) == 0:
                     break
 
-            self.next_time += self.schedule.match_duration
+            self.clock.advance_time(self.schedule.match_duration)
             self.schedule.matches.append(new_matches)
             self.period.matches.append(new_matches)
 
@@ -144,21 +144,12 @@ class KnockoutScheduler(object):
 
     def add_knockouts(self):
         period = self.config["match_periods"]["knockout"][0]
-        self.next_time = period["start_time"]
 
-        self.period = MatchPeriod(self.next_time, period["end_time"], \
+        self.period = MatchPeriod(period["start_time"], period["end_time"], \
                                   period["end_time"], period["description"], \
                                   [])
 
-        self.delays = []
-        for delay in self.schedule.delays:
-            "Find delays that occur in the knockouts period"
-            if delay.time < self.period.start_time:
-                continue
-            self.delays.append(delay)
-
-        # The current delay
-        self.delay = timedelta()
+        self.clock = MatchPeriodClock(self.period, self.schedule.delays)
 
         knockout_conf = self.config["knockout"]
         round_spacing = timedelta(seconds=knockout_conf["round_spacing"])
@@ -173,7 +164,7 @@ class KnockoutScheduler(object):
         while len(self.knockout_rounds[-1]) > 1:
 
             # Add the delay between rounds
-            self.next_time += round_spacing
+            self.clock.advance_time(round_spacing)
 
             # Number of rounds remaining to be added
             rounds_remaining = int(math.log(len(self.knockout_rounds[-1]), 2))
@@ -186,6 +177,6 @@ class KnockoutScheduler(object):
             if len(self.knockout_rounds[-1]) == 2:
                 "Extra delay before the final match"
                 final_delay = timedelta(seconds=knockout_conf["final_delay"])
-                self.next_time += final_delay
+                self.clock.advance_time(final_delay)
 
             self._add_round(arenas)
