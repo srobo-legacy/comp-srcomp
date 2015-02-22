@@ -50,6 +50,9 @@ class KnockoutScheduler(object):
             while len(self.delays) and self.delays[0].time <= self.next_time:
                 self.delay += self.delays.pop(0).delay
 
+            start_time = self.next_time + self.delay
+            end_time = start_time + self.schedule.match_duration
+
             new_matches = {}
             for arena in arenas:
                 teams = matches.pop(0)
@@ -61,8 +64,6 @@ class KnockoutScheduler(object):
                 # Randomise the zones
                 self.R.shuffle(teams)
 
-                start_time = self.next_time + self.delay
-                end_time = start_time + self.schedule.match_duration
                 num = len(self.schedule.matches)
 
                 match = Match(num, arena, teams, start_time, end_time, MatchType.knockout)
@@ -160,6 +161,7 @@ class KnockoutScheduler(object):
         self.delay = timedelta()
 
         knockout_conf = self.config["knockout"]
+        round_spacing = timedelta(seconds=knockout_conf["round_spacing"])
 
         n_teams = len(self.scores.league.positions)
         if 'arity' in knockout_conf:
@@ -171,7 +173,7 @@ class KnockoutScheduler(object):
         while len(self.knockout_rounds[-1]) > 1:
 
             # Add the delay between rounds
-            self.next_time += timedelta(seconds=knockout_conf["round_spacing"])
+            self.next_time += round_spacing
 
             # Number of rounds remaining to be added
             rounds_remaining = int(math.log(len(self.knockout_rounds[-1]), 2))
@@ -183,6 +185,7 @@ class KnockoutScheduler(object):
 
             if len(self.knockout_rounds[-1]) == 2:
                 "Extra delay before the final match"
-                self.next_time += timedelta(seconds=knockout_conf["final_delay"])
+                final_delay = timedelta(seconds=knockout_conf["final_delay"])
+                self.next_time += final_delay
 
             self._add_round(arenas)
