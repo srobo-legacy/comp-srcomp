@@ -167,13 +167,10 @@ class MatchSchedule(object):
         finals_info = self.knockout_rounds[-1][0]
         finals_key = (finals_info.arena, finals_info.num)
         try:
-            finals_points = scores.knockout.game_points[finals_key]
-            finals_ranked = scores.knockout.ranked_points[finals_key]
+            finals_positions = scores.knockout.game_positions[finals_key]
         except KeyError:
             return
-        finals_dsq = [tla for tla, rp in finals_ranked.items() if rp == 0]
-        positions = calc_positions(finals_points, finals_dsq)
-        winners = positions.get(1)
+        winners = finals_positions.get(1)
         if not winners:
             raise AssertionError('The only winning move is not to play.')
         if len(winners) > 1:  # Act surprised!

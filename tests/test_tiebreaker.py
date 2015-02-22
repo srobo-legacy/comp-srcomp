@@ -4,7 +4,7 @@ import mock
 
 from sr.comp.matches import MatchSchedule
 from sr.comp.match_period import MatchType, Match
-from sr.comp.ranker import get_ranked_points
+from sr.comp.ranker import calc_positions, calc_ranked_points
 
 def make_schedule():
     settings = {'match_periods': {'league': [], 'knockout': []},
@@ -27,9 +27,12 @@ def make_schedule():
     return schedule
 
 def make_finals_score(game_points):
+    positions = calc_positions(game_points)
+    ranked = calc_ranked_points(positions)
     ko_scores = mock.Mock()
     ko_scores.game_points = {('A', 0): game_points}
-    ko_scores.ranked_points = {('A', 0): get_ranked_points(game_points)}
+    ko_scores.game_positions = {('A', 0): positions}
+    ko_scores.ranked_points = {('A', 0): ranked}
     scores = mock.Mock()
     scores.knockout = ko_scores
     return scores
@@ -65,6 +68,7 @@ def test_no_tiebreaker_if_no_final():
     scores = mock.Mock()
     scores.knockout = mock.Mock()
     scores.knockout.game_points = {}
+    scores.knockout.game_positions = {}
     scores.knockout.ranked_points = {}
 
     schedule.add_tie_breaker(scores, datetime.datetime(2014, 4, 25, 13, 0))
