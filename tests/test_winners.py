@@ -38,6 +38,7 @@ class MockScoreSet(object):
         self.teams = team_key
         self.game_points = {(arena, game): gp_key}
         self.ranked_points = {(arena, game): rp_key}
+        self.game_positions = {(arena, game): positions}
         self.positions = OrderedDict()
         for position, teams in positions.items():
             for team in teams:

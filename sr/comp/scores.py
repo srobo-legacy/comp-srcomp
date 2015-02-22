@@ -76,6 +76,10 @@ class BaseScores(object):
         # keys are (arena_id, match_num) tuples
         self.game_points = {}
 
+        # Positions in each match
+        # keys are (arena_id, match_num) tuples
+        self.game_positions = {}
+
         # Ranked points in each match
         # keys are (arena_id, match_num) tuples
         self.ranked_points = {}
@@ -118,8 +122,9 @@ class BaseScores(object):
                not scoreinfo.get("present", True)):
                 dsq.append(tla)
 
-        self.ranked_points[match_id] = ranker.get_ranked_points(game_points,
-                                                                dsq)
+        positions = ranker.calc_positions(game_points, dsq)
+        self.game_positions[match_id] = positions
+        self.ranked_points[match_id] = ranker.calc_ranked_points(positions, dsq)
 
     @property
     def last_scored_match(self):
