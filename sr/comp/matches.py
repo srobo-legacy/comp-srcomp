@@ -100,9 +100,6 @@ class MatchSchedule(object):
         # Effectively just the .values(), except that it's ordered by number
         arena_info = [yamldata[m] for m in match_numbers]
 
-        # We'll pop items off this list as we go
-        delays = list(self.delays)
-
         match_n = 0
 
         for period in self.match_periods:
