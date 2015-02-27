@@ -3,7 +3,6 @@ from __future__ import print_function
 import dateutil.tz
 import dateutil.parser
 import yaml
-import sys
 
 try:
     from yaml import CLoader as YAML_Loader

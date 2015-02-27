@@ -1,8 +1,6 @@
 # A knockout scheduler which loads almost fixed data from the config.
 # Assumes only a single arena
 
-from collections import defaultdict
-
 from .match_period import Match, MatchPeriod, MatchType
 from .knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
 

@@ -9,7 +9,6 @@ from . import yaml_loader
 from .match_period import MatchPeriod, Match, MatchType
 from .match_period_clock import MatchPeriodClock
 from .knockout_scheduler import KnockoutScheduler
-from sr.comp.ranker import calc_positions
 
 Delay = namedtuple("Delay",
                    ["delay", "time"])

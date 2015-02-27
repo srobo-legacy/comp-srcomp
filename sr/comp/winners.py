@@ -7,11 +7,9 @@ The awards calculated are:
  * 3rd place,
  * Rookie award (rookie team with highest league position)."""
 
-from collections import namedtuple
 from enum import Enum, unique
 import os.path
 
-from sr.comp.ranker import calc_positions
 from . import yaml_loader
 
 @unique
