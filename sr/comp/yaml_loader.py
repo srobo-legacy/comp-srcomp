@@ -1,4 +1,3 @@
-from __future__ import print_function
 
 import dateutil.tz
 import dateutil.parser
