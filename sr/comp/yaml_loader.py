@@ -16,10 +16,11 @@ except ImportError:
 def time_constructor(loader, node):
     return dateutil.parser.parse(node.value)
 
-
-YAML_Loader.add_constructor("tag:yaml.org,2002:timestamp",
+def add_time_constructor(loader):
+    loader.add_constructor("tag:yaml.org,2002:timestamp",
                             time_constructor)
 
+add_time_constructor(YAML_Loader)
 
 def load(file_path):
     with open(file_path, 'r') as f:
