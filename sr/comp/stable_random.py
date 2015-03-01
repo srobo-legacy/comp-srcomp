@@ -1,6 +1,7 @@
 from __future__ import print_function
+
 import hashlib
-import random
+
 # Python's random number generator's stability across Python versions
 # is complicated.
 # Different versions will produce different results.
