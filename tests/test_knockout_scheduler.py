@@ -3,9 +3,6 @@ from collections import OrderedDict
 from datetime import datetime, timedelta
 import mock
 
-# Hack the path
-import helpers as test_helpers
-
 from sr.comp.scores import TeamScore
 from sr.comp.matches import Delay
 from sr.comp.match_period import Match, MatchType

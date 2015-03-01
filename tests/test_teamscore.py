@@ -1,7 +1,4 @@
 
-# Hack the path
-import helpers as test_helpers
-
 from sr.comp.scores import TeamScore
 
 def test_empty_ctor():

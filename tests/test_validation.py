@@ -4,9 +4,6 @@ from datetime import datetime, timedelta
 import os
 import subprocess
 
-# Hack the path
-import helpers as test_helpers
-
 from sr.comp import matches
 from sr.comp.validation import validate_match, validate_schedule_arenas, \
     validate_schedule_timings, validate_match_score, find_missing_scores

@@ -1,10 +1,17 @@
 
 import mock
 
-# Hack the path
-import helpers as test_helpers
-
 from sr.comp.scores import LeagueScores, TeamScore
+
+class FakeScorer(object):
+    def __init__(self, score_data):
+        self.score_data = score_data
+
+    def calculate_scores(self):
+        scores = {}
+        for team, info in self.score_data.items():
+            scores[team] = info['score']
+        return scores
 
 def get_basic_data():
     the_data = {
@@ -50,7 +57,7 @@ def load_datas(the_datas, teams):
         mock_finder.return_value = the_files
         mock_loader.side_effect = loader
 
-        scores = LeagueScores('somewhere', teams, test_helpers.FakeScorer)
+        scores = LeagueScores('somewhere', teams, FakeScorer)
         return scores
 
 def load_basic_data():

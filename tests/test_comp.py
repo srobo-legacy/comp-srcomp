@@ -2,9 +2,6 @@
 import os
 import datetime
 
-# Hack the path
-import helpers as test_helpers
-
 from nose.plugins.skip import SkipTest
 
 from sr.comp.comp import SRComp
