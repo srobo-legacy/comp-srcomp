@@ -1,11 +1,18 @@
 
 from collections import namedtuple
 from datetime import datetime, timedelta
+import mock
 import os
 import subprocess
 
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
 from sr.comp import matches
-from sr.comp.validation import validate_match, validate_schedule_arenas, \
+from sr.comp.comp import SRComp
+from sr.comp.validation import validate, validate_match, validate_schedule_arenas, \
     validate_schedule_timings, validate_match_score, find_missing_scores
 
 from sr.comp.knockout_scheduler import UNKNOWABLE_TEAM
@@ -18,14 +25,12 @@ Match3 = namedtuple('Match3', ['num', 'type'])
 
 def test_dummy_is_valid():
     test_dir = os.path.dirname(os.path.abspath(__file__))
-    root = os.path.dirname(test_dir)
-    validate = os.path.join(root, 'validate')
     dummy_compstate = os.path.join(test_dir, 'dummy')
-    try:
-        subprocess.check_output([validate, dummy_compstate], \
-                                stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as cpe:
-        assert cpe.returncode == 0, cpe.output
+    fake_stderr = StringIO()
+    with mock.patch("sys.stderr", fake_stderr):
+        comp = SRComp(dummy_compstate)
+        error_count = validate(comp)
+        assert 0 == error_count, fake_stderr.getvalue()
 
 def test_validate_match_unknowable_entrants():
     teams_a = [UNKNOWABLE_TEAM] * 4
