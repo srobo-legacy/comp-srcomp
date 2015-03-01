@@ -7,8 +7,14 @@ import random
 # It's easier right now to just have our own random number generator
 # that's not as good, but is definitely stable between machines.
 
+# Note: this class is deliberately not a sub-class of random.Random
+# since any of the functionality provided by the class (ie: not just
+# the generation portion) could change between Python versions.
+# Instead, any additionally required functionality should be added
+# below as needed and _importantly_ tests for the functionality to
+# ensure that the output is the same on all supported platforms.
 
-class Random(random.Random):
+class Random(object):
     def __init__(self):
         self.state = 0
 
@@ -17,12 +23,6 @@ class Random(random.Random):
         h.update(s)
 
         self.state = int(h.hexdigest(), 16) & 0xffffffff
-
-    def getstate(self):
-        return self.state
-
-    def setstate(self, state):
-        self.state = state
 
     def _rand_bit(self):
         bit = self.state & 1
@@ -46,12 +46,23 @@ class Random(random.Random):
     def random(self):
         return self.getrandbits(32) / float(1 << 32)
 
+    def shuffle(self, x):
+        # Based on python's shuffle function
+
+        for i in reversed(range(1, len(x))):
+            # pick an element in x[:i+1] with which to exchange x[i]
+            j = int(self.random() * (i+1))
+            x[i], x[j] = x[j], x[i]
 
 def _demo():
     R = Random()
     R.seed("hello".encode("utf-8"))
     for n in range(10):
         print(R.random())
+
+    items = list(range(16))
+    R.shuffle(items)
+    print(items)
 
 if __name__ == "__main__":
     _demo()
