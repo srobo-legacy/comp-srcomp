@@ -13,14 +13,17 @@ except ImportError:
 from sr.comp import matches
 from sr.comp.comp import SRComp
 from sr.comp.validation import validate, validate_match, validate_schedule_arenas, \
-    validate_schedule_timings, validate_match_score, find_missing_scores
+    validate_schedule_timings, validate_match_score, find_missing_scores, \
+    find_teams_without_league_matches
 
 from sr.comp.knockout_scheduler import UNKNOWABLE_TEAM
+from sr.comp.match_period import MatchType
 
 
 Match = namedtuple("Match", ["teams"])
 Match2 = namedtuple("Match2", ["num", "start_time"])
 Match3 = namedtuple('Match3', ['num', 'type'])
+Match4 = namedtuple('Match4', ['teams', 'type'])
 
 
 def test_dummy_is_valid():
@@ -381,3 +384,30 @@ def test_validate_schedule_arenas():
     error = errors[2]
     assert '3 (custom)' in error
     assert "arena 'D'" in error
+
+def test_teams_without_matches_ok():
+    teams_a = ['ABC', 'DEF']
+    teams_b = ['LMN', 'OPQ']
+    ok_match = {
+        'A': Match4(teams_a, MatchType.league),
+        'B': Match4(teams_b, MatchType.league)
+    }
+
+    teams = find_teams_without_league_matches([ok_match], teams_a + teams_b)
+    assert len(teams) == 0
+
+def test_teams_without_matches_err():
+    teams_a = ['ABC', 'DEF']
+    teams_b = ['LMN', 'OPQ']
+    other_teams = ['NOPE']
+    bad_matches = [{
+        'A': Match4(teams_a, MatchType.league),
+        'B': Match4(teams_b, MatchType.league)
+        },{
+        # Unless restricted, all teams end up in the knockouts.
+        # We therefore ignore those for this consideration
+        'A': Match4(other_teams, MatchType.knockout),
+    }]
+
+    teams = find_teams_without_league_matches(bad_matches, teams_a + teams_b + other_teams)
+    assert set(other_teams) == teams, "Should have found teams without league matches"

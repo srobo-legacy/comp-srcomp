@@ -4,6 +4,7 @@ from collections import defaultdict
 import sys
 
 from .knockout_scheduler import UNKNOWABLE_TEAM
+from .match_period import MatchType
 NO_TEAM = None
 
 META_TEAMS = set([NO_TEAM, UNKNOWABLE_TEAM])
@@ -23,6 +24,7 @@ def validate(comp):
     count = 0
     count += validate_schedule(comp.schedule, comp.teams.keys(),
                                comp.arenas.keys())
+    count += validate_team_matches(comp.schedule.matches, comp.teams.keys())
     count += validate_scores(comp.scores.league, comp.schedule.matches)
     warn_missing_scores(comp.scores.league, comp.schedule.matches)
     return count
@@ -243,3 +245,24 @@ def find_missing_scores(match_ids, last_match, schedule):
 
     missing_items = sorted(missing.items())
     return missing_items
+
+
+def validate_team_matches(matches, possible_teams):
+    """Check that all teams have been assigned league matches"""
+    teams_without_matches = find_teams_without_league_matches(matches, possible_teams)
+    if teams_without_matches:
+        teams_str = ", ".join(sorted(teams_without_matches))
+        print("The following teams have no league matches: {0}".format(teams_str))
+
+    return len(teams_without_matches)
+
+def find_teams_without_league_matches(matches, possible_teams):
+    teams_used = set()
+    for match in matches:
+        for game in match.values():
+            if game.type == MatchType.league:
+                teams_used |= set(game.teams)
+
+    teams_without_matches = set(possible_teams) - teams_used
+
+    return teams_without_matches
