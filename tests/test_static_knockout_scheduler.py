@@ -90,11 +90,11 @@ def helper(places, knockout_points = None):
     period = scheduler.period
 
     expected = [
-        {'A': Match(0, 'Match 0', 'A', places[0], datetime(2014, 4, 27, 14, 30), datetime(2014, 4, 27, 14, 35), MatchType.knockout) },
-        {'A': Match(1, 'Match 1', 'A', places[1], datetime(2014, 4, 27, 14, 35), datetime(2014, 4, 27, 14, 40), MatchType.knockout) },
-        {'A': Match(2, 'Match 2', 'A', places[2], datetime(2014, 4, 27, 14, 45), datetime(2014, 4, 27, 14, 50), MatchType.knockout) },
-        {'A': Match(3, 'Match 3', 'A', places[3], datetime(2014, 4, 27, 14, 50), datetime(2014, 4, 27, 14, 55), MatchType.knockout) },
-        {'A': Match(4, 'Match 4', 'A', places[4], datetime(2014, 4, 27, 15,  0), datetime(2014, 4, 27, 15,  5), MatchType.knockout) },
+        {'A': Match(0, 'Quarter 1 (#0)', 'A', places[0], datetime(2014, 4, 27, 14, 30), datetime(2014, 4, 27, 14, 35), MatchType.knockout) },
+        {'A': Match(1, 'Quarter 2 (#1)', 'A', places[1], datetime(2014, 4, 27, 14, 35), datetime(2014, 4, 27, 14, 40), MatchType.knockout) },
+        {'A': Match(2, 'Semi 1 (#2)', 'A', places[2], datetime(2014, 4, 27, 14, 45), datetime(2014, 4, 27, 14, 50), MatchType.knockout) },
+        {'A': Match(3, 'Semi 2 (#3)', 'A', places[3], datetime(2014, 4, 27, 14, 50), datetime(2014, 4, 27, 14, 55), MatchType.knockout) },
+        {'A': Match(4, 'Final (#4)', 'A', places[4], datetime(2014, 4, 27, 15,  0), datetime(2014, 4, 27, 15,  5), MatchType.knockout) },
     ]
 
     for i in range(len(expected)):
@@ -112,11 +112,11 @@ def test_before():
     period = scheduler.period
 
     expected = [
-        {'A': Match(1, 'Match 1', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 30), datetime(2014, 4, 27, 14, 35), MatchType.knockout) },
-        {'A': Match(2, 'Match 2', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 35), datetime(2014, 4, 27, 14, 40), MatchType.knockout) },
-        {'A': Match(3, 'Match 3', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 45), datetime(2014, 4, 27, 14, 50), MatchType.knockout) },
-        {'A': Match(4, 'Match 4', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 50), datetime(2014, 4, 27, 14, 55), MatchType.knockout) },
-        {'A': Match(5, 'Match 5', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 15,  0), datetime(2014, 4, 27, 15,  5), MatchType.knockout) },
+        {'A': Match(1, 'Quarter 1 (#1)', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 30), datetime(2014, 4, 27, 14, 35), MatchType.knockout) },
+        {'A': Match(2, 'Quarter 2 (#2)', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 35), datetime(2014, 4, 27, 14, 40), MatchType.knockout) },
+        {'A': Match(3, 'Semi 1 (#3)', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 45), datetime(2014, 4, 27, 14, 50), MatchType.knockout) },
+        {'A': Match(4, 'Semi 2 (#4)', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 50), datetime(2014, 4, 27, 14, 55), MatchType.knockout) },
+        {'A': Match(5, 'Final (#5)', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 15,  0), datetime(2014, 4, 27, 15,  5), MatchType.knockout) },
     ]
 
     for i in range(len(expected)):

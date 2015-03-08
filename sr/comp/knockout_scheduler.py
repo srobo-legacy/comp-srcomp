@@ -40,7 +40,8 @@ class KnockoutScheduler(object):
 
         return True
 
-    def get_match_display_name(self, rounds_remaining, round_num, global_num):
+    @staticmethod
+    def get_match_display_name(rounds_remaining, round_num, global_num):
         """
         Get a match display name.
 
@@ -48,14 +49,15 @@ class KnockoutScheduler(object):
         :param knockout_num: The match number within the knockout round.
         :param global_num: The global match number.
         """
-        display_name = 'Match {global_num}'
         if rounds_remaining == 0:
             display_name = 'Final (#{global_num})'
         elif rounds_remaining == 1:
             display_name = 'Semi {round_num} (#{global_num})'
         elif rounds_remaining == 2:
             display_name = 'Quarter {round_num} (#{global_num})'
-        return display_name.format(round_num=round_num, global_num=global_num)
+        else:
+            display_name = 'Match {global_num}'
+        return display_name.format(round_num=round_num + 1, global_num=global_num)
 
     def _add_round_of_matches(self, matches, arenas, rounds_remaining):
         """Add a whole round of matches
@@ -64,7 +66,7 @@ class KnockoutScheduler(object):
 
         self.knockout_rounds += [[]]
 
-        sub_num = 1
+        round_num = 0
         while len(matches):
             # Deliberately not using iterslots since we need to ensure
             # that the time advances even after we've run out of matches
@@ -84,7 +86,7 @@ class KnockoutScheduler(object):
 
                 num = len(self.schedule.matches)
                 display_name = self.get_match_display_name(rounds_remaining,
-                                                           sub_num, num)
+                                                           round_num, num)
 
                 match = Match(num, display_name, arena, teams,
                               start_time, end_time, MatchType.knockout)
@@ -98,7 +100,7 @@ class KnockoutScheduler(object):
             self.schedule.matches.append(new_matches)
             self.period.matches.append(new_matches)
 
-            sub_num += 1
+            round_num += 1
 
     def get_ranking(self, game):
         "Get a ranking of the given match's teams"

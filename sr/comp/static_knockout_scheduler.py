@@ -1,5 +1,6 @@
 # A knockout scheduler which loads almost fixed data from the config.
 # Assumes only a single arena
+import math
 
 from .match_period import Match, MatchPeriod, MatchType
 from .knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
@@ -34,7 +35,7 @@ class StaticScheduler(KnockoutScheduler):
         ranking.reverse()
         return ranking[pos]
 
-    def _add_match(self, match_info):
+    def _add_match(self, match_info, rounds_remaining, round_num):
         new_matches = {}
 
         arena = match_info['arena']
@@ -50,7 +51,8 @@ class StaticScheduler(KnockoutScheduler):
             "Fill empty zones with None"
             teams += [None] * (4-len(teams))
 
-        display_name = 'Match {n}'.format(n=num)
+        display_name = self.get_match_display_name(rounds_remaining, round_num,
+                                                   num)
         match = Match(num, display_name, arena, teams, start_time, end_time,
                       MatchType.knockout)
         self.knockout_rounds[-1].append(match)
@@ -70,6 +72,7 @@ class StaticScheduler(KnockoutScheduler):
 
         for round_num in sorted(knockout_conf.keys()):
             self.knockout_rounds += [[]]
+            rounds_remaining = len(knockout_conf.keys()) - round_num - 1
             for match_num in sorted(knockout_conf[round_num].keys()):
                 match_info = knockout_conf[round_num][match_num]
-                self._add_match(match_info)
+                self._add_match(match_info, rounds_remaining, match_num)
