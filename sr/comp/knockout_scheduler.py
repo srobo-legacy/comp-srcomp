@@ -40,13 +40,14 @@ class KnockoutScheduler(object):
 
         return True
 
-    def _add_round_of_matches(self, matches, arenas):
+    def _add_round_of_matches(self, matches, arenas, rounds_remaining):
         """Add a whole round of matches
 
         matches is a list of lists of teams for each match"""
 
         self.knockout_rounds += [[]]
 
+        sub_num = 1
         while len(matches):
             # Deliberately not using iterslots since we need to ensure
             # that the time advances even after we've run out of matches
@@ -59,15 +60,24 @@ class KnockoutScheduler(object):
 
                 if len(teams) < 4:
                     "Fill empty zones with None"
-                    teams += [None] * (4-len(teams))
+                    teams += [None] * (4 - len(teams))
 
                 # Randomise the zones
                 self.R.shuffle(teams)
 
                 num = len(self.schedule.matches)
-                display_name = 'Match {n}'.format(n=num)
-                match = Match(num, display_name, arena, teams, start_time,
-                              end_time, MatchType.knockout)
+
+                display_name = 'Match {num}'
+                if rounds_remaining == 0:
+                    display_name = 'Final (#{num})'
+                elif rounds_remaining == 1:
+                    display_name = 'Semi {sub_num} (#{num})'
+                elif rounds_remaining == 2:
+                    display_name = 'Quarter {sub_num} (#{num})'
+                display_name = display_name.format(sub_num=sub_num, num=num)
+
+                match = Match(num, display_name, arena, teams,
+                              start_time, end_time, MatchType.knockout)
                 self.knockout_rounds[-1].append(match)
                 new_matches[arena] = match
 
@@ -77,6 +87,8 @@ class KnockoutScheduler(object):
             self.clock.advance_time(self.schedule.match_duration)
             self.schedule.matches.append(new_matches)
             self.period.matches.append(new_matches)
+
+            sub_num += 1
 
     def get_ranking(self, game):
         "Get a ranking of the given match's teams"
@@ -111,7 +123,7 @@ class KnockoutScheduler(object):
         ranking = self.get_ranking(game)
         return ranking[-2:]
 
-    def _add_round(self, arenas):
+    def _add_round(self, arenas, rounds_remaining):
         prev_round = self.knockout_rounds[-1]
         matches = []
 
@@ -122,7 +134,7 @@ class KnockoutScheduler(object):
 
             matches.append(winners)
 
-        self._add_round_of_matches(matches, arenas)
+        self._add_round_of_matches(matches, arenas, rounds_remaining)
 
     def _add_first_round(self, arity):
         teams = list(self.scores.league.positions.keys())
@@ -141,7 +153,7 @@ class KnockoutScheduler(object):
             match_teams = [teams[seed] for seed in seeds]
             matches.append( match_teams )
 
-        self._add_round_of_matches(matches, self.arenas)
+        self._add_round_of_matches(matches, self.arenas, None)
 
     def add_knockouts(self):
         period = self.config["match_periods"]["knockout"][0]
@@ -180,4 +192,4 @@ class KnockoutScheduler(object):
                 final_delay = timedelta(seconds=knockout_conf["final_delay"])
                 self.clock.advance_time(final_delay)
 
-            self._add_round(arenas)
+            self._add_round(arenas, rounds_remaining - 1)
