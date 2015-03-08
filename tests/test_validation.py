@@ -118,7 +118,7 @@ def test_validate_match_score_empty_corner():
         'GHI': 1,
     }
 
-    errors = validate_match_score(ok_score, match)
+    errors = validate_match_score(MatchType.league, ok_score, match)
     assert len(errors) == 0
 
 def test_validate_match_score_empty_corner_2():
@@ -131,11 +131,11 @@ def test_validate_match_score_empty_corner_2():
         'NOP': 1,
     }
 
-    errors = validate_match_score(bad_score, match)
+    errors = validate_match_score(MatchType.league, bad_score, match)
     assert len(errors) == 1
     error = '\n'.join(errors)
 
-    assert 'not scheduled in this match' in error
+    assert 'not scheduled in this league match' in error
     assert 'NOP' in error
 
 def test_validate_match_score_extra_team():
@@ -148,13 +148,13 @@ def test_validate_match_score_extra_team():
         'NOP': 1,
     }
 
-    errors = validate_match_score(bad_score, match)
+    errors = validate_match_score(MatchType.league, bad_score, match)
     assert len(errors) == 2
     error = '\n'.join(errors)
 
-    assert 'not scheduled in this match' in error
+    assert 'not scheduled in this league match' in error
     assert 'NOP' in error
-    assert 'missing from this match' in error
+    assert 'missing from this league match' in error
     assert 'JKL' in error
 
 def test_validate_match_score_extra_team_2():
@@ -168,11 +168,11 @@ def test_validate_match_score_extra_team_2():
         'NOP': 1,
     }
 
-    errors = validate_match_score(bad_score, match)
+    errors = validate_match_score(MatchType.league, bad_score, match)
     assert len(errors) == 1
     error = '\n'.join(errors)
 
-    assert 'not scheduled in this match' in error
+    assert 'not scheduled in this league match' in error
     assert 'NOP' in error
 
 def test_validate_match_score_missing_team():
@@ -184,11 +184,11 @@ def test_validate_match_score_missing_team():
         'GHI': 1,
     }
 
-    errors = validate_match_score(bad_score, match)
+    errors = validate_match_score(MatchType.league, bad_score, match)
     assert len(errors) == 1
     error = '\n'.join(errors)
 
-    assert 'missing from this match' in error
+    assert 'missing from this league match' in error
     assert 'JKL' in error
 
 def test_validate_match_score_swapped_team():
@@ -201,15 +201,56 @@ def test_validate_match_score_swapped_team():
         'NOP': 1,
     }
 
-    errors = validate_match_score(bad_score, match)
+    errors = validate_match_score(MatchType.league, bad_score, match)
     assert len(errors) == 2
     error = '\n'.join(errors)
 
-    assert 'not scheduled in this match' in error
-    assert 'missing from this match' in error
+    assert 'not scheduled in this league match' in error
+    assert 'missing from this league match' in error
     assert 'JKL' in error
     assert 'NOP' in error
 
+
+def test_find_missing_scores_knockouts_ok():
+    # When looking at the knockouts the league scores won't be passed
+    # in, but we need to not error that they're missing since they'll
+    # be checked separately.
+
+    match_ids = [
+        ('A', 1),
+        ('B', 1)
+    ]
+    last_match = 1
+    schedule = [
+        {'A': Match3(0, MatchType.league), 'B': Match3(0, MatchType.league)},
+        {'A': Match3(1, MatchType.knockout), 'B': Match3(1, MatchType.knockout)},
+        {'A': Match3(2, MatchType.knockout)}
+    ]
+
+    missing = find_missing_scores(MatchType.knockout, match_ids, last_match, schedule)
+
+    expected = []
+    assert missing == expected
+
+def test_find_missing_scores_knockouts_missing():
+    # When looking at the knockouts the league scores won't be passed
+    # in, but we need to not error that they're missing since they'll
+    # be checked separately.
+
+    match_ids = [
+        ('B', 1)
+    ]
+    last_match = 1
+    schedule = [
+        {'A': Match3(0, MatchType.league), 'B': Match3(0, MatchType.league)},
+        {'A': Match3(1, MatchType.knockout), 'B': Match3(1, MatchType.knockout)},
+        {'A': Match3(2, MatchType.knockout)}
+    ]
+
+    missing = find_missing_scores(MatchType.knockout, match_ids, last_match, schedule)
+
+    expected = [ (1, set(['A'])) ]
+    assert missing == expected
 
 def test_find_missing_scores_arena():
     match_ids = [
@@ -217,10 +258,10 @@ def test_find_missing_scores_arena():
     ]
     last_match = 0
     schedule = [
-        {'A': None, 'B': None}
+        {'A': Match3(0, MatchType.league), 'B': Match3(0, MatchType.league)},
     ]
 
-    missing = find_missing_scores(match_ids, last_match, schedule)
+    missing = find_missing_scores(MatchType.league, match_ids, last_match, schedule)
 
     expected = [ (0, set(['B'])) ]
     assert missing == expected
@@ -231,11 +272,11 @@ def test_find_missing_scores_match():
     ]
     last_match = 1
     schedule = [
-        {'A': None},
-        {'A': None}
+        {'A': Match3(0, MatchType.league)},
+        {'A': Match3(1, MatchType.league)},
     ]
 
-    missing = find_missing_scores(match_ids, last_match, schedule)
+    missing = find_missing_scores(MatchType.league, match_ids, last_match, schedule)
 
     expected = [ (0, set(['A'])) ]
     assert missing == expected
@@ -248,14 +289,14 @@ def test_find_missing_scores_many_matches():
     ]
     last_match = 4
     schedule = [
-        {'A': None},
-        {'A': None},
-        {'A': None},
-        {'A': None},
-        {'A': None}
+        {'A': Match3(0, MatchType.league)},
+        {'A': Match3(1, MatchType.league)},
+        {'A': Match3(2, MatchType.league)},
+        {'A': Match3(3, MatchType.league)},
+        {'A': Match3(4, MatchType.league)},
     ]
 
-    missing = find_missing_scores(match_ids, last_match, schedule)
+    missing = find_missing_scores(MatchType.league, match_ids, last_match, schedule)
 
     expected = [
         (1, set(['A'])),
@@ -271,27 +312,27 @@ def test_find_missing_scores_ignore_future_matches():
     ]
     last_match = 2
     schedule = [
-        {'A': None},
-        {'A': None},
-        {'A': None},
-        {'A': None},
-        {'A': None}
+        {'A': Match3(0, MatchType.league)},
+        {'A': Match3(1, MatchType.league)},
+        {'A': Match3(2, MatchType.league)},
+        {'A': Match3(3, MatchType.league)},
+        {'A': Match3(4, MatchType.league)},
     ]
 
-    missing = find_missing_scores(match_ids, last_match, schedule)
+    missing = find_missing_scores(MatchType.league, match_ids, last_match, schedule)
 
     assert missing == []
 
 def test_find_missing_scores_ignore_no_matches():
     schedule = [
-        {'A': None},
-        {'A': None},
-        {'A': None},
-        {'A': None},
-        {'A': None}
+        {'A': Match3(0, MatchType.league)},
+        {'A': Match3(1, MatchType.league)},
+        {'A': Match3(2, MatchType.league)},
+        {'A': Match3(3, MatchType.league)},
+        {'A': Match3(4, MatchType.league)},
     ]
 
-    missing = find_missing_scores([], None, schedule)
+    missing = find_missing_scores(MatchType.league, [], None, schedule)
 
     assert not len(missing), "Cannot be any missing scores when none entered"
 

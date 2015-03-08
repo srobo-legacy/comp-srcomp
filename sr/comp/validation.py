@@ -27,7 +27,9 @@ def validate(comp):
 
     all_matches = comp.schedule.matches
     count += validate_team_matches(all_matches, comp.teams.keys())
-    count += validate_scores(comp.scores.league, all_matches)
+
+    count += validate_scores(MatchType.league, comp.scores.league, all_matches)
+    count += validate_scores(MatchType.knockout, comp.scores.knockout, all_matches)
 
     return count
 
@@ -144,29 +146,32 @@ def validate_match(match, possible_teams):
     return errors
 
 
-def validate_scores(scores, schedule):
-    count = validate_scores_inner(scores, schedule)
-    warn_missing_scores(scores, schedule)
+def validate_scores(match_type, scores, schedule):
+    count = validate_scores_inner(match_type, scores, schedule)
+    warn_missing_scores(match_type, scores, schedule)
     return count
 
-def validate_scores_inner(scores, schedule):
+def validate_scores_inner(match_type, scores, schedule):
     # NB: more specific validation is already done during the scoring,
     # so all we need to do is check that the right teams are being awarded
     # points
 
     count = 0
+    match_type_title = match_type.name.title()
 
     def get_scheduled_match(match_id, type_):
         """Check that the requested match was scheduled, return it if so."""
         num = match_id[1]
         if num < 0 or num >= len(schedule):
-            report_errors(type_, match_id, ['Match not scheduled'])
+            msg = '{0} Match not scheduled'.format(match_type_title)
+            report_errors(type_, match_id, [msg])
             return None
 
         arena = match_id[0]
         match = schedule[num]
         if arena not in match:
-            report_errors(type_, match_id, ['Arena not in this match'])
+            msg = 'Arena not in this {0} match'.format(match_type_title)
+            report_errors(type_, match_id, [msg])
             return None
 
         return match[arena]
@@ -176,20 +181,21 @@ def validate_scores_inner(scores, schedule):
         if scheduled_match is None:
             return 1
 
-        errors = validate_match_score(match, scheduled_match)
+        errors = validate_match_score(match_type, match, scheduled_match)
         report_errors(type_, match_id, errors)
         return len(errors)
 
     for match_id, match in scores.game_points.items():
         count += check('Game Score', match_id, match)
 
-    for match_id, match in scores.ranked_points.items():
-        count += check('League Points', match_id, match)
+    if match_type == MatchType.league:
+        for match_id, match in scores.ranked_points.items():
+            count += check('League Points', match_id, match)
 
     return count
 
 
-def validate_match_score(match_score, scheduled_match):
+def validate_match_score(match_type, match_score, scheduled_match):
     """Check that the match awards points to the right teams, by checking
     that the teams with points were scheduled to appear in the match."""
     # only remove the empty corner marker -- we shouldn't have unknowable
@@ -205,32 +211,41 @@ def validate_match_score(match_score, scheduled_match):
     errors = []
     if len(missing):
         missing = ', '.join(missing)
-        errors.append("Teams {0} missing from this match.".format(missing))
+        errors.append("Teams {0} missing from this {1} match." \
+                        .format(missing, match_type.name))
 
     if len(extra):
         extra = ', '.join(extra)
-        errors.append("Teams {0} not scheduled in this match.".format(extra))
+        errors.append("Teams {0} not scheduled in this {1} match." \
+                        .format(extra, match_type.name))
 
     return errors
 
 
-def warn_missing_scores(scores, schedule):
+def warn_missing_scores(match_type, scores, schedule):
     """Check that the scores up to the most recent are all present."""
     match_ids = scores.ranked_points.keys()
     last_match = scores.last_scored_match
 
-    missing = find_missing_scores(match_ids, last_match, schedule)
+    missing = find_missing_scores(match_type, match_ids, last_match, schedule)
     if len(missing) == 0:
         return
 
-    print("The following scores are missing:", file=sys.stderr)
+    msg = "The following {0} scores are missing:".format(match_type.name)
+    print(msg, file=sys.stderr)
     print("Match   | Arena ", file=sys.stderr)
     for m in missing:
         arenas = ", ".join(sorted(m[1]))
         print(" {0:>3}    | {1}".format(m[0], arenas), file=sys.stderr)
 
 
-def find_missing_scores(match_ids, last_match, schedule):
+def find_missing_scores(match_type, match_ids, last_match, schedule):
+    """Given a collection of ``match_ids`` for which we have scores,
+        the ``match_type`` currently under consideration, the number of
+        the ``last_match`` which was scored and the list of all known
+        matches determine which scores should be present but aren't.
+    """
+
     # If no matches have been scored, no scores can be missing.
     if last_match is None:
         return ()
@@ -239,9 +254,12 @@ def find_missing_scores(match_ids, last_match, schedule):
     for num, match in enumerate(schedule):
         if num > last_match:
             break
-        for arena in match.keys():
-            id_ = (arena, num)
-            expected.add(id_)
+        for arena, game in match.items():
+            # Filter to the right type of matches -- we only ever deal
+            # with one type at a time
+            if game.type == match_type:
+                id_ = (arena, num)
+                expected.add(id_)
 
     missing_ids = expected - set(match_ids)
     missing = defaultdict(set)
