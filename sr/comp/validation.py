@@ -24,9 +24,11 @@ def validate(comp):
     count = 0
     count += validate_schedule(comp.schedule, comp.teams.keys(),
                                comp.arenas.keys())
-    count += validate_team_matches(comp.schedule.matches, comp.teams.keys())
-    count += validate_scores(comp.scores.league, comp.schedule.matches)
-    warn_missing_scores(comp.scores.league, comp.schedule.matches)
+
+    all_matches = comp.schedule.matches
+    count += validate_team_matches(all_matches, comp.teams.keys())
+    count += validate_scores(comp.scores.league, all_matches)
+
     return count
 
 
@@ -143,6 +145,11 @@ def validate_match(match, possible_teams):
 
 
 def validate_scores(scores, schedule):
+    count = validate_scores_inner(scores, schedule)
+    warn_missing_scores(scores, schedule)
+    return count
+
+def validate_scores_inner(scores, schedule):
     # NB: more specific validation is already done during the scoring,
     # so all we need to do is check that the right teams are being awarded
     # points
