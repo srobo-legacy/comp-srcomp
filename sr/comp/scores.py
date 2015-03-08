@@ -60,14 +60,29 @@ def results_finder(root):
         for resfile in glob.glob(os.path.join(dname, "*.yaml")):
             yield resfile
 
+def get_validated_scores(scorer_cls, input_data):
+    """Hepler function which mimics the behaviour from libproton.
 
-# The scorer that these classes consume should be a class that:
-# * accepts a dictionary equivalent to value of the 'teams' key from a Proton
-#   compatible input as its only constructor argument.
-# * has a 'calculate_scores' method which returns a dictionary of TLAs (ie
-#   the same keys as the input) to the numeric scores for each team.
-#
-# Proton refers to [Proton 1.0.0-rc2](https://github.com/samphippen/proton)
+       Given a libproton (Proton 2.0.0-rc1) compatible class this will
+       calculate the scores and validate the input.
+    """
+    teams_data = input_data['teams']
+    extra_data = input_data.get('other') # May be absent
+
+    scorer = scorer_cls(teams_data)
+    scores = scorer.calculate_scores()
+
+    # Also check the validation, if supported. Explicit pre-check so
+    # that we don't accidentally hide any AttributeErrors (or similar)
+    # which come from inside the method.
+    if hasattr(scorer, 'validate'):
+        scorer.validate(extra_data)
+
+    return scores
+
+# The scorer that these classes consume should be a class that is compatible
+# with libproton in its Proton 2.0.0-rc1 form.
+# See https://github.com/PeterJCLaw/proton and http://srobo.org/cgit/comp/libproton.git.
 class BaseScores(object):
     def __init__(self, resultdir, teams, scorer):
         self._scorer = scorer
@@ -110,7 +125,7 @@ class BaseScores(object):
         if match_id in self.game_points:
             raise DuplicateScoresheet(match_id)
 
-        game_points = self._scorer(y["teams"]).calculate_scores()
+        game_points = get_validated_scores(self._scorer, y)
         self.game_points[match_id] = game_points
 
         # Build the disqualification dict
