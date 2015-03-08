@@ -248,7 +248,10 @@ def find_missing_scores(match_ids, last_match, schedule):
 
 
 def validate_team_matches(matches, possible_teams):
-    """Check that all teams have been assigned league matches"""
+    """Check that all teams have been assigned league matches. We don't
+        need (or want) to check the knockouts, since those are scheduled
+        dynamically based on the list of teams.
+    """
     teams_without_matches = find_teams_without_league_matches(matches, possible_teams)
     if teams_without_matches:
         teams_str = ", ".join(sorted(teams_without_matches))
