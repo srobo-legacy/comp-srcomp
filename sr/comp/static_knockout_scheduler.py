@@ -50,7 +50,9 @@ class StaticScheduler(KnockoutScheduler):
             "Fill empty zones with None"
             teams += [None] * (4-len(teams))
 
-        match = Match(num, arena, teams, start_time, end_time, MatchType.knockout)
+        display_name = 'Match {n}'.format(n=num)
+        match = Match(num, display_name, arena, teams, start_time, end_time,
+                      MatchType.knockout)
         self.knockout_rounds[-1].append(match)
 
         new_matches[match_info['arena']] = match

@@ -51,7 +51,7 @@ def get_scheduler(matches = None, positions = None, \
 
 def test_knockout_match_winners_empty():
     scheduler = get_scheduler()
-    game = Match(2, 'A', [], None, None, None)
+    game = Match(2, 'Match 2', 'A', [], None, None, None)
     winners = scheduler.get_winners(game)
     assert winners == [UNKNOWABLE_TEAM] * 2
 
@@ -66,7 +66,7 @@ def test_knockout_match_winners_simple():
     }
     scheduler = get_scheduler(knockout_points = knockout_points)
 
-    game = Match(2, 'A', [], None, None, None)
+    game = Match(2, 'Match 2', 'A', [], None, None, None)
     winners = scheduler.get_winners(game)
 
     assert set(winners) == set(['GHI', 'JKL'])
@@ -82,7 +82,7 @@ def test_knockout_match_winners_irrelevant_tie_1():
     }
     scheduler = get_scheduler(knockout_points = knockout_points)
 
-    game = Match(2, 'A', [], None, None, None)
+    game = Match(2, 'Match 2', 'A', [], None, None, None)
     winners = scheduler.get_winners(game)
 
     assert set(winners) == set(['GHI', 'JKL'])
@@ -105,7 +105,7 @@ def test_knockout_match_winners_irrelevant_tie_1():
     scheduler = get_scheduler(knockout_points = knockout_points, \
                                 positions = positions)
 
-    game = Match(2, 'A', [], None, None, None)
+    game = Match(2, 'Match 2', 'A', [], None, None, None)
     winners = scheduler.get_winners(game)
 
     assert set(winners) == set(['GHI', 'JKL'])
@@ -130,7 +130,7 @@ def test_knockout_match_winners_tie():
     scheduler = get_scheduler(knockout_points = knockout_points, \
                                 positions = positions)
 
-    game = Match(2, 'A', [], None, None, None)
+    game = Match(2, 'Match 2', 'A', [], None, None, None)
     winners = scheduler.get_winners(game)
 
     assert set(winners) == set(['GHI', 'JKL']), \
@@ -146,8 +146,8 @@ def test_first_round_before_league_end():
 
     # Fake a couple of league matches that won't have been scored
     matches = [
-        {'A':Match(0, 'A', [], None, None, MatchType.league)},
-        {'A':Match(1, 'A', [], None, None, MatchType.league)},
+        {'A':Match(0, 'Match 0', 'A', [], None, None, MatchType.league)},
+        {'A':Match(1, 'Match 1', 'A', [], None, None, MatchType.league)},
     ]
     scheduler = get_scheduler(matches, positions = positions)
 

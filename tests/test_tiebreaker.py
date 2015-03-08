@@ -15,7 +15,7 @@ def make_schedule():
                 'delays': []}
     schedule = MatchSchedule(settings, {})
 
-    finals = Match(num=0,
+    finals = Match(num=0, display_name='Match 0',
                    arena='A',
                    teams=['AAA', 'BBB', 'CCC', 'DDD'],
                    start_time=datetime.datetime(2014, 4, 25, 12, 0),
@@ -47,6 +47,7 @@ def test_tiebreaker():
     schedule.add_tie_breaker(scores, datetime.datetime(2014, 4, 25, 13, 0))
 
     eq_(schedule.matches[-1], {'A': Match(num=1,
+                                          display_name='Tiebreaker',
                                           arena='A',
                                           teams=['BBB', 'AAA', None, 'CCC'],
                                           start_time=datetime.datetime(2014, 4, 25, 13,  0),

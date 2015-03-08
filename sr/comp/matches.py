@@ -118,7 +118,9 @@ class MatchSchedule(object):
 
                 end_time = start + self.match_duration
                 for arena_name, teams in arenas.items():
-                    match = Match(match_n, arena_name, teams, start, end_time, MatchType.league)
+                    display_name = 'Match {n}'.format(n=match_n)
+                    match = Match(match_n, display_name, arena_name, teams,
+                                  start, end_time, MatchType.league)
                     m[arena_name] = match
 
                 period.matches.append(m)
@@ -157,9 +159,10 @@ class MatchSchedule(object):
             # Inject new match
             arena = finals_info.arena
             match = Match(num=self.n_matches(),
+                          display_name='Tiebreaker',
                           arena=arena,
                           teams=tie_breaker_teams,
                           type=MatchType.tie_breaker,
                           start_time=time,
-                          end_time=time+self.match_duration)
+                          end_time=time + self.match_duration)
             self.matches.append({arena: match})

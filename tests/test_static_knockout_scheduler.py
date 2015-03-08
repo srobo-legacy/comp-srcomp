@@ -90,11 +90,11 @@ def helper(places, knockout_points = None):
     period = scheduler.period
 
     expected = [
-        {'A': Match(0, 'A', places[0], datetime(2014, 4, 27, 14, 30), datetime(2014, 4, 27, 14, 35), MatchType.knockout) },
-        {'A': Match(1, 'A', places[1], datetime(2014, 4, 27, 14, 35), datetime(2014, 4, 27, 14, 40), MatchType.knockout) },
-        {'A': Match(2, 'A', places[2], datetime(2014, 4, 27, 14, 45), datetime(2014, 4, 27, 14, 50), MatchType.knockout) },
-        {'A': Match(3, 'A', places[3], datetime(2014, 4, 27, 14, 50), datetime(2014, 4, 27, 14, 55), MatchType.knockout) },
-        {'A': Match(4, 'A', places[4], datetime(2014, 4, 27, 15,  0), datetime(2014, 4, 27, 15,  5), MatchType.knockout) },
+        {'A': Match(0, 'Match 0', 'A', places[0], datetime(2014, 4, 27, 14, 30), datetime(2014, 4, 27, 14, 35), MatchType.knockout) },
+        {'A': Match(1, 'Match 1', 'A', places[1], datetime(2014, 4, 27, 14, 35), datetime(2014, 4, 27, 14, 40), MatchType.knockout) },
+        {'A': Match(2, 'Match 2', 'A', places[2], datetime(2014, 4, 27, 14, 45), datetime(2014, 4, 27, 14, 50), MatchType.knockout) },
+        {'A': Match(3, 'Match 3', 'A', places[3], datetime(2014, 4, 27, 14, 50), datetime(2014, 4, 27, 14, 55), MatchType.knockout) },
+        {'A': Match(4, 'Match 4', 'A', places[4], datetime(2014, 4, 27, 15,  0), datetime(2014, 4, 27, 15,  5), MatchType.knockout) },
     ]
 
     for i in range(len(expected)):
@@ -104,7 +104,7 @@ def helper(places, knockout_points = None):
         assert e == a, "Match {0} in the knockouts".format(i)
 
 def test_before():
-    league_matches = [{'A': Match(0, 'A', [], datetime(2014, 4, 27, 12, 30), datetime(2014, 4, 27, 12, 35), MatchType.league) }]
+    league_matches = [{'A': Match(0, 'Match 0', 'A', [], datetime(2014, 4, 27, 12, 30), datetime(2014, 4, 27, 12, 35), MatchType.league) }]
 
     scheduler = get_scheduler(matches = league_matches)
     scheduler.add_knockouts()
@@ -112,11 +112,11 @@ def test_before():
     period = scheduler.period
 
     expected = [
-        {'A': Match(1, 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 30), datetime(2014, 4, 27, 14, 35), MatchType.knockout) },
-        {'A': Match(2, 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 35), datetime(2014, 4, 27, 14, 40), MatchType.knockout) },
-        {'A': Match(3, 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 45), datetime(2014, 4, 27, 14, 50), MatchType.knockout) },
-        {'A': Match(4, 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 50), datetime(2014, 4, 27, 14, 55), MatchType.knockout) },
-        {'A': Match(5, 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 15,  0), datetime(2014, 4, 27, 15,  5), MatchType.knockout) },
+        {'A': Match(1, 'Match 1', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 30), datetime(2014, 4, 27, 14, 35), MatchType.knockout) },
+        {'A': Match(2, 'Match 2', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 35), datetime(2014, 4, 27, 14, 40), MatchType.knockout) },
+        {'A': Match(3, 'Match 3', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 45), datetime(2014, 4, 27, 14, 50), MatchType.knockout) },
+        {'A': Match(4, 'Match 4', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 50), datetime(2014, 4, 27, 14, 55), MatchType.knockout) },
+        {'A': Match(5, 'Match 5', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 15,  0), datetime(2014, 4, 27, 15,  5), MatchType.knockout) },
     ]
 
     for i in range(len(expected)):

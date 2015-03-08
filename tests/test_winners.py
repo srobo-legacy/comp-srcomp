@@ -12,7 +12,7 @@ from nose.tools import eq_
 import mock
 
 
-KNOCKOUT_ROUNDS = [[Match(num=1, arena='A',
+KNOCKOUT_ROUNDS = [[Match(num=1, display_name='Match 1', arena='A',
                           teams=['AAA', 'BBB', 'CCC', 'DDD'],
                           start_time=datetime(2014, 4, 26, 16, 30, tzinfo=tzutc()),
                           end_time=datetime(2014, 4, 26, 16, 35, tzinfo=tzutc()),
