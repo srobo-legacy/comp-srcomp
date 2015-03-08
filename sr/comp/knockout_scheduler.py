@@ -40,6 +40,23 @@ class KnockoutScheduler(object):
 
         return True
 
+    def get_match_display_name(self, rounds_remaining, round_num, global_num):
+        """
+        Get a match display name.
+
+        :param rounds_remaining: The number of knockout rounds remaining.
+        :param knockout_num: The match number within the knockout round.
+        :param global_num: The global match number.
+        """
+        display_name = 'Match {global_num}'
+        if rounds_remaining == 0:
+            display_name = 'Final (#{global_num})'
+        elif rounds_remaining == 1:
+            display_name = 'Semi {round_num} (#{global_num})'
+        elif rounds_remaining == 2:
+            display_name = 'Quarter {round_num} (#{global_num})'
+        return display_name.format(round_num=round_num, global_num=global_num)
+
     def _add_round_of_matches(self, matches, arenas, rounds_remaining):
         """Add a whole round of matches
 
@@ -66,15 +83,8 @@ class KnockoutScheduler(object):
                 self.R.shuffle(teams)
 
                 num = len(self.schedule.matches)
-
-                display_name = 'Match {num}'
-                if rounds_remaining == 0:
-                    display_name = 'Final (#{num})'
-                elif rounds_remaining == 1:
-                    display_name = 'Semi {sub_num} (#{num})'
-                elif rounds_remaining == 2:
-                    display_name = 'Quarter {sub_num} (#{num})'
-                display_name = display_name.format(sub_num=sub_num, num=num)
+                display_name = self.get_match_display_name(rounds_remaining,
+                                                           sub_num, num)
 
                 match = Match(num, display_name, arena, teams,
                               start_time, end_time, MatchType.knockout)
