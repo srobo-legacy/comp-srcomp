@@ -32,6 +32,8 @@ def validate_schedule(schedule, possible_teams, possible_arenas):
     """Check that the schedule contains enough time for all the matches,
     and that the matches themselves are valid."""
     count = 0
+
+    # Check that each match features only valid teams
     for num, match in enumerate(schedule.matches):
         errors = validate_match(match, possible_teams)
         count += len(errors)
