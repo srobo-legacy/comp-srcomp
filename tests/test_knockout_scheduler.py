@@ -11,7 +11,7 @@ from sr.comp.knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
 
 def get_scheduler(matches = None, positions = None, \
                     knockout_points = None, league_game_points = None, \
-                    delays = None):
+                    delays = None, teams=None):
     matches = matches or []
     delays = delays or []
     match_duration = timedelta(minutes = 5)
@@ -46,7 +46,8 @@ def get_scheduler(matches = None, positions = None, \
         'knockout': knockout_config,
     }
     arenas = ['A']
-    teams = defaultdict(lambda: Team(None, None, False, False))
+    if teams is None:
+        teams = defaultdict(lambda: Team(None, None, False, False))
     scheduler = KnockoutScheduler(league_schedule, scores, arenas, teams,
                                   config)
     return scheduler
