@@ -2,20 +2,24 @@ import math
 
 
 def bit_mask(n):
-    "Return an n-bit mask of 1's"
+    """Return an n-bit mask of 1's."""
+
     return 2 ** n-1
 
 
 def reverse_bits(n, width):
-    "Reverse the bits of n"
+    """Reverse the bits of ``n``."""
+
     b = '{:0{width}b}'.format(n, width=width)
     return int(b[::-1], 2)
 
 
 def first_round_seeding(n_teams):
-    """Return the seed arrangement for the first round of a knockout with n_teams
+    """
+    Return the seed arrangement for the first round of a knockout with n_teams.
 
-    Returns an array of matches."""
+    Returns an array of matches.
+    """
 
     # Round the number of teams up to a power of two
     rounded_teams = int(2 ** math.ceil(math.log(n_teams, 2)))

@@ -1,22 +1,28 @@
-"""Calculation of winners of awards.
+"""
+Calculation of winners of awards.
 
 The awards calculated are:
 
  * 1st place,
  * 2nd place,
  * 3rd place,
- * Rookie award (rookie team with highest league position)."""
+ * Rookie award (rookie team with highest league position).
+"""
 
 from enum import Enum, unique
 import os.path
 
-from . import yaml_loader
+from sr.comp import yaml_loader
+
 
 @unique
 class Award(Enum):
-    """Award types.
+    """
+    Award types.
 
-    These correspond with awards as specified in the rulebook."""
+    These correspond with awards as specified in the rulebook.
+    """
+
     first     = "first"        # First place
     second    = "second"       # Second place
     third     = "third"        # Third place
@@ -70,14 +76,19 @@ def _compute_explicit_awards(path):
 
 
 def compute_awards(scores, knockout_rounds, teams, path=None):
-    """Compute the awards handed out from configuration.
+    """
+    Compute the awards handed out from configuration.
 
-    ``scores`` is a ``Scores`` object. ``knockout_rounds`` is a list of
-    knockout rounds as produced by a scheduler. ``teams`` is a mapping from
-    TLAs to ``Team`` objects.
+    :param sr.comp.scores.Scores scores: The scores.
+    :param list knockout_rounds: A list of knockout rounds as produced by a
+                                 scheduler.
+    :param dict teams: A mapping from TLAs to :class:`sr.comp.teams.Team`
+                       objects.
+    :return: A dictionary of :class:`Award` types to TLAs is returned. This may
+             not have a key for any award type that has not yet been
+             determined.
+    """
 
-    A dictionary of ``Award`` types to TLAs is returned. This may not have a
-    key for any award type that has not yet been determined."""
     awards = {}
     awards.update(_compute_main_awards(scores, knockout_rounds, teams))
     awards.update(_compute_rookie_award(scores, teams))

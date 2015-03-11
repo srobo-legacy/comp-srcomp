@@ -1,21 +1,27 @@
+"""A stable random number generator implementation."""
+
 from __future__ import print_function
 
 import hashlib
 
-# Python's random number generator's stability across Python versions
-# is complicated.
-# Different versions will produce different results.
-# It's easier right now to just have our own random number generator
-# that's not as good, but is definitely stable between machines.
-
-# Note: this class is deliberately not a sub-class of random.Random
-# since any of the functionality provided by the class (ie: not just
-# the generation portion) could change between Python versions.
-# Instead, any additionally required functionality should be added
-# below as needed and _importantly_ tests for the functionality to
-# ensure that the output is the same on all supported platforms.
-
 class Random(object):
+    """
+    Our own random number generator that is guaranteed to be stable.
+
+    Python's random number generator's stability across Python versions is
+    complicated. Different versions will produce different results. It's easier
+    right now to just have our own random number generator that's not as good,
+    but is definitely stable between machines.
+
+    .. note::
+       This class is deliberately not a sub-class of :py:class:`random.Random`
+       since any of the functionality provided by the class (i.e. not just the
+       generation portion) could change between Python versions. Instead, any
+       additionally required functionality should be added below as needed
+       and _importantly_ tests for the functionality to ensure that the output
+       is the same on all supported platforms.
+    """
+
     def __init__(self):
         self.state = 0
 
@@ -55,6 +61,7 @@ class Random(object):
             j = int(self.random() * (i+1))
             x[i], x[j] = x[j], x[i]
 
+
 def _demo():
     R = Random()
     R.seed("hello".encode("utf-8"))
@@ -64,6 +71,7 @@ def _demo():
     items = list(range(16))
     R.shuffle(items)
     print(items)
+
 
 if __name__ == "__main__":
     _demo()

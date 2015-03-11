@@ -1,3 +1,5 @@
+"""Classes that are useful for dealing with match periods."""
+
 from collections import namedtuple
 from enum import Enum, unique
 

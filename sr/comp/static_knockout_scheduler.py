@@ -1,12 +1,25 @@
-# A knockout scheduler which loads almost fixed data from the config.
-# Assumes only a single arena
+"""
+A static knockout schedule.
+"""
+
 import math
 
-from .match_period import Match, MatchPeriod, MatchType
-from .knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
+from sr.comp.match_period import Match, MatchPeriod, MatchType
+from sr.comp.knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
 
 
 class StaticScheduler(KnockoutScheduler):
+    """
+    A knockout scheduler which loads almost fixed data from the config. Assumes
+    only a single arena.
+
+    :param schedule: The league schedule.
+    :param scores: The scores.
+    :param areans: The arenas.
+    :param teams: The teams.
+    :param config: Extra configuration for the static knockout.
+    """
+
     def __init__(self, schedule, scores, arenas, teams, config):
         super(StaticScheduler, self).__init__(schedule, scores, arenas, teams,
                                               config)

@@ -1,7 +1,8 @@
 """Team metadata library."""
+
 from collections import namedtuple
 
-from . import yaml_loader
+from sr.comp import yaml_loader
 
 
 Team = namedtuple('Team', ['tla', 'name', 'rookie', 'dropped_out'])
@@ -11,7 +12,10 @@ def load_teams(filename):
     """
     Load teams from a YAML file.
 
-    :param str filename: The filename of the YAML file to load."""
+    :param str filename: The filename of the YAML file to load.
+    :return: A dictionary mapping TLAs to :class:`Team` objects.
+    """
+
     data = yaml_loader.load(filename)
 
     teams = {}

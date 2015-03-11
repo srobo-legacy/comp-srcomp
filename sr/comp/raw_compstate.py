@@ -1,34 +1,41 @@
+"""Utilities for working with raw Compstate repositories."""
 
 import os
 import subprocess
 import yaml
 
-from .comp import SRComp
+from sr.comp.comp import SRComp
+
 
 class RawCompstate(object):
-    """Helper class to interact with a compstate as raw files in a git
-       repository on disk."""
+    """
+    Helper class to interact with a Compstate as raw files in a Git repository
+    on disk.
+
+    :param str path: The path to the Compstate repository.
+    :param bool local_only: If true, this disabled the pulling, commiting and
+                            pushing functionality.
+    """
 
     def __init__(self, path, local_only):
         self._path = path
         self._local_only = local_only
 
-
     ## Load and save related functionality
 
     def load(self):
-        "Load the state as an ``SRComp`` instance"
+        """Load the state as an ``SRComp`` instance."""
         return SRComp(self._path)
 
 
     def get_score_path(self, match):
-        "Get the absolute path to the score file for the given match"
+        """Get the absolute path to the score file for the given match."""
         filename = "{0:0>3}.yaml".format(match.num)
         return os.path.join(self._path, match.type.value, match.arena, filename)
 
 
     def load_score(self, match):
-        "Load raw score data for the given match"
+        """Load raw score data for the given match."""
         path = self.get_score_path(match)
         # Scores are basic data only
         with open(path) as fd:
@@ -36,7 +43,7 @@ class RawCompstate(object):
 
 
     def save_score(self, match, score):
-        "Save raw score data for the given match"
+        """Save raw score data for the given match."""
         path = self.get_score_path(match)
 
         dirname = os.path.dirname(path)

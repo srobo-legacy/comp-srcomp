@@ -1,15 +1,28 @@
+"""Knockout schedule generation."""
+
 import math
 from datetime import timedelta
 
-from . import stable_random
-from . import knockout
-from .match_period import MatchPeriod, Match, MatchType
-from .match_period_clock import MatchPeriodClock
+from sr.comp import knockout, stable_random
+from sr.comp.match_period import MatchPeriod, Match, MatchType
+from sr.comp.match_period_clock import MatchPeriodClock
+
 
 # Use '???' as the "we don't know yet" marker
 UNKNOWABLE_TEAM = '???'
 
+
 class KnockoutScheduler(object):
+    """
+    A class that can be used to generate a knockout schedule.
+
+    :param schedule: The league schedule.
+    :param scores: The scores.
+    :param arenas: The arenas.
+    :param teams: The teams.
+    :param config: Custom configuration for the knockout scheduler.
+    """
+
     def __init__(self, schedule, scores, arenas, teams, config):
         self.schedule = schedule
         self.scores = scores
@@ -30,7 +43,12 @@ class KnockoutScheduler(object):
         self.R = stable_random.Random()
 
     def _played_all_league_matches(self):
-        "Returns True if we've played all league matches"
+        """
+        Check if all league matches have been played.
+
+        :return: :py:bool:`True` if we've played all league matches.
+        """
+
         for arena_matches in self.schedule.matches:
             for match in arena_matches.values():
                 if match.type != MatchType.league:
@@ -44,12 +62,13 @@ class KnockoutScheduler(object):
     @staticmethod
     def get_match_display_name(rounds_remaining, round_num, global_num):
         """
-        Get a match display name.
+        Get a human-readable match display name.
 
         :param rounds_remaining: The number of knockout rounds remaining.
         :param knockout_num: The match number within the knockout round.
         :param global_num: The global match number.
         """
+
         if rounds_remaining == 0:
             display_name = 'Final (#{global_num})'
         elif rounds_remaining == 1:
@@ -61,9 +80,11 @@ class KnockoutScheduler(object):
         return display_name.format(round_num=round_num + 1, global_num=global_num)
 
     def _add_round_of_matches(self, matches, arenas, rounds_remaining):
-        """Add a whole round of matches
+        """
+        Add a whole round of matches.
 
-        matches is a list of lists of teams for each match"""
+        :param list matches: A list of lists of teams for each match.
+        """
 
         self.knockout_rounds += [[]]
 
@@ -104,7 +125,11 @@ class KnockoutScheduler(object):
             round_num += 1
 
     def get_ranking(self, game):
-        "Get a ranking of the given match's teams"
+        """
+        Get a ranking of the given match's teams.
+
+        :param game: A game.
+        """
         desc = (game.arena, game.num)
         positions = self.scores.league.positions
 
@@ -131,7 +156,11 @@ class KnockoutScheduler(object):
         return ranking
 
     def get_winners(self, game):
-        "Find the parent match's winners"
+        """
+        Find the parent match's winners.
+
+        :param game: A game.
+        """
 
         ranking = self.get_ranking(game)
         return ranking[-2:]
@@ -176,6 +205,8 @@ class KnockoutScheduler(object):
         self._add_round_of_matches(matches, self.arenas, None)
 
     def add_knockouts(self):
+        """Add the knockouts to the schedule."""
+
         period = self.config["match_periods"]["knockout"][0]
 
         self.period = MatchPeriod(period["start_time"], period["end_time"], \

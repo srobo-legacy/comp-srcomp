@@ -1,20 +1,28 @@
+"""A clock to manage match periods."""
 
 class OutOfTimeException(Exception):
+    """
+    An exception representing no more time available at the competition to run
+    matches.
+    """
+
     pass
 
+
 class MatchPeriodClock(object):
-    """A clock for use in scheduling matches within a ``MatchPeriod``.
+    """
+    A clock for use in scheduling matches within a ``MatchPeriod``.
 
-       It is generally expected that the time information here will be
-       in the form of ``datetime`` and ``timedelta`` instances, though
-       any data which can be compared and added appropriately should work.
+    It is generally expected that the time information here will be in the form
+    of ``datetime`` and ``timedelta`` instances, though any data which can be
+    compared and added appropriately should work.
 
-       Delay rules:
+    Delay rules:
 
-       - Only delays which are scheduled after the start of the given
-         period will be considered.
-       - Delays are cumilative.
-       - Delays take effect as soon as their ``time`` is reached.
+    - Only delays which are scheduled after the start of the given period will
+      be considered.
+    - Delays are cumilative.
+    - Delays take effect as soon as their ``time`` is reached.
     """
 
     def __init__(self, period, delays):
@@ -37,18 +45,20 @@ class MatchPeriodClock(object):
 
     @property
     def current_time(self):
-        """Get the apparent current time. This is a combination of the
-           time which has passed (through calls to ``advance_time``) and
-           the delays which have occurred.
-
-           Will raise an ``OutOfTimeException`` if either:
-
-           - the end of the period has been reached (i.e: the sum of
-             durations passed to ``advance_time`` has exceeded the planned
-             duration of the period), or
-           - the maximum end of the period has been reached (i.e: the
-             current time would be after the period's ``max_end_time``).
         """
+        Get the apparent current time. This is a combination of the time which
+        has passed (through calls to ``advance_time``) and the delays which
+        have occurred.
+
+        Will raise an ``OutOfTimeException`` if either:
+
+        - the end of the period has been reached (i.e: the sum of durations
+          passed to ``advance_time`` has exceeded the planned duration of the
+          period), or
+        - the maximum end of the period has been reached (i.e: the current time
+          would be after the period's ``max_end_time``).
+        """
+
         ct = self._current_time
 
         # Ensure we haven't exceeded the maximum time limit
@@ -66,14 +76,16 @@ class MatchPeriodClock(object):
         return ct
 
     def advance_time(self, duration):
-        """Make a given amount of time pass. This is expected to be called
-           after scheduling some matches in order to move to the next
-           timeslot.
-
-           Note: it is assumed that the duration value will always be
-           'positive', i.e.: that time will not go backwards. The results
-           of the duration value being 'negative' are undefined.
         """
+        Make a given amount of time pass. This is expected to be called after
+        scheduling some matches in order to move to the next timeslot.
+
+        .. note::
+           It is assumed that the duration value will always be 'positive',
+           i.e. that time will not go backwards. The results of the duration
+           valuebeing 'negative' are undefined.
+        """
+
         self._current_time += duration
         self._apply_delays()
 
@@ -97,13 +109,14 @@ class MatchPeriodClock(object):
             return self._current_time - self._total_delay
 
     def iterslots(self, slot_duration):
-        """Iterate through all the available timeslots of the given size
-           within the ``MatchPeriod``, taking into account delays.
+        """
+        Iterate through all the available timeslots of the given size within
+        the ``MatchPeriod``, taking into account delays.
 
-           This is equivalent to checking the current_time and repeatedly
-           calling ``advance_time`` with the given duration. As a result,
-           it is safe to call ``advance_time`` between iterations if
-           additional gaps between slots are needed.
+        This is equivalent to checking the current_time and repeatedly calling
+        ``advance_time`` with the given duration. As a result, it is safe to
+        call ``advance_time`` between iterations if additional gaps between
+        slots are needed.
         """
 
         try:

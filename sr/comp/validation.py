@@ -1,16 +1,27 @@
+"""Compstate validation routines."""
+
 from __future__ import print_function
 
 from collections import defaultdict
 import sys
 
-from .knockout_scheduler import UNKNOWABLE_TEAM
-from .match_period import MatchType
-NO_TEAM = None
+from sr.comp.knockout_scheduler import UNKNOWABLE_TEAM
+from sr.comp.match_period import MatchType
 
+
+NO_TEAM = None
 META_TEAMS = set([NO_TEAM, UNKNOWABLE_TEAM])
 
 
 def report_errors(type_, id_, errors):
+    """
+    Print out errors nicely formatted.
+
+    :param str type: The human-readable 'type'.
+    :param str id_: The human-readable 'ID'.
+    :param list errors: A list of string errors.
+    """
+
     if len(errors) == 0:
         return
 
@@ -21,6 +32,13 @@ def report_errors(type_, id_, errors):
 
 
 def validate(comp):
+    """
+    Validate a Compstate repo.
+
+    :param sr.comp.SRComp comp: A competition instance.
+    :return: The number of errors that have occurred.
+    """
+
     count = 0
     count += validate_schedule(comp.schedule, comp.teams.keys(),
                                comp.arenas.keys())

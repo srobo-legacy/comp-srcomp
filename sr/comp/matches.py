@@ -1,20 +1,25 @@
-"""Match schedule library"""
+"""Match schedule library."""
 
 from collections import namedtuple
-from datetime import timedelta
 import datetime
+from datetime import timedelta
+
 from dateutil.tz import gettz
 
-from . import yaml_loader
-from .match_period import MatchPeriod, Match, MatchType
-from .match_period_clock import MatchPeriodClock
-from .knockout_scheduler import KnockoutScheduler
+from sr.comp import yaml_loader
+from sr.comp.match_period import MatchPeriod, Match, MatchType
+from sr.comp.match_period_clock import MatchPeriodClock
+from sr.comp.knockout_scheduler import KnockoutScheduler
+
 
 Delay = namedtuple("Delay",
                    ["delay", "time"])
 
 
 class MatchSchedule(object):
+    """
+    A match schedule.
+    """
     @classmethod
     def create(cls, config_fname, league_fname, scores, arenas, teams,
                     knockout_scheduler = KnockoutScheduler):
@@ -84,7 +89,7 @@ class MatchSchedule(object):
         self.delays = delays
 
     def _build_matchlist(self, yamldata):
-        "Build the match list"
+        """Build the match list."""
         self.matches = []
         if yamldata is None:
             self.n_planned_league_matches = 0
@@ -129,16 +134,35 @@ class MatchSchedule(object):
                 match_n += 1
 
     def matches_at(self, date):
-        """Get all the matches that occur around a specific ``date``."""
+        """
+        Get all the matches that occur around a specific ``date``.
+
+        :param date datetime: The date at which matches occur.
+        :return: An iterable list of matches.
+        """
+
         for slot in self.matches:
             for match in slot.values():
                 if match.start_time <= date < match.end_time:
                     yield match
 
     def n_matches(self):
+        """
+        Get the number of matches.
+
+        :return: The number of matches.
+        """
+
         return len(self.matches)
 
     def add_tie_breaker(self, scores, time):
+        """
+        Add a tie breaker to the league if required.
+
+        :param scores: The scores.
+        :param time: The time.
+        """
+
         finals_info = self.knockout_rounds[-1][0]
         finals_key = (finals_info.arena, finals_info.num)
         try:

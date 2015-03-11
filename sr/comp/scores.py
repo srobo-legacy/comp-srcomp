@@ -1,14 +1,16 @@
+"""Utilities for working with scores."""
 
 from collections import OrderedDict
 from functools import total_ordering
 import glob
 import os
 
-from sr.comp import ranker
-from . import yaml_loader
+from sr.comp import ranker, yaml_loader
 
 
 class InvalidTeam(Exception):
+    """An exception that occurs when a score contains an invalid team."""
+
     def __init__(self, tla):
         message = "Team {0} does not exist.".format(tla)
         super(InvalidTeam, self).__init__(message)
@@ -16,6 +18,11 @@ class InvalidTeam(Exception):
 
 
 class DuplicateScoresheet(Exception):
+    """
+    An exception that occurs if two scoresheets for the same match have been
+    entered.
+    """
+
     def __init__(self, match_id):
         message = "Scoresheet for {0} has already been added.".format(match_id)
         super(DuplicateScoresheet, self).__init__(message)
@@ -24,6 +31,13 @@ class DuplicateScoresheet(Exception):
 
 @total_ordering
 class TeamScore(object):
+    """
+    A team score.
+
+    :param int league: The league points.
+    :param int game: The game points.
+    """
+
     def __init__(self, league=0, game=0):
         self.league_points = league
         self.game_points = game
@@ -53,6 +67,8 @@ class TeamScore(object):
 
 
 def results_finder(root):
+    """An iterator that finds score sheet files."""
+
     for dname in glob.glob(os.path.join(root, "*")):
         if not os.path.isdir(dname):
             continue
@@ -60,12 +76,15 @@ def results_finder(root):
         for resfile in glob.glob(os.path.join(dname, "*.yaml")):
             yield resfile
 
-def get_validated_scores(scorer_cls, input_data):
-    """Hepler function which mimics the behaviour from libproton.
 
-       Given a libproton (Proton 2.0.0-rc1) compatible class this will
-       calculate the scores and validate the input.
+def get_validated_scores(scorer_cls, input_data):
     """
+    Helper function which mimics the behaviour from libproton.
+
+    Given a libproton (Proton 2.0.0-rc1) compatible class this will calculate
+    the scores and validate the input.
+    """
+
     teams_data = input_data['teams']
     extra_data = input_data.get('other') # May be absent
 
@@ -80,10 +99,20 @@ def get_validated_scores(scorer_cls, input_data):
 
     return scores
 
+
 # The scorer that these classes consume should be a class that is compatible
 # with libproton in its Proton 2.0.0-rc1 form.
-# See https://github.com/PeterJCLaw/proton and http://srobo.org/cgit/comp/libproton.git.
+# See https://github.com/PeterJCLaw/proton and
+# http://srobo.org/cgit/comp/libproton.git.
 class BaseScores(object):
+    """
+    A generic class that holds scores.
+
+    :param str resultdir: Where to find score sheet files.
+    :param dict teams: The teams in the competition.
+    :param dict scorer: The scorer logic.
+    """
+
     def __init__(self, resultdir, teams, scorer):
         self._scorer = scorer
 
@@ -143,7 +172,7 @@ class BaseScores(object):
 
     @property
     def last_scored_match(self):
-        """The most match with the highest id for which we have score data"""
+        """The most match with the highest id for which we have score data."""
         if len(self.ranked_points) == 0:
             return None
         matches = self.ranked_points.keys()
@@ -151,11 +180,15 @@ class BaseScores(object):
 
 
 class LeagueScores(BaseScores):
+    """A class which holds league scores."""
+
     @staticmethod
     def rank_league(team_scores):
-        """Given a mapping of TLA to TeamScore, returns a mapping of TLA
-           to league position which both allows for ties and enables their
-           resolution deterministically."""
+        """
+        Given a mapping of TLA to TeamScore, returns a mapping of TLA to league
+        position which both allows for ties and enables their resolution
+        deterministically.
+        """
 
         # Reverse sort the (tla, score) pairs so the biggest scores are at the
         # top. We break perfect ties by TLA, which is not fair but is
@@ -197,6 +230,10 @@ class KnockoutScores(BaseScores):
 
 
 class Scores(object):
+    """
+    A simple class which stores references to the league and knockout scores.
+    """
+
     def __init__(self, root, teams, scorer):
         self.root = root
         self.league = LeagueScores(os.path.join(root, "league"),
