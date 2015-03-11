@@ -7,8 +7,9 @@ from .knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
 
 
 class StaticScheduler(KnockoutScheduler):
-    def __init__(self, schedule, scores, arenas, config):
-        super(StaticScheduler, self).__init__(schedule, scores, arenas, config)
+    def __init__(self, schedule, scores, arenas, teams, config):
+        super(StaticScheduler, self).__init__(schedule, scores, arenas, teams,
+                                              config)
 
     def get_team(self, team_ref):
         if not self._played_all_league_matches():

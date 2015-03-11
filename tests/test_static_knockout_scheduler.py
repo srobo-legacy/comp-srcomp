@@ -1,9 +1,10 @@
 
-from collections import OrderedDict
+from collections import defaultdict, OrderedDict
 from datetime import datetime, timedelta
 import mock
 
 from sr.comp.scores import TeamScore
+from sr.comp.teams import Team
 from sr.comp.match_period import Match, MatchType
 from sr.comp.knockout_scheduler import UNKNOWABLE_TEAM
 from sr.comp.static_knockout_scheduler import StaticScheduler
@@ -80,7 +81,9 @@ def get_scheduler(matches = None, positions = None, \
         'static_knockout': get_config(),
     }
     arenas = ['A']
-    scheduler = StaticScheduler(league_schedule, scores, arenas, config)
+
+    teams = defaultdict(lambda: Team(None, None, False, False))
+    scheduler = StaticScheduler(league_schedule, scores, arenas, teams, config)
     return scheduler
 
 def helper(places, knockout_points = None):

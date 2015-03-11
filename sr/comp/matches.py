@@ -16,7 +16,7 @@ Delay = namedtuple("Delay",
 
 class MatchSchedule(object):
     @classmethod
-    def create(cls, config_fname, league_fname, scores, arenas,
+    def create(cls, config_fname, league_fname, scores, arenas, teams,
                     knockout_scheduler = KnockoutScheduler):
         y = yaml_loader.load(config_fname)
 
@@ -24,7 +24,7 @@ class MatchSchedule(object):
 
         schedule = cls(y, league)
 
-        k = knockout_scheduler(schedule, scores, arenas, y)
+        k = knockout_scheduler(schedule, scores, arenas, teams, y)
         k.add_knockouts()
 
         schedule.knockout_rounds = k.knockout_rounds

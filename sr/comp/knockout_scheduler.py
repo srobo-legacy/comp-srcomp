@@ -10,10 +10,11 @@ from .match_period_clock import MatchPeriodClock
 UNKNOWABLE_TEAM = '???'
 
 class KnockoutScheduler(object):
-    def __init__(self, schedule, scores, arenas, config):
+    def __init__(self, schedule, scores, arenas, teams, config):
         self.schedule = schedule
         self.scores = scores
         self.arenas = arenas
+        self.teams = teams
         self.config = config
 
         # The knockout matches appear in the normal matches list
