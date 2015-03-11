@@ -23,14 +23,14 @@ class Award(Enum):
     These correspond with awards as specified in the rulebook.
     """
 
-    first     = "first"        # First place
-    second    = "second"       # Second place
-    third     = "third"        # Third place
-    rookie    = "rookie"       # Rookie award
-    committee = "committee"    # Committee award
-    image     = "image"        # Robot and Team Image award
-    movement  = "movement"     # First Movement award
-    web       = "web"          # Online Presence award
+    first = "first"          # First place
+    second = "second"        # Second place
+    third = "third"          # Third place
+    rookie = "rookie"        # Rookie award
+    committee = "committee"  # Committee award
+    image = "image"          # Robot and Team Image award
+    movement = "movement"    # First Movement award
+    web = "web"              # Online Presence award
 
 
 def _compute_main_awards(scores, knockout_rounds, teams):
@@ -54,16 +54,17 @@ def _compute_main_awards(scores, knockout_rounds, teams):
 def _compute_rookie_award(scores, teams):
     """Compute the winner of the rookie award."""
     rookie_positions = {team: position
-                         for team, position in scores.league.positions.items()
-                         if teams[team].rookie}
+                        for team, position in scores.league.positions.items()
+                        if teams[team].rookie}
     # It's possible there are no rookie teams, in which case nobody gets
     # the award.
     if not rookie_positions:
         return {Award.rookie: []}
     # Position go from 1 upwards (1 being first), so the best is the minimum
     best_position = min(rookie_positions.values())
-    return {Award.rookie: list(sorted(team for team, position in rookie_positions.items()
-                                       if position == best_position))}
+    return {Award.rookie:
+            list(sorted(team for team, position in rookie_positions.items()
+                        if position == best_position))}
 
 
 def _compute_explicit_awards(path):
@@ -72,7 +73,7 @@ def _compute_explicit_awards(path):
         return {}
     explicit_awards = yaml_loader.load(path)
     return {Award(key): [value] if isinstance(value, str) else value
-              for key, value in explicit_awards.items()}
+            for key, value in explicit_awards.items()}
 
 
 def compute_awards(scores, knockout_rounds, teams, path=None):

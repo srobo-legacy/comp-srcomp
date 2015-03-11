@@ -21,18 +21,17 @@ class RawCompstate(object):
         self._path = path
         self._local_only = local_only
 
-    ## Load and save related functionality
+    # Load and save related functionality
 
     def load(self):
         """Load the state as an ``SRComp`` instance."""
         return SRComp(self._path)
 
-
     def get_score_path(self, match):
         """Get the absolute path to the score file for the given match."""
         filename = "{0:0>3}.yaml".format(match.num)
-        return os.path.join(self._path, match.type.value, match.arena, filename)
-
+        return os.path.join(self._path, match.type.value, match.arena,
+                            filename)
 
     def load_score(self, match):
         """Load raw score data for the given match."""
@@ -40,7 +39,6 @@ class RawCompstate(object):
         # Scores are basic data only
         with open(path) as fd:
             return yaml.safe_load(fd)
-
 
     def save_score(self, match, score):
         """Save raw score data for the given match."""
@@ -52,7 +50,6 @@ class RawCompstate(object):
 
         with open(path, "w") as fd:
             yaml.safe_dump(score, fd, default_flow_style=False)
-
 
     # Git repo related functionality
 
@@ -66,10 +63,8 @@ class RawCompstate(object):
             else:
                 raise
 
-
     def reset_hard(self):
         self.git(["reset", "--hard", "HEAD"], err_msg="Git reset failed.")
-
 
     def reset_and_fast_forward(self):
         self.reset_hard()
@@ -80,14 +75,11 @@ class RawCompstate(object):
         self.git(["pull", "--ff-only", "origin", "master"],
                  err_msg="Git pull failed, deal with the merge manually.")
 
-
     def stage(self, file_path):
         self.git(["add", os.path.realpath(file_path)])
 
-
     def commit(self, commit_msg):
         self.git(["commit", "-m", commit_msg], err_msg="Git commit failed.")
-
 
     def commit_and_push(self, commit_msg):
         self.commit(commit_msg)

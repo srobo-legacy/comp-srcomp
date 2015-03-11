@@ -1,5 +1,6 @@
 """A clock to manage match periods."""
 
+
 class OutOfTimeException(Exception):
     """
     An exception representing no more time available at the competition to run
@@ -32,7 +33,7 @@ class MatchPeriodClock(object):
         # Only consider delays which are at the start of the period or later
         self._delays = [d for d in delays if d.time >= period.start_time]
         # Sort by when the delays occur
-        self._delays.sort(key = lambda d: d.time)
+        self._delays.sort(key=lambda d: d.time)
 
         # The current time, including any delays
         self._current_time = period.start_time

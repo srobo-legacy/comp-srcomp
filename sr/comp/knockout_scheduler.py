@@ -54,7 +54,8 @@ class KnockoutScheduler(object):
                 if match.type != MatchType.league:
                     continue
 
-                if (match.arena, match.num) not in self.scores.league.game_points:
+                if (match.arena, match.num) not in \
+                        self.scores.league.game_points:
                     return False
 
         return True
@@ -77,7 +78,8 @@ class KnockoutScheduler(object):
             display_name = 'Quarter {round_num} (#{global_num})'
         else:
             display_name = 'Match {global_num}'
-        return display_name.format(round_num=round_num + 1, global_num=global_num)
+        return display_name.format(round_num=round_num + 1,
+                                   global_num=global_num)
 
     def _add_round_of_matches(self, matches, arenas, rounds_remaining):
         """
@@ -169,15 +171,14 @@ class KnockoutScheduler(object):
         prev_round = self.knockout_rounds[-1]
         matches = []
 
-        for i in range(0,len(prev_round),2):
+        for i in range(0, len(prev_round), 2):
             winners = []
-            for parent in prev_round[i:i+2]:
+            for parent in prev_round[i:i + 2]:
                 winners += self.get_winners(parent)
 
             matches.append(winners)
 
         self._add_round_of_matches(matches, arenas, rounds_remaining)
-
 
     def _get_non_dropped_out_teams(self):
         teams = list(self.scores.league.positions.keys())
@@ -200,7 +201,7 @@ class KnockoutScheduler(object):
 
         for seeds in knockout.first_round_seeding(arity):
             match_teams = [teams[seed] for seed in seeds]
-            matches.append( match_teams )
+            matches.append(match_teams)
 
         self._add_round_of_matches(matches, self.arenas, None)
 
@@ -209,8 +210,8 @@ class KnockoutScheduler(object):
 
         period = self.config["match_periods"]["knockout"][0]
 
-        self.period = MatchPeriod(period["start_time"], period["end_time"], \
-                                  period["end_time"], period["description"], \
+        self.period = MatchPeriod(period["start_time"], period["end_time"],
+                                  period["end_time"], period["description"],
                                   [])
 
         self.clock = MatchPeriodClock(self.period, self.schedule.delays)

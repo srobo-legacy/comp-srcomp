@@ -86,7 +86,7 @@ def get_validated_scores(scorer_cls, input_data):
     """
 
     teams_data = input_data['teams']
-    extra_data = input_data.get('other') # May be absent
+    extra_data = input_data.get('other')  # May be absent
 
     scorer = scorer_cls(teams_data)
     scores = scorer.calculate_scores()
@@ -168,7 +168,8 @@ class BaseScores(object):
 
         positions = ranker.calc_positions(game_points, dsq)
         self.game_positions[match_id] = positions
-        self.ranked_points[match_id] = ranker.calc_ranked_points(positions, dsq)
+        self.ranked_points[match_id] = ranker.calc_ranked_points(positions,
+                                                                 dsq)
 
     @property
     def last_scored_match(self):

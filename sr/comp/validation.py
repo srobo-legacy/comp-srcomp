@@ -47,7 +47,8 @@ def validate(comp):
     count += validate_team_matches(all_matches, comp.teams.keys())
 
     count += validate_scores(MatchType.league, comp.scores.league, all_matches)
-    count += validate_scores(MatchType.knockout, comp.scores.knockout, all_matches)
+    count += validate_scores(MatchType.knockout, comp.scores.knockout,
+                             all_matches)
 
     return count
 
@@ -66,7 +67,8 @@ def validate_schedule(schedule, possible_teams, possible_arenas):
     warnings = validate_schedule_count(schedule)
     report_errors('Schedule', '', warnings)
 
-    errors = validate_schedule_timings(schedule.matches, schedule.match_duration)
+    errors = validate_schedule_timings(schedule.matches,
+                                       schedule.match_duration)
     count += len(errors)
     if len(errors):
         errors.append("This usually indicates that the scheduled periods "
@@ -169,6 +171,7 @@ def validate_scores(match_type, scores, schedule):
     warn_missing_scores(match_type, scores, schedule)
     return count
 
+
 def validate_scores_inner(match_type, scores, schedule):
     # NB: more specific validation is already done during the scoring,
     # so all we need to do is check that the right teams are being awarded
@@ -229,13 +232,13 @@ def validate_match_score(match_type, match_score, scheduled_match):
     errors = []
     if len(missing):
         missing = ', '.join(missing)
-        errors.append("Teams {0} missing from this {1} match." \
-                        .format(missing, match_type.name))
+        errors.append("Teams {0} missing from this {1} match."
+                      .format(missing, match_type.name))
 
     if len(extra):
         extra = ', '.join(extra)
-        errors.append("Teams {0} not scheduled in this {1} match." \
-                        .format(extra, match_type.name))
+        errors.append("Teams {0} not scheduled in this {1} match."
+                      .format(extra, match_type.name))
 
     return errors
 
@@ -295,12 +298,15 @@ def validate_team_matches(matches, possible_teams):
         need (or want) to check the knockouts, since those are scheduled
         dynamically based on the list of teams.
     """
-    teams_without_matches = find_teams_without_league_matches(matches, possible_teams)
+    teams_without_matches = find_teams_without_league_matches(matches,
+                                                              possible_teams)
     if teams_without_matches:
         teams_str = ", ".join(sorted(teams_without_matches))
-        print("The following teams have no league matches: {0}".format(teams_str))
+        print("The following teams have no league matches: {0}"
+              .format(teams_str))
 
     return len(teams_without_matches)
+
 
 def find_teams_without_league_matches(matches, possible_teams):
     teams_used = set()

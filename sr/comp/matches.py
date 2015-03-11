@@ -22,7 +22,7 @@ class MatchSchedule(object):
     """
     @classmethod
     def create(cls, config_fname, league_fname, scores, arenas, teams,
-                    knockout_scheduler = KnockoutScheduler):
+               knockout_scheduler=KnockoutScheduler):
         y = yaml_loader.load(config_fname)
 
         league = yaml_loader.load(league_fname)['matches']
@@ -48,8 +48,8 @@ class MatchSchedule(object):
             else:
                 max_end_time = e["end_time"]
 
-            period = MatchPeriod(e["start_time"], e["end_time"], max_end_time, \
-                                    e["description"], [])
+            period = MatchPeriod(e["start_time"], e["end_time"], max_end_time,
+                                 e["description"], [])
             self.match_periods.append(period)
 
         self._configure_match_slot_lengths(y)
@@ -63,7 +63,8 @@ class MatchSchedule(object):
 
     def _configure_match_slot_lengths(self, yamldata):
         raw_data = yamldata['match_slot_lengths']
-        durations = {key: datetime.timedelta(0, value) for key, value in raw_data.items()}
+        durations = {key: datetime.timedelta(0, value)
+                     for key, value in raw_data.items()}
         pre = durations['pre']
         post = durations['post']
         match = durations['match']
@@ -81,8 +82,7 @@ class MatchSchedule(object):
             return
 
         for info in yamldata:
-            d = Delay(timedelta(seconds = info["delay"]),
-                      info["time"])
+            d = Delay(timedelta(seconds=info["delay"]), info["time"])
             delays.append(d)
 
         delays.sort(key=lambda x: x.time)
@@ -175,11 +175,11 @@ class MatchSchedule(object):
         if len(winners) > 1:  # Act surprised!
             # Start with the winning teams in the same order as in the finals
             tie_breaker_teams = [team if team in winners else None
-                                   for team in finals_info.teams]
+                                 for team in finals_info.teams]
             # Use a static permutation
             permutation = [3, 2, 0, 1]
             tie_breaker_teams = [tie_breaker_teams[permutation[n]]
-                                   for n in permutation]
+                                 for n in permutation]
             # Inject new match
             arena = finals_info.arena
             match = Match(num=self.n_matches(),
