@@ -10,10 +10,11 @@ from .match_period_clock import MatchPeriodClock
 UNKNOWABLE_TEAM = '???'
 
 class KnockoutScheduler(object):
-    def __init__(self, schedule, scores, arenas, config):
+    def __init__(self, schedule, scores, arenas, teams, config):
         self.schedule = schedule
         self.scores = scores
         self.arenas = arenas
+        self.teams = teams
         self.config = config
 
         # The knockout matches appear in the normal matches list
@@ -148,11 +149,18 @@ class KnockoutScheduler(object):
 
         self._add_round_of_matches(matches, arenas, rounds_remaining)
 
-    def _add_first_round(self, arity):
-        teams = list(self.scores.league.positions.keys())
 
+    def _get_non_dropped_out_teams(self):
+        teams = list(self.scores.league.positions.keys())
+        teams = [tla for tla in teams if not self.teams[tla].dropped_out]
+        return teams
+
+    def _add_first_round(self, arity):
+        teams = self._get_non_dropped_out_teams()
         if not self._played_all_league_matches():
             teams = [UNKNOWABLE_TEAM] * len(teams)
+
+        assert arity <= len(teams)
 
         # Seed the random generator with the seeded team list
         # This makes it unpredictable which teams will be in which zones
@@ -179,7 +187,7 @@ class KnockoutScheduler(object):
         knockout_conf = self.config["knockout"]
         round_spacing = timedelta(seconds=knockout_conf["round_spacing"])
 
-        n_teams = len(self.scores.league.positions)
+        n_teams = len(self._get_non_dropped_out_teams())
         if 'arity' in knockout_conf:
             arity = min(n_teams, knockout_conf['arity'])
         else:

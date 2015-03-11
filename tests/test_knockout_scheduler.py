@@ -1,16 +1,17 @@
 
-from collections import OrderedDict
+from collections import defaultdict, OrderedDict
 from datetime import datetime, timedelta
 import mock
 
 from sr.comp.scores import TeamScore
+from sr.comp.teams import Team
 from sr.comp.matches import Delay
 from sr.comp.match_period import Match, MatchType
 from sr.comp.knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
 
 def get_scheduler(matches = None, positions = None, \
                     knockout_points = None, league_game_points = None, \
-                    delays = None):
+                    delays = None, teams=None):
     matches = matches or []
     delays = delays or []
     match_duration = timedelta(minutes = 5)
@@ -45,7 +46,10 @@ def get_scheduler(matches = None, positions = None, \
         'knockout': knockout_config,
     }
     arenas = ['A']
-    scheduler = KnockoutScheduler(league_schedule, scores, arenas, config)
+    if teams is None:
+        teams = defaultdict(lambda: Team(None, None, False, False))
+    scheduler = KnockoutScheduler(league_schedule, scores, arenas, teams,
+                                  config)
     return scheduler
 
 
@@ -70,6 +74,7 @@ def test_knockout_match_winners_simple():
     winners = scheduler.get_winners(game)
 
     assert set(winners) == set(['GHI', 'JKL'])
+
 
 def test_knockout_match_winners_irrelevant_tie_1():
     knockout_points = {
@@ -187,10 +192,14 @@ def test_first_round():
     positions['KLM'] = 6
     positions['MNO'] = 7
     positions['OPQ'] = 8
+    positions['RST'] = 9
+
+    teams = defaultdict(lambda: Team(None, None, False, False))
+    teams['ABC'] = Team(None, None, False, True)  # dropped out
 
     # Fake a couple of league matches
     matches = [{},{}]
-    scheduler = get_scheduler(matches, positions = positions)
+    scheduler = get_scheduler(matches, positions = positions, teams=teams)
 
     def seeder(*args):
         assert args[0] == 8, "Wrong number of teams"
@@ -213,7 +222,7 @@ def test_first_round():
     semi_0 = semis[0]
     semi_0_teams = semi_0.teams
     # Thanks to our mocking of the seeder...
-    expected_0_teams = list(positions.keys())[:4]
+    expected_0_teams = list(positions.keys())[1:5]  # 0th team has dropped out
 
     assert semi_0.num == 2, "Match number should carry on above league matches"
     assert semi_0.type == MatchType.knockout

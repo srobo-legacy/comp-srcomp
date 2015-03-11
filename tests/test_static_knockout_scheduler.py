@@ -1,5 +1,5 @@
 
-from collections import OrderedDict
+from collections import defaultdict, OrderedDict
 from datetime import datetime, timedelta
 import mock
 
@@ -80,7 +80,9 @@ def get_scheduler(matches = None, positions = None, \
         'static_knockout': get_config(),
     }
     arenas = ['A']
-    scheduler = StaticScheduler(league_schedule, scores, arenas, config)
+
+    teams = None  # static schedule shouldn't use teams
+    scheduler = StaticScheduler(league_schedule, scores, arenas, teams, config)
     return scheduler
 
 def helper(places, knockout_points = None):
