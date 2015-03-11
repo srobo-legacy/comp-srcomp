@@ -151,6 +151,7 @@ class KnockoutScheduler(object):
 
     def _add_first_round(self, arity):
         teams = list(self.scores.league.positions.keys())
+        teams = [tla for tla in teams if not self.teams[tla].dropped_out]
 
         if not self._played_all_league_matches():
             teams = [UNKNOWABLE_TEAM] * len(teams)
