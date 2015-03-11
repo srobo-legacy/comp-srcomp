@@ -75,6 +75,7 @@ def test_knockout_match_winners_simple():
 
     assert set(winners) == set(['GHI', 'JKL'])
 
+
 def test_knockout_match_winners_irrelevant_tie_1():
     knockout_points = {
         ('A', 2): {
@@ -191,10 +192,14 @@ def test_first_round():
     positions['KLM'] = 6
     positions['MNO'] = 7
     positions['OPQ'] = 8
+    positions['RST'] = 9
+
+    teams = defaultdict(lambda: Team(None, None, False, False))
+    teams['ABC'] = Team(None, None, False, True)  # dropped out
 
     # Fake a couple of league matches
     matches = [{},{}]
-    scheduler = get_scheduler(matches, positions = positions)
+    scheduler = get_scheduler(matches, positions = positions, teams=teams)
 
     def seeder(*args):
         assert args[0] == 8, "Wrong number of teams"
@@ -217,7 +222,7 @@ def test_first_round():
     semi_0 = semis[0]
     semi_0_teams = semi_0.teams
     # Thanks to our mocking of the seeder...
-    expected_0_teams = list(positions.keys())[:4]
+    expected_0_teams = list(positions.keys())[1:5]  # 0th team has dropped out
 
     assert semi_0.num == 2, "Match number should carry on above league matches"
     assert semi_0.type == MatchType.knockout
