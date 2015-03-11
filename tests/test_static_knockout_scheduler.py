@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 import mock
 
 from sr.comp.scores import TeamScore
-from sr.comp.teams import Team
 from sr.comp.match_period import Match, MatchType
 from sr.comp.knockout_scheduler import UNKNOWABLE_TEAM
 from sr.comp.static_knockout_scheduler import StaticScheduler
@@ -82,7 +81,7 @@ def get_scheduler(matches = None, positions = None, \
     }
     arenas = ['A']
 
-    teams = defaultdict(lambda: Team(None, None, False, False))
+    teams = None  # static schedule shouldn't use teams
     scheduler = StaticScheduler(league_schedule, scores, arenas, teams, config)
     return scheduler
 
