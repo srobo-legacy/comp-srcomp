@@ -1,3 +1,5 @@
+import sys
+
 from setuptools import find_packages, setup
 
 
@@ -11,7 +13,6 @@ install_requires = [
     'python-dateutil >=2.2, <3'
 ]
 
-import sys
 if sys.version_info < (3, 4):
     install_requires.append('enum34 >=1.0.4, <2')
 
