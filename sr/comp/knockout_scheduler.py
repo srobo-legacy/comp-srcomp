@@ -18,8 +18,8 @@ class KnockoutScheduler(object):
 
     :param schedule: The league schedule.
     :param scores: The scores.
-    :param arenas: The arenas.
-    :param teams: The teams.
+    :param dict arenas: The arenas.
+    :param dict teams: The teams.
     :param config: Custom configuration for the knockout scheduler.
     """
 

@@ -167,12 +167,14 @@ def validate_match(match, possible_teams):
 
 
 def validate_scores(match_type, scores, schedule):
+    """Validate that the scores are sane."""
     count = validate_scores_inner(match_type, scores, schedule)
     warn_missing_scores(match_type, scores, schedule)
     return count
 
 
 def validate_scores_inner(match_type, scores, schedule):
+    """Validate that scores are sane."""
     # NB: more specific validation is already done during the scoring,
     # so all we need to do is check that the right teams are being awarded
     # points
@@ -261,10 +263,11 @@ def warn_missing_scores(match_type, scores, schedule):
 
 
 def find_missing_scores(match_type, match_ids, last_match, schedule):
-    """Given a collection of ``match_ids`` for which we have scores,
-        the ``match_type`` currently under consideration, the number of
-        the ``last_match`` which was scored and the list of all known
-        matches determine which scores should be present but aren't.
+    """
+    Given a collection of ``match_ids`` for which we have scores, the
+    ``match_type`` currently under consideration, the number of the
+    ``last_match`` which was scored and the list of all known matches determine
+    which scores should be present but aren't.
     """
 
     # If no matches have been scored, no scores can be missing.
@@ -294,10 +297,12 @@ def find_missing_scores(match_type, match_ids, last_match, schedule):
 
 
 def validate_team_matches(matches, possible_teams):
-    """Check that all teams have been assigned league matches. We don't
-        need (or want) to check the knockouts, since those are scheduled
-        dynamically based on the list of teams.
     """
+    Check that all teams have been assigned league matches. We don't need (or
+    want) to check the knockouts, since those are scheduled dynamically based
+    on the list of teams.
+    """
+
     teams_without_matches = find_teams_without_league_matches(matches,
                                                               possible_teams)
     if teams_without_matches:
@@ -309,6 +314,13 @@ def validate_team_matches(matches, possible_teams):
 
 
 def find_teams_without_league_matches(matches, possible_teams):
+    """
+    Find teams that don't have league matches.
+
+    :param list matches: A list of matches.
+    :param possible_teams: A list of possible teams.
+    :return: A :class:`set` of teams without matches.
+    """
     teams_used = set()
     for match in matches:
         for game in match.values():
