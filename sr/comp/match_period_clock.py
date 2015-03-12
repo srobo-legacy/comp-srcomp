@@ -84,7 +84,7 @@ class MatchPeriodClock(object):
         .. note::
            It is assumed that the duration value will always be 'positive',
            i.e. that time will not go backwards. The results of the duration
-           valuebeing 'negative' are undefined.
+           value being 'negative' are undefined.
         """
 
         self._current_time += duration
