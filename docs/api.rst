@@ -62,6 +62,14 @@ Matches
     :undoc-members:
     :show-inheritance:
 
+Raw Compstate
+-------------
+
+.. automodule:: sr.comp.raw_compstate
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Scores
 ------
 
@@ -98,6 +106,14 @@ Validation
 ----------
 
 .. automodule:: sr.comp.validation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Winners
+-------
+
+.. automodule:: sr.comp.winners
     :members:
     :undoc-members:
     :show-inheritance:
