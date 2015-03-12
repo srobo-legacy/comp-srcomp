@@ -92,7 +92,7 @@ def test_knockout_match_winners_irrelevant_tie_1():
 
     assert set(winners) == set(['GHI', 'JKL'])
 
-def test_knockout_match_winners_irrelevant_tie_1():
+def test_knockout_match_winners_irrelevant_tie_2():
     knockout_points = {
         ('A', 2): {
             'ABC': 1,
