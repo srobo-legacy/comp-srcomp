@@ -3,7 +3,6 @@ from collections import defaultdict, OrderedDict
 from datetime import datetime, timedelta
 import mock
 
-from sr.comp.scores import TeamScore
 from sr.comp.teams import Team
 from sr.comp.matches import Delay
 from sr.comp.match_period import Match, MatchType
@@ -168,7 +167,6 @@ def test_first_round_before_league_end():
         scheduler.add_knockouts()
 
     knockout_rounds = scheduler.knockout_rounds
-    period = scheduler.period
 
     assert len(knockout_rounds) == 1, "Should be finals only"
     finals = knockout_rounds[0]

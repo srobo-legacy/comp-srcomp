@@ -3,14 +3,12 @@ from collections import namedtuple
 from datetime import datetime, timedelta
 import mock
 import os
-import subprocess
 
 try:
     from StringIO import StringIO
 except ImportError:
     from io import StringIO
 
-from sr.comp import matches
 from sr.comp.comp import SRComp
 from sr.comp.validation import validate, validate_match, validate_schedule_arenas, \
     validate_schedule_timings, validate_match_score, find_missing_scores, \

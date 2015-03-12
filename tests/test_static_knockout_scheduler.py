@@ -1,9 +1,8 @@
 
-from collections import defaultdict, OrderedDict
+from collections import OrderedDict
 from datetime import datetime, timedelta
 import mock
 
-from sr.comp.scores import TeamScore
 from sr.comp.match_period import Match, MatchType
 from sr.comp.knockout_scheduler import UNKNOWABLE_TEAM
 from sr.comp.static_knockout_scheduler import StaticScheduler
