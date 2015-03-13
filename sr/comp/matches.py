@@ -27,7 +27,7 @@ class MatchSchedule(object):
 
         league = yaml_loader.load(league_fname)['matches']
 
-        schedule = cls(y, league)
+        schedule = cls(y, league, teams)
 
         k = knockout_scheduler(schedule, scores, arenas, teams, y)
         k.add_knockouts()
@@ -40,7 +40,9 @@ class MatchSchedule(object):
 
         return schedule
 
-    def __init__(self, y, league):
+    def __init__(self, y, league, teams):
+        self.teams = teams
+
         self.match_periods = []
         for e in y["match_periods"]["league"]:
             if "max_end_time" in e:
@@ -88,6 +90,26 @@ class MatchSchedule(object):
         delays.sort(key=lambda x: x.time)
         self.delays = delays
 
+    def remove_drop_outs(self, teams, since_match):
+        """
+        Take a list of TLAs and replace the teams that have dropped out with
+        ``None`` values.
+
+        :param list teams: A list of TLAs.
+        :param int since_match: The match number to check for drop outs from.
+        :return: A new list containing the approriate teams.
+        """
+        new_teams = []
+        for tla in teams:
+            if tla is None:
+                new_teams.append(None)
+            else:
+                if self.teams[tla].is_still_around(since_match):
+                    new_teams.append(tla)
+                else:
+                    new_teams.append(None)
+        return new_teams
+
     def _build_matchlist(self, yamldata):
         """Build the match list."""
         self.matches = []
@@ -123,6 +145,7 @@ class MatchSchedule(object):
 
                 end_time = start + self.match_duration
                 for arena_name, teams in arenas.items():
+                    teams = self.remove_drop_outs(teams, match_n)
                     display_name = 'Match {n}'.format(n=match_n)
                     match = Match(match_n, display_name, arena_name, teams,
                                   start, end_time, MatchType.league)
