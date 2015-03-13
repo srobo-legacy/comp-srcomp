@@ -1,10 +1,12 @@
 from nose.tools import eq_
+from collections import defaultdict
 import datetime
 import mock
 
 from sr.comp.matches import MatchSchedule
 from sr.comp.match_period import MatchType, Match
 from sr.comp.ranker import calc_positions, calc_ranked_points
+
 
 def make_schedule():
     settings = {'match_periods': {'league': [], 'knockout': []},
@@ -13,7 +15,8 @@ def make_schedule():
                                        'post': 30,
                                        'total': 300},
                 'delays': []}
-    schedule = MatchSchedule(settings, {})
+    teams = defaultdict(lambda: Team(None, None, False, None))
+    schedule = MatchSchedule(settings, {}, teams)
 
     finals = Match(num=0, display_name='Match 0',
                    arena='A',

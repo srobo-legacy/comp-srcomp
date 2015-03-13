@@ -1,7 +1,10 @@
 
+from collections import defaultdict
 from datetime import datetime, timedelta
 
 from sr.comp.matches import MatchSchedule
+from sr.comp.teams import Team
+
 
 def assert_times(expected, matches, message):
     def times(dts):
@@ -54,7 +57,10 @@ def get_basic_data():
     return the_data
 
 def load_data(the_data):
-    matches = MatchSchedule(the_data, the_data['matches'])
+    teams = defaultdict(lambda: Team(None, None, False, None))
+    teams['WYC'] = Team(None, None, False, 1)  # dropped out after match 1
+
+    matches = MatchSchedule(the_data, the_data['matches'], teams)
     return matches
 
 def load_basic_data():
@@ -83,6 +89,15 @@ def test_basic_data():
     b_end = b.end_time
     assert a_end == datetime(2014, 3, 26,  13, 5)
     assert a_end == b_end
+
+def test_dropped_out_team():
+    matches = load_basic_data()
+
+    match = matches.matches[1]
+    assert match['A'].teams == ['WYC', 'QMS', 'LSS', 'EMM']
+
+    match = matches.matches[2]
+    assert match['A'].teams == [None, 'QMS', 'LSS', 'EMM']
 
 def test_matches_at_no_delays():
     the_data = get_basic_data()
