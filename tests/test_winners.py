@@ -18,10 +18,10 @@ KNOCKOUT_ROUNDS = [[Match(num=1, display_name='Match 1', arena='A',
                           end_time=datetime(2014, 4, 26, 16, 35, tzinfo=tzutc()),
                           type=MatchType.knockout)]]
 
-TEAMS = {'AAA': Team(tla='AAA', name='AAA Squad', rookie=True, dropped_out=False),
-         'BBB': Team(tla='BBB', name='BBBees', rookie=False, dropped_out=False),
-         'CCC': Team(tla='CCC', name='Team CCC', rookie=True, dropped_out=False),
-         'DDD': Team(tla='DDD', name='DDD Robotics', rookie=False, dropped_out=False)}
+TEAMS = {'AAA': Team(tla='AAA', name='AAA Squad', rookie=True, dropped_out_after=None),
+         'BBB': Team(tla='BBB', name='BBBees', rookie=False, dropped_out_after=None),
+         'CCC': Team(tla='CCC', name='Team CCC', rookie=True, dropped_out_after=None),
+         'DDD': Team(tla='DDD', name='DDD Robotics', rookie=False, dropped_out_after=None)}
 
 class MockScoreSet(object):
     def __init__(self, arena, game, scores, dsq=()):

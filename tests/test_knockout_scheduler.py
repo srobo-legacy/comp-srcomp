@@ -46,7 +46,7 @@ def get_scheduler(matches = None, positions = None, \
     }
     arenas = ['A']
     if teams is None:
-        teams = defaultdict(lambda: Team(None, None, False, False))
+        teams = defaultdict(lambda: Team(None, None, False, None))
     scheduler = KnockoutScheduler(league_schedule, scores, arenas, teams,
                                   config)
     return scheduler
@@ -192,8 +192,8 @@ def test_first_round():
     positions['OPQ'] = 8
     positions['RST'] = 9
 
-    teams = defaultdict(lambda: Team(None, None, False, False))
-    teams['ABC'] = Team(None, None, False, True)  # dropped out
+    teams = defaultdict(lambda: Team(None, None, False, None))
+    teams['ABC'] = Team(None, None, False, 0)  # dropped out
 
     # Fake a couple of league matches
     matches = [{},{}]
