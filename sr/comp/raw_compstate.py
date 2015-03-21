@@ -63,6 +63,9 @@ class RawCompstate(object):
             else:
                 raise
 
+    def push(self, where, revspec, err_msg=None):
+        self.git(["push", where, revspec], err_msg)
+
     def reset_hard(self):
         self.git(["reset", "--hard", "HEAD"], err_msg="Git reset failed.")
 
@@ -87,5 +90,5 @@ class RawCompstate(object):
         if self._local_only:
             return
 
-        self.git(["push", "origin", "master"],
-                 err_msg="Git push failed, deal with the merge manually.")
+        self.push("origin", "master",
+                  err_msg="Git push failed, deal with the merge manually.")
