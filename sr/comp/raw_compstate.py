@@ -82,7 +82,7 @@ class RawCompstate(object):
         self.git(["push", where, revspec], err_msg)
 
     def rev_parse(self, revision):
-        output = self.git(["rev-parse", revision, '--'], return_output=True,
+        output = self.git(["rev-parse", '--verify', revision], return_output=True,
                           err_msg="Unknown revision '{0}'.".format(revision))
         return output.strip()
 
