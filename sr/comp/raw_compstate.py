@@ -68,12 +68,11 @@ class RawCompstate(object):
     @property
     def has_changes(self):
         """
-        Whether or not there are any changes to files in the state.
-        Untracked files are ignored.
+        Whether or not there are any changes to files in the state,
+        including untracked files.
         """
         output = self.git(["status", "--porcelain"], return_output=True)
-        lines = output.splitlines()
-        return any(not l.startswith('??') for l in lines)
+        return len(output) != 0
 
     def show_changes(self):
         self.git(['status'])
