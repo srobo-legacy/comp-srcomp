@@ -53,18 +53,38 @@ class RawCompstate(object):
 
     # Git repo related functionality
 
-    def git(self, command_pieces, err_msg=None):
+    def git(self, command_pieces, err_msg=None, return_output=False):
         command = ['git'] + list(command_pieces)
+        func = subprocess.check_output if return_output else subprocess.check_call
+        stderr = subprocess.STDOUT if return_output else None
         try:
-            subprocess.check_call(command, cwd=self._path)
+            return func(command, cwd=self._path, stderr=stderr)
         except (OSError, subprocess.CalledProcessError):
             if err_msg:
                 raise RuntimeError(err_msg)
             else:
                 raise
 
+    @property
+    def has_changes(self):
+        """
+        Whether or not there are any changes to files in the state.
+        Untracked files are ignored.
+        """
+        output = self.git(["status", "--porcelain"], return_output=True)
+        lines = output.splitlines()
+        return any(not l.startswith('??') for l in lines)
+
+    def show_changes(self):
+        self.git(['status'])
+
     def push(self, where, revspec, err_msg=None):
         self.git(["push", where, revspec], err_msg)
+
+    def rev_parse(self, revision):
+        output = self.git(["rev-parse", revision, '--'], return_output=True,
+                          err_msg="Unknown revision '{0}'.".format(revision))
+        return output.strip()
 
     def reset_hard(self):
         self.git(["reset", "--hard", "HEAD"], err_msg="Git reset failed.")
