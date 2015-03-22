@@ -130,6 +130,9 @@ class RawCompstate(object):
     def stage(self, file_path):
         self.git(["add", os.path.realpath(file_path)])
 
+    def fetch(self, where='origin', quiet=False):
+        self.git(['fetch', where], return_output=quiet)
+
     def commit(self, commit_msg):
         self.git(["commit", "-m", commit_msg], err_msg="Git commit failed.")
 
