@@ -77,8 +77,11 @@ class RawCompstate(object):
     def show_changes(self):
         self.git(['status'])
 
-    def push(self, where, revspec, err_msg=None):
-        self.git(["push", where, revspec], err_msg)
+    def push(self, where, revspec, err_msg=None, force=False):
+        args = ["push", where, revspec]
+        if force:
+            args.insert(1, '--force')
+        self.git(args, err_msg)
 
     def rev_parse(self, revision):
         output = self.git(["rev-parse", '--verify', revision], return_output=True,
