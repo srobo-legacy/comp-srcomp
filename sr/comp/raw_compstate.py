@@ -77,6 +77,9 @@ class RawCompstate(object):
     def show_changes(self):
         self.git(['status'])
 
+    def show_remotes(self):
+        self.git(['remote', '-v'])
+
     def push(self, where, revspec, err_msg=None, force=False):
         args = ["push", where, revspec]
         if force:
@@ -132,6 +135,9 @@ class RawCompstate(object):
 
     def fetch(self, where='origin', quiet=False):
         self.git(['fetch', where], return_output=quiet)
+
+    def checkout(self, what):
+        self.git(['checkout', what])
 
     def commit(self, commit_msg):
         self.git(["commit", "-m", commit_msg], err_msg="Git commit failed.")
