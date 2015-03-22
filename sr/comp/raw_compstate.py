@@ -30,8 +30,8 @@ class RawCompstate(object):
     def get_score_path(self, match):
         """Get the absolute path to the score file for the given match."""
         filename = "{0:0>3}.yaml".format(match.num)
-        return os.path.join(self._path, match.type.value, match.arena,
-                            filename)
+        relpath = os.path.join(match.type.value, match.arena, filename)
+        return os.path.realpath(os.path.join(self._path, relapth))
 
     def load_score(self, match):
         """Load raw score data for the given match."""
@@ -131,7 +131,14 @@ class RawCompstate(object):
                  err_msg="Git pull failed, deal with the merge manually.")
 
     def stage(self, file_path):
-        self.git(["add", os.path.realpath(file_path)])
+        """
+        Stage the given file.
+
+        :param str file_path: A path to the file to stage. This should
+                              either be an absolute path, or one relative
+                              to the compstate.
+        """
+        self.git(["add", file_path])
 
     def fetch(self, where='origin', quiet=False):
         self.git(['fetch', where], return_output=quiet)
