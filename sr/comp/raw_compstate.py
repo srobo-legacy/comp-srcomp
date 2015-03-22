@@ -88,6 +88,33 @@ class RawCompstate(object):
                           err_msg="Unknown revision '{0}'.".format(revision))
         return output.strip()
 
+    def has_commit(self, commit):
+        """Whether or not the given commit is known to this repository."""
+        try:
+            self.rev_parse(commit + "^{commit}")
+            return True
+        except:
+            return False
+
+    def _is_parent(self, parent, child):
+        try:
+            revspec = "{0}..{1}".format(parent, child)
+            revs = self.git(['rev-list', '-n1', revspec, '--'],
+                            return_output=True)
+            # rev-list prints the revisions which are parents of 'child',
+            # up to and including 'parent'; any output therefore tells us
+            # that they're related
+            return len(revs.strip()) != 0
+        except:
+            # One or both revisions are unknown
+            return False
+
+    def has_ancestor(self, commit):
+        return self._is_parent(commit, 'HEAD')
+
+    def has_descendant(self, commit):
+        return self._is_parent('HEAD', commit)
+
     def reset_hard(self):
         self.git(["reset", "--hard", "HEAD"], err_msg="Git reset failed.")
 
