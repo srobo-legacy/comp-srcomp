@@ -124,6 +124,9 @@ class RawCompstate(object):
     def reset_and_fast_forward(self):
         self.reset_hard()
 
+        self.pull_fast_forward()
+
+    def pull_fast_forward(self):
         if self._local_only:
             return
 
