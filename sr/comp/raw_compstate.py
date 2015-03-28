@@ -31,7 +31,7 @@ class RawCompstate(object):
         """Get the absolute path to the score file for the given match."""
         filename = "{0:0>3}.yaml".format(match.num)
         relpath = os.path.join(match.type.value, match.arena, filename)
-        return os.path.realpath(os.path.join(self._path, relapth))
+        return os.path.realpath(os.path.join(self._path, relpath))
 
     def load_score(self, match):
         """Load raw score data for the given match."""
