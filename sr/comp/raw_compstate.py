@@ -58,7 +58,7 @@ class RawCompstate(object):
         func = subprocess.check_output if return_output else subprocess.check_call
         stderr = subprocess.STDOUT if return_output else None
         try:
-            return func(command, cwd=self._path, stderr=stderr)
+            return func(command, cwd=self._path, stderr=stderr).decode("utf-8")
         except (OSError, subprocess.CalledProcessError):
             if err_msg:
                 raise RuntimeError(err_msg)
