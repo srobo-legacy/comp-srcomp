@@ -51,6 +51,17 @@ class RawCompstate(object):
         with open(path, "w") as fd:
             yaml.safe_dump(score, fd, default_flow_style=False)
 
+    @property
+    def deployments(self):
+        deployments_name = 'deployments.yaml'
+        deployments_path = os.path.join(self._path, deployments_name)
+
+        with open(deployments_path, 'r') as dp:
+            raw_deployments = yaml.load(dp)
+
+        hosts = raw_deployments['deployments']
+        return hosts
+
     # Git repo related functionality
 
     def git(self, command_pieces, err_msg=None, return_output=False):
