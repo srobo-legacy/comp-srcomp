@@ -205,7 +205,12 @@ class KnockoutScheduler(object):
             match_teams = [teams[seed] for seed in seeds]
             matches.append(match_teams)
 
-        self._add_round_of_matches(matches, self.arenas, None)
+        rounds_remaining = self.get_rounds_remaining(matches)
+        self._add_round_of_matches(matches, self.arenas, rounds_remaining)
+
+    @staticmethod
+    def get_rounds_remaining(prev_matches):
+        return int(math.log(len(prev_matches), 2))
 
     def add_knockouts(self):
         """Add the knockouts to the schedule."""
@@ -235,7 +240,7 @@ class KnockoutScheduler(object):
             self.clock.advance_time(round_spacing)
 
             # Number of rounds remaining to be added
-            rounds_remaining = int(math.log(len(self.knockout_rounds[-1]), 2))
+            rounds_remaining = self.get_rounds_remaining(self.knockout_rounds[-1])
 
             if rounds_remaining <= knockout_conf["single_arena"]["rounds"]:
                 arenas = knockout_conf["single_arena"]["arenas"]

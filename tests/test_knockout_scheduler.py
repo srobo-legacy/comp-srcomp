@@ -225,6 +225,8 @@ def test_first_round():
     assert semi_0.num == 2, "Match number should carry on above league matches"
     assert semi_0.type == MatchType.knockout
     assert semi_0_teams == expected_0_teams
+    semi_0_name = semi_0.display_name
+    assert semi_0_name == "Semi 1 (#2)" # labelling starts at 1
 
     period_matches = period.matches
     expected_matches = [{'A':m} for r in knockout_rounds for m in r]
