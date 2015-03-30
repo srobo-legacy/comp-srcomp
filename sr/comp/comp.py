@@ -52,7 +52,7 @@ class SRComp(object):
 
         scorer = load_scorer(root)
         self.scores = scores.Scores(root, self.teams.keys(), scorer)
-        """A :class:`sr.comp.scorer.Scores` instance."""
+        """A :class:`sr.comp.scores.Scores` instance."""
 
         self.arenas = arenas.load_arenas(os.path.join(root, "arenas.yaml"))
         """A :class:`collections.OrderedDict` mapping arena names to
