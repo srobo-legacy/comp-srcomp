@@ -51,7 +51,7 @@ class MatchPeriodClock(object):
         has passed (through calls to ``advance_time``) and the delays which
         have occurred.
 
-        Will raise an ``OutOfTimeException`` if either:
+        Will raise an :class:`.OutOfTimeException` if either:
 
         - the end of the period has been reached (i.e: the sum of durations
           passed to ``advance_time`` has exceeded the planned duration of the
