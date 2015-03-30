@@ -160,7 +160,7 @@ class MatchSchedule(object):
         """
         Get all the matches that occur around a specific ``date``.
 
-        :param date datetime: The date at which matches occur.
+        :param datetime date: The date at which matches occur.
         :return: An iterable list of matches.
         """
 
