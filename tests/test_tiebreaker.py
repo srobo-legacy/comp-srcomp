@@ -4,7 +4,7 @@ import datetime
 import mock
 
 from sr.comp.matches import MatchSchedule
-from sr.comp.match_period import MatchType, Match
+from sr.comp.match_period import MatchType, Match, MatchPeriod
 from sr.comp.ranker import calc_positions, calc_ranked_points
 
 
@@ -49,13 +49,30 @@ def test_tiebreaker():
 
     schedule.add_tie_breaker(scores, datetime.datetime(2014, 4, 25, 13, 0))
 
-    eq_(schedule.matches[-1], {'A': Match(num=1,
-                                          display_name='Tiebreaker',
-                                          arena='A',
-                                          teams=['BBB', 'AAA', None, 'CCC'],
-                                          start_time=datetime.datetime(2014, 4, 25, 13,  0),
-                                          end_time=datetime.datetime(2014, 4, 25, 13,  5),
-                                          type=MatchType.tie_breaker)})
+    start_time = datetime.datetime(2014, 4, 25, 13,  0)
+    end_time = datetime.datetime(2014, 4, 25, 13,  5)
+
+    tiebreaker_match = {'A': Match(num=1,
+                                   display_name='Tiebreaker',
+                                   arena='A',
+                                   teams=['BBB', 'AAA', None, 'CCC'],
+                                   start_time=start_time,
+                                   end_time=end_time,
+                                   type=MatchType.tie_breaker)}
+
+    eq_(schedule.matches[-1], tiebreaker_match)
+
+    last_period = schedule.match_periods[-1]
+    last_period_matches = last_period.matches
+
+    assert last_period_matches == [tiebreaker_match], "Wrong matches in last period"
+
+    last_period_matches.pop() # simplify the next comparison
+
+    expected_period = MatchPeriod(start_time, end_time, end_time,
+                                  'Tiebreaker', [])
+
+    assert last_period == expected_period, "Wrong last period"
 
 def test_no_tiebreaker_if_winner():
     schedule = make_schedule()

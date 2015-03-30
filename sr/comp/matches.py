@@ -222,6 +222,7 @@ class MatchSchedule(object):
             tie_breaker_teams = [tie_breaker_teams[permutation[n]]
                                  for n in permutation]
             # Inject new match
+            end_time = time + self.match_duration
             arena = finals_info.arena
             match = Match(num=self.n_matches(),
                           display_name='Tiebreaker',
@@ -229,5 +230,9 @@ class MatchSchedule(object):
                           teams=tie_breaker_teams,
                           type=MatchType.tie_breaker,
                           start_time=time,
-                          end_time=time + self.match_duration)
-            self.matches.append({arena: match})
+                          end_time=end_time)
+            slot = {arena: match}
+            self.matches.append(slot)
+            match_period = MatchPeriod(time, end_time, end_time,
+                                       'Tiebreaker', [slot])
+            self.match_periods.append(match_period)
