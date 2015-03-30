@@ -20,9 +20,21 @@ class MatchSchedule(object):
     """
     A match schedule.
     """
+
     @classmethod
     def create(cls, config_fname, league_fname, scores, arenas, teams,
                knockout_scheduler=KnockoutScheduler):
+        """
+        Create a new match schedule around the given config data.
+
+        :param str config_fname: The filename of the main config file.
+        :param str league_fname: The filename of the file containing the league matches.
+        :param `.Scores` scores: The scores for the competition.
+        :param dict arenas: A mapping of arena ids to :class:`.Arena` instances.
+        :param dict teams: A mapping of TLAs to :class:`.Team` instances.
+        :param class knockout_scheduler: The scheduler to use for the knockcout stages.
+        """
+
         y = yaml_loader.load(config_fname)
 
         league = yaml_loader.load(league_fname)['matches']
@@ -42,8 +54,14 @@ class MatchSchedule(object):
 
     def __init__(self, y, league, teams):
         self.teams = teams
+        """A mapping of TLAs to :class:`.Team` instances."""
 
         self.match_periods = []
+        """
+        A list of the :class:`.MatchPeriod` s which contain the matches
+        for the competition.
+        """
+
         for e in y["match_periods"]["league"]:
             if "max_end_time" in e:
                 max_end_time = e["max_end_time"]
