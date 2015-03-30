@@ -53,7 +53,7 @@ def test_tiebreaker():
     end_time = datetime.datetime(2014, 4, 25, 13,  5)
 
     tiebreaker_match = {'A': Match(num=1,
-                                   display_name='Tiebreaker',
+                                   display_name='Tiebreaker (#1)',
                                    arena='A',
                                    teams=['BBB', 'AAA', None, 'CCC'],
                                    start_time=start_time,

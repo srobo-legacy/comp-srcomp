@@ -223,9 +223,10 @@ class MatchSchedule(object):
                                  for n in permutation]
             # Inject new match
             end_time = time + self.match_duration
+            num = self.n_matches()
             arena = finals_info.arena
-            match = Match(num=self.n_matches(),
-                          display_name='Tiebreaker',
+            match = Match(num=num,
+                          display_name="Tiebreaker (#{0})".format(num),
                           arena=arena,
                           teams=tie_breaker_teams,
                           type=MatchType.tie_breaker,
