@@ -13,9 +13,15 @@ def load_arenas(filename):
     """
     Load arenas from a YAML file.
 
-    :param str filename: The filename of the YAML file to load arenas from.
-    :return: A :class:`collections.OrderedDict` mapping arena names to
-             :class:`Arena` objects.
+    Parameters
+    ----------
+    filename : str
+        The filename of the YAML file to load arenas from.
+
+    Returns
+    -------
+    collections.OrderedDict
+        A mapping of arena names to :class:`Arena` objects.
     """
 
     y = yaml_loader.load(filename)
@@ -35,9 +41,15 @@ def load_corners(filename):
     """
     Load corner colours from a YAML file.
 
-    :param str filename: The filename of the YAML file to load corners from.
-    :return: An :class:`collections.OrderedDict` mapping corner numbers to
-             :class:`Corner` objects.
+    Parameters
+    ----------
+    filename : str
+        The filename of the YAML file to load corners from.
+
+    Returns
+    -------
+    collections.OrderedDict
+        A mapping of corner numbers to :class:`Corner` objects.
     """
 
     y = yaml_loader.load(filename)

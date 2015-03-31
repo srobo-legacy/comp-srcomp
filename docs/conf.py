@@ -4,11 +4,11 @@ import sys
 
 sys.path.insert(0, os.path.abspath('..'))
 
-# Sphinx configuration
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
+    'sphinx.ext.napoleon'
 ]
 
 source_suffix = '.rst'
