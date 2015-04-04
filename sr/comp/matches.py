@@ -142,7 +142,7 @@ class MatchSchedule(object):
             raise Exception("Matches are not a complete 0-N range")
 
         # Effectively just the .values(), except that it's ordered by number
-        arena_info = [yamldata[m] for m in match_numbers]
+        raw_matches = [yamldata[m] for m in match_numbers]
 
         match_n = 0
 
@@ -154,7 +154,7 @@ class MatchSchedule(object):
             # Fill this match period with matches
             for start in clock.iterslots(self.match_duration):
                 try:
-                    arenas = arena_info.pop(0)
+                    arenas = raw_matches.pop(0)
                 except IndexError:
                     # no more matches left
                     break
