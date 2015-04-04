@@ -40,6 +40,7 @@ def get_basic_data():
             } ],
             "knockout": []
         },
+        "league": { "extra_spacing": [], },
         "matches": {
             0: {
                 "A": ["CLY", "TTN", "SCC", "DSF"],
@@ -89,6 +90,127 @@ def test_basic_data():
     b_end = b.end_time
     assert a_end == datetime(2014, 3, 26,  13, 5)
     assert a_end == b_end
+
+
+def test_extra_spacing_no_delays():
+    the_data = get_basic_data()
+
+    the_data['league']['extra_spacing'] = [{
+        "match_numbers": "1",
+        "duration": 30,
+    }]
+    the_data['delays'] = []
+
+    matches = load_data(the_data)
+
+    first_a = matches.matches[0]['A']
+    first_b = matches.matches[0]['B']
+    a_start = first_a.start_time
+    b_start = first_b.start_time
+    assert a_start == datetime(2014, 3, 26,  13)
+    assert a_start == b_start
+
+    second_a = matches.matches[1]['A']
+    second_b = matches.matches[1]['B']
+    a_start = second_a.start_time
+    b_start = second_b.start_time
+    assert a_start == datetime(2014, 3, 26,  13,  5, 30)
+    assert a_start == b_start
+
+    third_a = matches.matches[2]['A']
+    a_start = third_a.start_time
+    assert a_start == datetime(2014, 3, 26,  13, 10, 30)
+
+def test_extra_spacing_first_match():
+    the_data = get_basic_data()
+
+    the_data['league']['extra_spacing'] = [{
+        "match_numbers": "0",
+        "duration": 30,
+    }]
+    the_data['delays'] = []
+
+    matches = load_data(the_data)
+
+    first_a = matches.matches[0]['A']
+    first_b = matches.matches[0]['B']
+    a_start = first_a.start_time
+    b_start = first_b.start_time
+    assert a_start == datetime(2014, 3, 26,  13,  0, 30)
+    assert a_start == b_start
+
+    second_a = matches.matches[1]['A']
+    second_b = matches.matches[1]['B']
+    a_start = second_a.start_time
+    b_start = second_b.start_time
+    assert a_start == datetime(2014, 3, 26,  13,  5, 30)
+    assert a_start == b_start
+
+    third_a = matches.matches[2]['A']
+    a_start = third_a.start_time
+    assert a_start == datetime(2014, 3, 26,  13, 10, 30)
+
+def test_extra_spacing_with_delays():
+    the_data = get_basic_data()
+
+    the_data['league']['extra_spacing'] = [{
+        "match_numbers": "1",
+        "duration": 30,
+    }]
+
+    matches = load_data(the_data)
+
+    first_a = matches.matches[0]['A']
+    first_b = matches.matches[0]['B']
+    a_start = first_a.start_time
+    b_start = first_b.start_time
+    assert a_start == datetime(2014, 3, 26,  13)
+    assert a_start == b_start
+
+    second_a = matches.matches[1]['A']
+    second_b = matches.matches[1]['B']
+    a_start = second_a.start_time
+    b_start = second_b.start_time
+    assert a_start == datetime(2014, 3, 26,  13,  5, 45)
+    assert a_start == b_start
+
+    third_a = matches.matches[2]['A']
+    a_start = third_a.start_time
+    assert a_start == datetime(2014, 3, 26,  13, 10, 45)
+
+def test_extra_spacing_overlapping_with_delays():
+    the_data = get_basic_data()
+
+    the_data['league']['extra_spacing'] = [{
+        "match_numbers": "1",
+        "duration": 30,
+    }]
+    # Inject a delay which occurs during our extra spcing time
+    the_data['delays'] = [{
+        "delay": 15,
+        "time": datetime(2014, 3, 26,  13,  5, 10)
+    }]
+
+    matches = load_data(the_data)
+
+    first_a = matches.matches[0]['A']
+    first_b = matches.matches[0]['B']
+    a_start = first_a.start_time
+    b_start = first_b.start_time
+    assert a_start == datetime(2014, 3, 26,  13)
+    assert a_start == b_start
+
+    second_a = matches.matches[1]['A']
+    second_b = matches.matches[1]['B']
+    a_start = second_a.start_time
+    b_start = second_b.start_time
+    assert a_start == datetime(2014, 3, 26,  13,  5, 45)
+    assert a_start == b_start
+
+    third_a = matches.matches[2]['A']
+    a_start = third_a.start_time
+    assert a_start == datetime(2014, 3, 26,  13, 10, 45)
+
 
 def test_dropped_out_team():
     matches = load_basic_data()

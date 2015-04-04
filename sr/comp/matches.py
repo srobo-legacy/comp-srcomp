@@ -91,6 +91,7 @@ class MatchSchedule(object):
 
         self._configure_match_slot_lengths(y)
 
+        self._build_extra_spacing(y["league"]['extra_spacing'])
         self._build_delaylist(y["delays"])
         self._build_matchlist(league)
 
@@ -110,6 +111,21 @@ class MatchSchedule(object):
             raise ValueError('Match slot lengths are inconsistent.')
         self.match_slot_lengths = durations
         self.match_duration = total
+
+    def _build_extra_spacing(self, yamldata):
+        spacing = {}
+        if not yamldata:
+            self._spacing = spacing
+            return
+
+        for info in yamldata:
+            match_numbers = parse_ranges(info['match_numbers'])
+            duration = timedelta(seconds=info['duration'])
+            for num in match_numbers:
+                assert num not in spacing
+                spacing[num] = duration
+
+        self._spacing = spacing
 
     def _build_delaylist(self, yamldata):
         delays = []
@@ -168,6 +184,10 @@ class MatchSchedule(object):
 
             clock = MatchPeriodClock(period, self.delays)
 
+            extra_spacing = self._spacing.get(match_n)
+            if extra_spacing:
+                clock.advance_time(extra_spacing)
+
             # Fill this match period with matches
             for start in clock.iterslots(self.match_duration):
                 try:
@@ -190,6 +210,10 @@ class MatchSchedule(object):
                 self.matches.append(m)
 
                 match_n += 1
+
+                extra_spacing = self._spacing.get(match_n)
+                if extra_spacing:
+                    clock.advance_time(extra_spacing)
 
     def matches_at(self, date):
         """
