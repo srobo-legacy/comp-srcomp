@@ -2,7 +2,7 @@
 from collections import defaultdict
 from datetime import datetime, timedelta
 
-from sr.comp.matches import MatchSchedule
+from sr.comp.matches import MatchSchedule, parse_ranges
 from sr.comp.teams import Team
 
 
@@ -426,3 +426,32 @@ def test_planned_matches():
 
     n_league_matches = matches.n_league_matches
     assert n_league_matches == 2, "Number actually scheduled for the league"
+
+
+
+def test_parse_ranges():
+    def check(range_str, expected):
+        actual = parse_ranges(range_str)
+        assert expected == actual, "Wrong ranges parsed"
+
+    yield check, "1", set([1])
+    yield check, "1,4", set([1, 4])
+    yield check, "1, 4", set([1, 4])
+    yield check, "1-4", set([1, 2, 3, 4])
+    yield check, "1-4,2-5", set([1, 2, 3, 4, 5])
+    yield check, "1-4,6,0", set([0, 1, 2, 3, 4, 6])
+
+def test_parse_bad_ranges():
+    def check(range_str):
+        try:
+            actual = parse_ranges(range_str)
+        except:
+            pass
+        else:
+            msg = "Should have errored, got: {0}".format(repr(actual))
+            raise AssertionError(msg)
+
+    yield check, ""
+    yield check, "1,a"
+    yield check, "1--4"
+    yield check, "1-,4"

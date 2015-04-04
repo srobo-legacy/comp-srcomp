@@ -15,6 +15,23 @@ from sr.comp.knockout_scheduler import KnockoutScheduler
 Delay = namedtuple("Delay",
                    ["delay", "time"])
 
+def parse_ranges(ranges):
+    """
+    Parse a comma seprated list of numbers which may include ranges
+    specified as hyphen-separated numbers.
+
+    From http://stackoverflow.com/questions/6405208/how-to-convert-numeric-string-ranges-to-a-list-in-python
+    """
+    result = []
+    for part in ranges.split(','):
+        if '-' in part:
+            a, b = part.split('-')
+            a, b = int(a), int(b)
+            result.extend(range(a, b + 1))
+        else:
+            a = int(part)
+            result.append(a)
+    return set(result)
 
 class MatchSchedule(object):
     """
