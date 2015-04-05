@@ -221,6 +221,7 @@ def test_dropped_out_team():
     match = matches.matches[2]
     assert match['A'].teams == [None, 'QMS', 'LSS', 'EMM']
 
+
 def test_period_at_start_time():
     match_sched = load_basic_data()
 
@@ -258,6 +259,7 @@ def test_no_period_at_time():
     period = match_sched.period_at(when)
 
     assert period is None
+
 
 def test_matches_at_no_delays():
     the_data = get_basic_data()
@@ -309,6 +311,7 @@ def test_matches_at_with_delays():
 
     yield check, [],            datetime(2014, 3, 26,  13, 15, 15)
 
+
 def test_no_matches():
     the_data = get_basic_data()
     the_data['matches'] = None
@@ -324,6 +327,7 @@ def test_no_matches():
 
     n_league_matches = matches.n_league_matches
     assert n_league_matches == 0, "Number actually scheduled for the league"
+
 
 def test_basic_delay():
     matches = load_basic_data()
