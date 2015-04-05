@@ -213,6 +213,31 @@ class MatchSchedule(object):
                 if extra_spacing:
                     clock.advance_time(extra_spacing)
 
+    def delay_at(self, date):
+        """
+        Calculates the active delay at a given ``date``. Intended for use
+        only in exposing the current delay value -- scheduling should be
+        done using a :class:`.MatchPeriodClock` instead.
+
+        :param datetime date: The date to find the delay for.
+        :return: A :class:`datetime.timedelta` specifying the active delay.
+        """
+
+        total = timedelta()
+        period = self.period_at(date)
+        if not period:
+            # No current period, no delays active
+            return total
+
+        delays = MatchPeriodClock.delays_for_period(period, self.delays)
+        for delay in delays:
+            if delay.time > date:
+                break
+
+            total += delay.delay
+
+        return total
+
     def matches_at(self, date):
         """
         Get all the matches that occur around a specific ``date``.

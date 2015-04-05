@@ -26,14 +26,31 @@ class MatchPeriodClock(object):
     - Delays take effect as soon as their ``time`` is reached.
     """
 
+    @staticmethod
+    def delays_for_period(period, delays):
+        """
+        Filter and sort a list of all possible delays to include only those
+        which occur after the start of the given `period`.
+
+        :param `.MatchPeriod` period: The period to get the delays for.
+        :param list delays: The list of :class:`.Delay` s to consider.
+        :return: A sorted list of delays which occur after the start of the period.
+        """
+
+        # Only consider delays which are at the start of the period or later
+        valid_delays = [d for d in delays if d.time >= period.start_time]
+
+        # Sort by when the delays occur
+        valid_delays.sort(key=lambda d: d.time)
+
+        return valid_delays
+
+
     def __init__(self, period, delays):
         """Create a new clock for the given period and collection of delays."""
         self._period = period
 
-        # Only consider delays which are at the start of the period or later
-        self._delays = [d for d in delays if d.time >= period.start_time]
-        # Sort by when the delays occur
-        self._delays.sort(key=lambda d: d.time)
+        self._delays = self.delays_for_period(period, delays)
 
         # The current time, including any delays
         self._current_time = period.start_time

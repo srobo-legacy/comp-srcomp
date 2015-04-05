@@ -329,6 +329,41 @@ def test_no_matches():
     assert n_league_matches == 0, "Number actually scheduled for the league"
 
 
+def test_delay_at_no_period():
+    match_sched = load_basic_data()
+
+    when = datetime(2013, 3, 26)
+    delay = match_sched.delay_at(when)
+
+    assert delay == timedelta()
+
+def test_delay_at_no_delays():
+    the_data = get_basic_data()
+    the_data['delays'] = None
+    match_sched = load_data(the_data)
+
+    when = datetime(2014, 3, 26,  13, 10)
+    delay = match_sched.delay_at(when)
+
+    assert delay == timedelta()
+
+def test_delay_at_before_delays():
+    match_sched = load_basic_data()
+
+    when = datetime(2014, 3, 26,  13,  1)
+    delay = match_sched.delay_at(when)
+
+    assert delay == timedelta()
+
+def test_delay_at_at_delay_time():
+    match_sched = load_basic_data()
+
+    when = datetime(2014, 3, 26,  13,  2)
+    delay = match_sched.delay_at(when)
+
+    assert delay == timedelta(seconds=15)
+
+
 def test_basic_delay():
     matches = load_basic_data()
 
