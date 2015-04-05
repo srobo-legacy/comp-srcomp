@@ -3,8 +3,8 @@ from sr.comp.matches import Delay
 from sr.comp.match_period import MatchPeriod
 from sr.comp.match_period_clock import MatchPeriodClock, OutOfTimeException
 
-def build_match_period(start, end, max_end = None, desc = None, matches = None):
-    return MatchPeriod(start, end, max_end or end, desc, matches)
+def build_match_period(start, end, max_end=None, desc=None, matches=None, type_=None):
+    return MatchPeriod(start, end, max_end or end, desc, matches, type_)
 
 def check_out_of_time(clock, msg = None):
     threw = False

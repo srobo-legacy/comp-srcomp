@@ -78,7 +78,7 @@ class StaticScheduler(KnockoutScheduler):
         period = self.config["match_periods"]["knockout"][0]
         self.period = MatchPeriod(period["start_time"], period["end_time"],
                                   period["end_time"], period["description"],
-                                  [])
+                                  [], MatchType.knockout)
 
         knockout_conf = self.config["static_knockout"]
 

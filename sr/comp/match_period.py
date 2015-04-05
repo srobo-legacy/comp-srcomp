@@ -6,7 +6,7 @@ from enum import Enum, unique
 
 MatchPeriod = namedtuple('MatchPeriod', ['start_time', 'end_time',
                                          'max_end_time', 'description',
-                                         'matches'])
+                                         'matches', 'type'])
 Match = namedtuple('Match', ['num', 'display_name', 'arena', 'teams',
                              'start_time', 'end_time', 'type'])
 

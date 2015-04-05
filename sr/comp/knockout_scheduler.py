@@ -219,7 +219,7 @@ class KnockoutScheduler(object):
 
         self.period = MatchPeriod(period["start_time"], period["end_time"],
                                   period["end_time"], period["description"],
-                                  [])
+                                  [], MatchType.knockout)
 
         self.clock = MatchPeriodClock(self.period, self.schedule.delays)
 

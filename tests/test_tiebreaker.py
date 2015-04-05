@@ -72,7 +72,7 @@ def test_tiebreaker():
     last_period_matches.pop() # simplify the next comparison
 
     expected_period = MatchPeriod(start_time, end_time, end_time,
-                                  'Tiebreaker', [])
+                                  'Tiebreaker', [], MatchType.tie_breaker)
 
     assert last_period == expected_period, "Wrong last period"
 

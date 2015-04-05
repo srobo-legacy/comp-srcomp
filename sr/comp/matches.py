@@ -86,7 +86,7 @@ class MatchSchedule(object):
                 max_end_time = e["end_time"]
 
             period = MatchPeriod(e["start_time"], e["end_time"], max_end_time,
-                                 e["description"], [])
+                                 e["description"], [], MatchType.league)
             self.match_periods.append(period)
 
         self._configure_match_slot_lengths(y)
@@ -274,5 +274,5 @@ class MatchSchedule(object):
             slot = {arena: match}
             self.matches.append(slot)
             match_period = MatchPeriod(time, end_time, end_time,
-                                       'Tiebreaker', [slot])
+                                       'Tiebreaker', [slot], MatchType.tie_breaker)
             self.match_periods.append(match_period)
