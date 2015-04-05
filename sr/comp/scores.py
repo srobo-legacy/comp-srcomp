@@ -229,6 +229,9 @@ class LeagueScores(BaseScores):
 class KnockoutScores(BaseScores):
     pass
 
+class TiebreakerScores(BaseScores):
+    pass
+
 
 class Scores(object):
     """
@@ -241,9 +244,13 @@ class Scores(object):
                                    teams, scorer)
         self.knockout = KnockoutScores(os.path.join(root, "knockout"),
                                        teams, scorer)
+        self.tiebreaker = TiebreakerScores(os.path.join(root, "tiebreaker"),
+                                           teams, scorer)
 
-        lsm = self.knockout.last_scored_match
-        if lsm is None:
-            lsm = self.league.last_scored_match
+        lsm = None
+        for scores in (self.tiebreaker, self.knockout, self.league):
+            lsm = scores.last_scored_match
+            if lsm is not None:
+                break
 
         self.last_scored_match = lsm
