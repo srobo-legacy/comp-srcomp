@@ -96,3 +96,27 @@ def test_no_tiebreaker_if_no_final():
 
     schedule.add_tiebreaker(scores, datetime.datetime(2014, 4, 25, 13, 0))
     eq_(schedule.n_matches(), 1)
+
+
+def test_final_match_no_tiebreaker():
+    schedule = make_schedule()
+
+    expected = schedule.matches[0]['A']
+    final_info = schedule.final_match
+
+    assert expected.display_name == 'Match 0', "Sanity check"
+    assert expected == final_info
+
+def test_final_match_with_tiebreaker():
+    schedule = make_schedule()
+    scores = make_finals_score({'AAA': 1,
+                                'BBB': 1,
+                                'CCC': 1,
+                                'DDD': 0})
+    schedule.add_tiebreaker(scores, datetime.datetime(2014, 4, 25, 13, 0))
+
+    expected = schedule.matches[1]['A']
+    final_info = schedule.final_match
+
+    assert expected.display_name == 'Tiebreaker (#1)', "Sanity check"
+    assert expected == final_info

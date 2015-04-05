@@ -73,7 +73,7 @@ class SRComp(object):
         :class:`sr.comp.arenas.Corner` objects."""
 
         self.awards = compute_awards(self.scores,
-                                     self.schedule.knockout_rounds,
+                                     self.schedule.final_match,
                                      self.teams,
                                      os.path.join(root, "awards.yaml"))
         """A :class:`dict` mapping :class:`sr.comp.winners.Award` objects to

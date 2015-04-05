@@ -13,6 +13,7 @@ from enum import Enum, unique
 import os.path
 
 from sr.comp import yaml_loader
+from sr.comp.match_period import MatchType
 
 
 @unique
@@ -33,14 +34,18 @@ class Award(Enum):
     web = "web"              # Online Presence award
 
 
-def _compute_main_awards(scores, knockout_rounds, teams):
+def _compute_main_awards(scores, final_match_info, teams):
     """Compute awards resulting from the grand finals."""
-    last_match_info = knockout_rounds[-1][0]
-    last_match_key = (last_match_info.arena, last_match_info.num)
+    last_match_key = (final_match_info.arena, final_match_info.num)
+
+    game_positions = scores.knockout.game_positions
+    if final_match_info.type == MatchType.tiebreaker:
+        game_positions = scores.tiebreaker.game_positions
+
     try:
-        positions = scores.knockout.game_positions[last_match_key]
+        positions = game_positions[last_match_key]
     except KeyError:
-        # We haven't scored the finals yet
+        # We haven't scored the last match yet
         return {}
     awards = {}
     for award, key in ((Award.first, 1),
@@ -48,6 +53,15 @@ def _compute_main_awards(scores, knockout_rounds, teams):
                        (Award.third, 3)):
         candidates = positions.get(key, ())
         awards[award] = list(sorted(candidates))
+
+    if not awards[Award.third] and len(final_match_info.teams) == 2:
+        # Look in the previous match to find the third place
+        final_key = (final_match_info.arena, final_match_info.num-1)
+        positions = scores.knockout.game_positions[final_key]
+
+        candidates = positions.get(3, ())
+        awards[Award.third] = list(sorted(candidates))
+
     return awards
 
 
@@ -76,13 +90,12 @@ def _compute_explicit_awards(path):
             for key, value in explicit_awards.items()}
 
 
-def compute_awards(scores, knockout_rounds, teams, path=None):
+def compute_awards(scores, final_match, teams, path=None):
     """
     Compute the awards handed out from configuration.
 
     :param sr.comp.scores.Scores scores: The scores.
-    :param list knockout_rounds: A list of knockout rounds as produced by a
-                                 scheduler.
+    :param Match final_match: The match to use as the final.
     :param dict teams: A mapping from TLAs to :class:`sr.comp.teams.Team`
                        objects.
     :return: A dictionary of :class:`Award` types to TLAs is returned. This may
@@ -91,7 +104,7 @@ def compute_awards(scores, knockout_rounds, teams, path=None):
     """
 
     awards = {}
-    awards.update(_compute_main_awards(scores, knockout_rounds, teams))
+    awards.update(_compute_main_awards(scores, final_match, teams))
     awards.update(_compute_rookie_award(scores, teams))
     if path is not None:
         awards.update(_compute_explicit_awards(path))

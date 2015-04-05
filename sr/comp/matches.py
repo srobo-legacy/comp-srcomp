@@ -274,6 +274,19 @@ class MatchSchedule(object):
 
         return len(self.matches)
 
+    @property
+    def final_match(self):
+        """
+        Get the :class:`.Match` for the last match of the competition.
+
+        This is the info for the 'finals' of the competition (i.e: the
+        last of the knockout matches) unless there is a tiebreaker.
+        """
+        last_match_slot = self.matches[-1]
+        last_matches = list(last_match_slot.values())
+        assert len(last_matches) == 1, last_match_slot
+        return last_matches[0]
+
     def add_tiebreaker(self, scores, time):
         """
         Add a tie breaker to the league if required.
