@@ -6,6 +6,7 @@ import mock
 from sr.comp.matches import MatchSchedule
 from sr.comp.match_period import MatchType, Match, MatchPeriod
 from sr.comp.ranker import calc_positions, calc_ranked_points
+from sr.comp.teams import Team
 
 
 def make_schedule():
