@@ -27,7 +27,7 @@ def make_schedule():
                    end_time=datetime.datetime(2014, 4, 25, 12, 5),
                    type=MatchType.knockout)
     schedule.knockout_rounds = [[finals]]
-    schedule.matches.append(finals)
+    schedule.matches.append({'A':finals})
 
     return schedule
 
