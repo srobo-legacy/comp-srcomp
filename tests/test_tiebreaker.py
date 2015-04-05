@@ -49,7 +49,7 @@ def test_tiebreaker():
                                 'CCC': 1,
                                 'DDD': 0})
 
-    schedule.add_tie_breaker(scores, datetime.datetime(2014, 4, 25, 13, 0))
+    schedule.add_tiebreaker(scores, datetime.datetime(2014, 4, 25, 13, 0))
 
     start_time = datetime.datetime(2014, 4, 25, 13,  0)
     end_time = datetime.datetime(2014, 4, 25, 13,  5)
@@ -60,7 +60,7 @@ def test_tiebreaker():
                                    teams=['BBB', 'AAA', None, 'CCC'],
                                    start_time=start_time,
                                    end_time=end_time,
-                                   type=MatchType.tie_breaker)}
+                                   type=MatchType.tiebreaker)}
 
     eq_(schedule.matches[-1], tiebreaker_match)
 
@@ -72,7 +72,7 @@ def test_tiebreaker():
     last_period_matches.pop() # simplify the next comparison
 
     expected_period = MatchPeriod(start_time, end_time, end_time,
-                                  'Tiebreaker', [], MatchType.tie_breaker)
+                                  'Tiebreaker', [], MatchType.tiebreaker)
 
     assert last_period == expected_period, "Wrong last period"
 
@@ -83,7 +83,7 @@ def test_no_tiebreaker_if_winner():
                                 'CCC': 1,
                                 'DDD': 0})
 
-    schedule.add_tie_breaker(scores, datetime.datetime(2014, 4, 25, 13, 0))
+    schedule.add_tiebreaker(scores, datetime.datetime(2014, 4, 25, 13, 0))
     eq_(schedule.n_matches(), 1)
 
 def test_no_tiebreaker_if_no_final():
@@ -94,5 +94,5 @@ def test_no_tiebreaker_if_no_final():
     scores.knockout.game_positions = {}
     scores.knockout.ranked_points = {}
 
-    schedule.add_tie_breaker(scores, datetime.datetime(2014, 4, 25, 13, 0))
+    schedule.add_tiebreaker(scores, datetime.datetime(2014, 4, 25, 13, 0))
     eq_(schedule.n_matches(), 1)

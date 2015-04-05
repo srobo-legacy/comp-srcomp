@@ -65,7 +65,7 @@ class MatchSchedule(object):
         schedule.match_periods.append(k.period)
 
         if 'tiebreaker' in y:
-            schedule.add_tie_breaker(scores, y['tiebreaker'])
+            schedule.add_tiebreaker(scores, y['tiebreaker'])
 
         return schedule
 
@@ -274,7 +274,7 @@ class MatchSchedule(object):
 
         return len(self.matches)
 
-    def add_tie_breaker(self, scores, time):
+    def add_tiebreaker(self, scores, time):
         """
         Add a tie breaker to the league if required.
 
@@ -293,12 +293,12 @@ class MatchSchedule(object):
             raise AssertionError('The only winning move is not to play.')
         if len(winners) > 1:  # Act surprised!
             # Start with the winning teams in the same order as in the finals
-            tie_breaker_teams = [team if team in winners else None
-                                 for team in finals_info.teams]
+            tiebreaker_teams = [team if team in winners else None
+                                for team in finals_info.teams]
             # Use a static permutation
             permutation = [3, 2, 0, 1]
-            tie_breaker_teams = [tie_breaker_teams[permutation[n]]
-                                 for n in permutation]
+            tiebreaker_teams = [tiebreaker_teams[permutation[n]]
+                                for n in permutation]
             # Inject new match
             end_time = time + self.match_duration
             num = self.n_matches()
@@ -306,12 +306,12 @@ class MatchSchedule(object):
             match = Match(num=num,
                           display_name="Tiebreaker (#{0})".format(num),
                           arena=arena,
-                          teams=tie_breaker_teams,
-                          type=MatchType.tie_breaker,
+                          teams=tiebreaker_teams,
+                          type=MatchType.tiebreaker,
                           start_time=time,
                           end_time=end_time)
             slot = {arena: match}
             self.matches.append(slot)
             match_period = MatchPeriod(time, end_time, end_time,
-                                       'Tiebreaker', [slot], MatchType.tie_breaker)
+                                       'Tiebreaker', [slot], MatchType.tiebreaker)
             self.match_periods.append(match_period)
