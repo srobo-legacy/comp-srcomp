@@ -221,6 +221,44 @@ def test_dropped_out_team():
     match = matches.matches[2]
     assert match['A'].teams == [None, 'QMS', 'LSS', 'EMM']
 
+def test_period_at_start_time():
+    match_sched = load_basic_data()
+
+    when = datetime(2014, 3, 26,  13)
+    period = match_sched.period_at(when)
+
+    expected = match_sched.match_periods[0]
+
+    assert period == expected
+
+def test_period_between_max_and_end_time():
+    match_sched = load_basic_data()
+
+    # end time is 17:30, max_end is 17:40
+    when = datetime(2014, 3, 26,  17, 35)
+    period = match_sched.period_at(when)
+
+    expected = match_sched.match_periods[0]
+
+    assert period == expected
+
+def test_no_period_at_max_end_time():
+    match_sched = load_basic_data()
+
+    # end time is 17:30, max_end is 17:40
+    when = datetime(2014, 3, 26,  17, 40)
+    period = match_sched.period_at(when)
+
+    assert period is None
+
+def test_no_period_at_time():
+    match_sched = load_basic_data()
+
+    when = datetime(2013, 3, 26)
+    period = match_sched.period_at(when)
+
+    assert period is None
+
 def test_matches_at_no_delays():
     the_data = get_basic_data()
 

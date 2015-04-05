@@ -226,6 +226,20 @@ class MatchSchedule(object):
                 if match.start_time <= date < match.end_time:
                     yield match
 
+    def period_at(self, date):
+        """
+        Get the match period that occur around a specific ``date``.
+
+        :param datetime date: The date at which period occurs.
+        :return: The period at that time or ``None``.
+        """
+
+        for period in self.match_periods:
+            if period.start_time <= date < period.max_end_time:
+                return period
+
+        return None
+
     def n_matches(self):
         """
         Get the number of matches.
