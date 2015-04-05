@@ -136,19 +136,19 @@ def test_extra_spacing_first_match():
     first_b = matches.matches[0]['B']
     a_start = first_a.start_time
     b_start = first_b.start_time
-    assert a_start == datetime(2014, 3, 26,  13,  0, 30)
+    assert a_start == datetime(2014, 3, 26,  13,  0)
     assert a_start == b_start
 
     second_a = matches.matches[1]['A']
     second_b = matches.matches[1]['B']
     a_start = second_a.start_time
     b_start = second_b.start_time
-    assert a_start == datetime(2014, 3, 26,  13,  5, 30)
+    assert a_start == datetime(2014, 3, 26,  13,  5)
     assert a_start == b_start
 
     third_a = matches.matches[2]['A']
     a_start = third_a.start_time
-    assert a_start == datetime(2014, 3, 26,  13, 10, 30)
+    assert a_start == datetime(2014, 3, 26,  13, 10)
 
 def test_extra_spacing_with_delays():
     the_data = get_basic_data()

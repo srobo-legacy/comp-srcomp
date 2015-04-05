@@ -184,9 +184,7 @@ class MatchSchedule(object):
 
             clock = MatchPeriodClock(period, self.delays)
 
-            extra_spacing = self._spacing.get(match_n)
-            if extra_spacing:
-                clock.advance_time(extra_spacing)
+            # No extra spacing for matches at the start of a period
 
             # Fill this match period with matches
             for start in clock.iterslots(self.match_duration):
