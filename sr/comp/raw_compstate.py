@@ -66,10 +66,17 @@ class RawCompstate(object):
 
     def git(self, command_pieces, err_msg=None, return_output=False):
         command = ['git'] + list(command_pieces)
-        func = subprocess.check_output if return_output else subprocess.check_call
-        stderr = subprocess.STDOUT if return_output else None
+
+        if return_output:
+            stderr = subprocess.STDOUT
+            def func(*args, **kwargs):
+                return subprocess.check_output(*args, **kwargs).decode("utf-8")
+        else:
+            func = subprocess.check_call
+            stderr = None
+
         try:
-            return func(command, cwd=self._path, stderr=stderr).decode("utf-8")
+            return func(command, cwd=self._path, stderr=stderr)
         except (OSError, subprocess.CalledProcessError):
             if err_msg:
                 raise RuntimeError(err_msg)
