@@ -85,7 +85,7 @@ def test_git_converts_error():
     try:
         output = state.git(['this-is-not-a-valid-command'], err_msg=error_msg)
     except RuntimeError as re:
-        assert re.message == error_msg
+        assert error_msg in str(re)
     else:
         msg = "Should have errored about bad command (returned '{0}').".format(output)
         raise AssertionError(msg)
