@@ -78,3 +78,10 @@ class SRComp(object):
                                      os.path.join(root, "awards.yaml"))
         """A :class:`dict` mapping :class:`sr.comp.winners.Award` objects to
         a :class:`list` of teams."""
+
+        if sys.version_info[0] == 3:
+            from warnings import warn
+            warn("Python 3 has a known issue with timezones that have the "
+                 "same `dst()` and `utcoffset()` values (such as BST). "
+                 "Using Python 2 instead is recommended. "
+                 "See https://bugs.python.org/issue23600.")
