@@ -31,8 +31,7 @@ def load_arenas(filename):
     arenas = OrderedDict()
     for name in sorted(arenas_data.keys()):
         d = arenas_data[name]
-        arenas[name] = Arena(name, d['display_name'],
-                             d.get('colour', '#FFFFFF'))
+        arenas[name] = Arena(name, d['display_name'], d.get('colour'))
 
     return arenas
 
