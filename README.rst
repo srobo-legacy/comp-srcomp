@@ -1,7 +1,7 @@
 SRComp
 ======
 
-|Build Status|
+|Build Status| |Docs Status|
 
 Yet Another attempt at some Competition Software for `Student
 Robotics <http://srobo.org>`__.
@@ -60,3 +60,6 @@ Scripts
 
 .. |Build Status| image:: https://travis-ci.org/PeterJCLaw/srcomp.png?branch=master
    :target: https://travis-ci.org/PeterJCLaw/srcomp
+
+.. |Docs Status| image:: https://readthedocs.org/projects/srcomp/badge/?version=latest
+   :target: http://srcomp.readthedocs.org/
