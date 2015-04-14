@@ -11,7 +11,9 @@ _MatchPeriod = namedtuple('MatchPeriod', ['start_time', 'end_time',
 
 class MatchPeriod(_MatchPeriod):
     def __str__(self):
-        return '{} ({} to {})'.format(self.description, self.start_time, self.end_time)
+        return '{} ({}–{})'.format(self.description,
+                                   self.start_time.strftime('%H:%M'),
+                                   self.end_time.strftime('%H:%M'))
 
 
 Match = namedtuple('Match', ['num', 'display_name', 'arena', 'teams',
