@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Classes that are useful for dealing with match periods."""
 
 from collections import namedtuple
