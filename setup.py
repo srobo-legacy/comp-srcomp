@@ -28,7 +28,7 @@ setup(
     install_requires=install_requires,
     setup_requires=[
         'nose >=1.3, <2',
-        'Sphinx >=1.2, <2'
+        'Sphinx >=1.3, <2'
     ],
     test_suite='nose.collector'
 )
