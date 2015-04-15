@@ -116,17 +116,28 @@ class BaseScores(object):
     def __init__(self, resultdir, teams, scorer):
         self._scorer = scorer
 
-        # Game points in each match
-        # keys are (arena_id, match_num) tuples
         self.game_points = {}
+        """
+        Game points data for each match. Keys are tuples of the form
+        ``(arena_id, match_num)``, values are :class:`dict` s mapping
+        TLAs to the number of game points they scored.
+        """
 
-        # Positions in each match
-        # keys are (arena_id, match_num) tuples
         self.game_positions = {}
+        """
+        Game position data for each match. Keys are tuples of the form
+        ``(arena_id, match_num)``, values are :class:`dict` s mapping
+        TLAs to the ranked position (i.e: first is `1`, etc.) of that
+        team based solely on their game points.
+        """
 
-        # Ranked points in each match
-        # keys are (arena_id, match_num) tuples
         self.ranked_points = {}
+        """
+        Normalised (aka 'league') points earned in each match. Keys are
+        tuples of the form ``(arena_id, match_num)``, values are
+        :class:`dict` s mapping TLAs to the number of normalised points
+        they would earn for that match.
+        """
 
         # Points for each team (TeamScore objects)
         # keys are team tlas
