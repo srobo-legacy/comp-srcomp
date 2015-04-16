@@ -6,12 +6,12 @@ from collections import namedtuple
 from enum import Enum, unique
 
 
-_MatchPeriod = namedtuple('MatchPeriod', ['start_time', 'end_time',
-                                          'max_end_time', 'description',
-                                          'matches', 'type'])
+class MatchPeriod(namedtuple('MatchPeriod', ['start_time', 'end_time',
+                                             'max_end_time', 'description',
+                                             'matches', 'type'])):
 
+    __slots__ = ()
 
-class MatchPeriod(_MatchPeriod):
     def __str__(self):
         return '{} ({}–{})'.format(self.description,
                                    self.start_time.strftime('%H:%M'),
