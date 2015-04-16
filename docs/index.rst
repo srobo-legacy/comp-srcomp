@@ -10,6 +10,7 @@ User Guide
    introduction
    history
    compstate
+   schedule
    league
    knockout
    delays
