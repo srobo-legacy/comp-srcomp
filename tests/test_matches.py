@@ -91,6 +91,8 @@ def test_basic_data():
     assert a_end == datetime(2014, 3, 26,  13, 5)
     assert a_end == b_end
 
+    assert matches.staging_deadline.seconds == 5 * 60
+
 
 def test_extra_spacing_no_delays():
     the_data = get_basic_data()

@@ -96,6 +96,8 @@ class MatchSchedule(object):
         self._build_matchlist(league)
 
         self.timezone = gettz(y.get('timezone', 'UTC'))
+        self.staging_deadline = \
+            timedelta(seconds=y.get('staging_deadline', 5 * 60))
 
         self.n_league_matches = self.n_matches()
 
