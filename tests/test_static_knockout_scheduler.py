@@ -43,13 +43,13 @@ def get_config():
     }
 
 def get_scheduler(matches = None, positions = None, \
-                    knockout_points = None, league_game_points = None, \
+                    knockout_positions = None, league_game_points = None, \
                     delays = None):
     matches = matches or []
     delays = delays or []
     match_duration = timedelta(minutes = 5)
     league_game_points = league_game_points or {}
-    knockout_points = knockout_points or {}
+    knockout_positions = knockout_positions or {}
     if not positions:
         positions = OrderedDict()
         positions['AAA'] = 1
@@ -66,7 +66,7 @@ def get_scheduler(matches = None, positions = None, \
     league_schedule = mock.Mock(matches = matches, delays = delays, \
                                 match_duration = match_duration)
     league_scores = mock.Mock(positions = positions, game_points = league_game_points)
-    knockout_scores = mock.Mock(ranked_points = knockout_points)
+    knockout_scores = mock.Mock(resolved_positions = knockout_positions)
     scores = mock.Mock(league = league_scores, knockout = knockout_scores)
 
     period_config = {
@@ -84,8 +84,8 @@ def get_scheduler(matches = None, positions = None, \
     scheduler = StaticScheduler(league_schedule, scores, arenas, teams, config)
     return scheduler
 
-def helper(places, knockout_points = None):
-    scheduler = get_scheduler(knockout_points = knockout_points)
+def helper(places, knockout_positions = None):
+    scheduler = get_scheduler(knockout_positions = knockout_positions)
     scheduler.add_knockouts()
 
     period = scheduler.period
@@ -144,7 +144,12 @@ def test_partial_1():
         [UNKNOWABLE_TEAM] * 4,
     ], {
         # QF 1
-        ('A', 0): { 'CCC': 1.0, 'EEE': 2.0, 'HHH': 3.0, 'JJJ': 4.0, }
+        ('A', 0): OrderedDict([
+                    ('JJJ', 1),
+                    ('HHH', 2),
+                    ('EEE', 3),
+                    ('CCC', 4)
+                ])
     })
 
 def test_partial_2():
@@ -156,7 +161,17 @@ def test_partial_2():
         [UNKNOWABLE_TEAM] * 4,
     ], {
         # QF 1
-        ('A', 0): { 'CCC': 1.0, 'EEE': 2.0, 'HHH': 3.0, 'JJJ': 4.0, },
+        ('A', 0): OrderedDict([
+                ('JJJ', 1),
+                ('HHH', 2),
+                ('EEE', 3),
+                ('CCC', 4)
+            ]),
         # QF 2
-        ('A', 1): { 'DDD': 1.0, 'FFF': 2.0, 'GGG': 3.0, 'III': 4.0, }
+        ('A', 1): OrderedDict([
+                ('III', 1),
+                ('GGG', 2),
+                ('FFF', 3),
+                ('DDD', 4)
+            ])
     })

@@ -133,28 +133,16 @@ class KnockoutScheduler(object):
         :param game: A game.
         """
         desc = (game.arena, game.num)
-        positions = self.scores.league.positions
 
-        # Get the score if present (will be a tla -> 'league points' map)
-        points = self.scores.knockout.ranked_points.get(desc, None)
+        # Get the resolved positions if present (will be a tla -> position map)
+        positions = self.scores.knockout.resolved_positions.get(desc, None)
 
-        if points is None:
+        if positions is None:
             "Given match hasn't been scored yet"
             return [UNKNOWABLE_TEAM] * 4
 
-        def key(item):
-            # Lexicographically sort by game result, then by league position
-            # League positions are sorted in the opposite direction
-            return item[1], -positions.get(item[0], 0)
-
-        # Sort by points with tie resolution
-        # The winner is at the start of the list
-        with_points = sorted(points.items(), key=key, reverse=True)
-
         # Extract just TLAs
-        ranking = [x[0] for x in with_points]
-
-        return ranking
+        return list(positions.keys())
 
     def get_winners(self, game):
         """
