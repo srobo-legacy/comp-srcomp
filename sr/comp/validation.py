@@ -49,6 +49,8 @@ def validate(comp):
     count += validate_scores(MatchType.league, comp.scores.league, all_matches)
     count += validate_scores(MatchType.knockout, comp.scores.knockout,
                              all_matches)
+    count += validate_scores(MatchType.tiebreaker, comp.scores.tiebreaker,
+                             all_matches)
 
     return count
 
