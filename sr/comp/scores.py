@@ -127,8 +127,8 @@ class BaseScores(object):
         """
         Game position data for each match. Keys are tuples of the form
         ``(arena_id, match_num)``, values are :class:`dict` s mapping
-        TLAs to the ranked position (i.e: first is `1`, etc.) of that
-        team based solely on their game points.
+        ranked positions (i.e: first is `1`, etc.) to an iterable of TLAs
+        which have that position. Based solely on teams' game points.
         """
 
         self.ranked_points = {}
