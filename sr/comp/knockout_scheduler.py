@@ -148,9 +148,8 @@ class KnockoutScheduler(object):
             return item[1], -positions.get(item[0], 0)
 
         # Sort by points with tie resolution
-        # Note that this list is upside down compared to what might be
-        # expected, ie the winner is at the end of the list
-        with_points = sorted(points.items(), key=key)
+        # The winner is at the start of the list
+        with_points = sorted(points.items(), key=key, reverse=True)
 
         # Extract just TLAs
         ranking = [x[0] for x in with_points]
@@ -165,7 +164,7 @@ class KnockoutScheduler(object):
         """
 
         ranking = self.get_ranking(game)
-        return ranking[-2:]
+        return ranking[:2]
 
     def _add_round(self, arenas, rounds_remaining):
         prev_round = self.knockout_rounds[-1]

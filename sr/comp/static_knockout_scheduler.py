@@ -43,8 +43,6 @@ class StaticScheduler(KnockoutScheduler):
             raise AssertionError(message)
 
         ranking = self.get_ranking(match)
-        # move the winner to the front of the list
-        ranking.reverse()
         return ranking[pos]
 
     def _add_match(self, match_info, rounds_remaining, round_num):
