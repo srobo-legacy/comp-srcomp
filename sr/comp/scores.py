@@ -139,9 +139,11 @@ class BaseScores(object):
         they would earn for that match.
         """
 
-        # Points for each team (TeamScore objects)
-        # keys are team tlas
         self.teams = {}
+        """
+        Points for each team earned during this portion of the competition.
+        Maps TLAs to :class:`.TeamScore` instances.
+        """
 
         # Start with 0 points for each team
         for tla in teams:
@@ -235,6 +237,9 @@ class LeagueScores(BaseScores):
                 self.teams[tla].league_points += score
 
         self.positions = self.rank_league(self.teams)
+        """
+        An :class:`.OrderedDict` of TLAs to :class:`.TeamScore` instances.
+        """
 
 
 class KnockoutScores(BaseScores):
