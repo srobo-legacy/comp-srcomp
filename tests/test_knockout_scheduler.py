@@ -9,13 +9,13 @@ from sr.comp.match_period import Match, MatchType
 from sr.comp.knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
 
 def get_scheduler(matches = None, positions = None, \
-                    knockout_points = None, league_game_points = None, \
+                    knockout_positions = None, league_game_points = None, \
                     delays = None, teams=None):
     matches = matches or []
     delays = delays or []
     match_duration = timedelta(minutes = 5)
     league_game_points = league_game_points or {}
-    knockout_points = knockout_points or {}
+    knockout_positions = knockout_positions or {}
     if not positions:
         positions = OrderedDict()
         positions['ABC'] = 1
@@ -24,7 +24,7 @@ def get_scheduler(matches = None, positions = None, \
     league_schedule = mock.Mock(matches = matches, delays = delays, \
                                 match_duration = match_duration)
     league_scores = mock.Mock(positions = positions, game_points = league_game_points)
-    knockout_scores = mock.Mock(ranked_points = knockout_points)
+    knockout_scores = mock.Mock(resolved_positions = knockout_positions)
     scores = mock.Mock(league = league_scores, knockout = knockout_scores)
 
     period_config = {
@@ -59,15 +59,15 @@ def test_knockout_match_winners_empty():
     assert winners == [UNKNOWABLE_TEAM] * 2
 
 def test_knockout_match_winners_simple():
-    knockout_points = {
-        ('A', 2): {
-            'ABC': 1.0,
-            'DEF': 2.0,
-            'GHI': 3.0,
-            'JKL': 4.0,
-        }
+    knockout_positions = {
+        ('A', 2): OrderedDict([
+            ('JKL', 1),
+            ('GHI', 2),
+            ('DEF', 3),
+            ('ABC', 4),
+        ])
     }
-    scheduler = get_scheduler(knockout_points = knockout_points)
+    scheduler = get_scheduler(knockout_positions = knockout_positions)
 
     game = Match(2, 'Match 2', 'A', [], None, None, None)
     winners = scheduler.get_winners(game)
@@ -76,15 +76,15 @@ def test_knockout_match_winners_simple():
 
 
 def test_knockout_match_winners_irrelevant_tie_1():
-    knockout_points = {
-        ('A', 2): {
-            'ABC': 1.5,
-            'DEF': 1.5,
-            'GHI': 3,
-            'JKL': 4,
-        }
+    knockout_positions = {
+        ('A', 2):  OrderedDict([
+            ('JKL', 1),
+            ('GHI', 2),
+            ('ABC', 3),
+            ('DEF', 3),
+        ])
     }
-    scheduler = get_scheduler(knockout_points = knockout_points)
+    scheduler = get_scheduler(knockout_positions = knockout_positions)
 
     game = Match(2, 'Match 2', 'A', [], None, None, None)
     winners = scheduler.get_winners(game)
@@ -92,13 +92,13 @@ def test_knockout_match_winners_irrelevant_tie_1():
     assert set(winners) == set(['GHI', 'JKL'])
 
 def test_knockout_match_winners_irrelevant_tie_2():
-    knockout_points = {
-        ('A', 2): {
-            'ABC': 1,
-            'DEF': 2,
-            'GHI': 3.5,
-            'JKL': 3.5,
-        }
+    knockout_positions = {
+        ('A', 2): OrderedDict([
+            ('GHI', 1),
+            ('JKL', 2),
+            ('DEF', 3),
+            ('ABC', 4),
+        ])
     }
     positions = {
         'ABC': 1,
@@ -106,7 +106,7 @@ def test_knockout_match_winners_irrelevant_tie_2():
         'GHI': 3,
         'JKL': 4,
     }
-    scheduler = get_scheduler(knockout_points = knockout_points, \
+    scheduler = get_scheduler(knockout_positions = knockout_positions, \
                                 positions = positions)
 
     game = Match(2, 'Match 2', 'A', [], None, None, None)
@@ -115,13 +115,13 @@ def test_knockout_match_winners_irrelevant_tie_2():
     assert set(winners) == set(['GHI', 'JKL'])
 
 def test_knockout_match_winners_tie():
-    knockout_points = {
-        ('A', 2): {
-            'ABC': 1,
-            'DEF': 2.5,
-            'GHI': 2.5,
-            'JKL': 4,
-        }
+    knockout_positions = {
+        ('A', 2): OrderedDict([
+            ('JKL', 1),
+            ('GHI', 2),
+            ('DEF', 3),
+            ('ABC', 4),
+        ])
     }
     # Deliberately out of order as some python implementations
     # use the creation order of the tuples as a fallback sort comparison
@@ -131,7 +131,7 @@ def test_knockout_match_winners_tie():
         'GHI': 3,
         'JKL': 2,
     }
-    scheduler = get_scheduler(knockout_points = knockout_points, \
+    scheduler = get_scheduler(knockout_positions = knockout_positions, \
                                 positions = positions)
 
     game = Match(2, 'Match 2', 'A', [], None, None, None)

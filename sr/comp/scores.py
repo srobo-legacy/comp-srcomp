@@ -100,6 +100,22 @@ def get_validated_scores(scorer_cls, input_data):
     return scores
 
 
+def degroup(grouped_positions):
+    """
+    Given a mapping of positions to collections ot teams at that position,
+    returns an :class:`OrderedDict` of teams to their positions.
+
+    Where more than one team has a given position, they are sorted before
+    being inserted.
+    """
+
+    positions = OrderedDict()
+    for pos, teams in grouped_positions.items():
+        for tla in sorted(teams):
+            positions[tla] = pos
+    return positions
+
+
 # The scorer that these classes consume should be a class that is compatible
 # with libproton in its Proton 2.0.0-rc1 form.
 # See https://github.com/PeterJCLaw/proton and
@@ -243,7 +259,51 @@ class LeagueScores(BaseScores):
 
 
 class KnockoutScores(BaseScores):
-    pass
+    """A class which holds knockout scores."""
+
+    @staticmethod
+    def calculate_ranking(match_points, league_positions):
+        """
+        Get a ranking of the given match's teams.
+
+        :param match_points: A map of TLAs to (normalised) scores.
+        :param league_positions: A map of TLAs to league positions.
+        """
+
+        def key(tla, points):
+            # Lexicographically sort by game result, then by league position
+            # League positions are sorted in the opposite direction
+            return points, -league_positions.get(tla, 0)
+
+        # Sort by points with tie resolution
+        # Convert the points values to keys
+        keyed = {tla: key(tla, points) for tla, points in match_points.items()}
+
+        # Defer to the ranker to calculate positions
+        positions = ranker.calc_positions(keyed)
+
+        # Invert the map back to being TLA -> position
+        ranking = degroup(positions)
+
+        return ranking
+
+    def __init__(self, resultdir, teams, scorer, league_positions):
+        super(KnockoutScores, self).__init__(resultdir, teams, scorer)
+
+        self.resolved_positions = {}
+        """
+        Position data for each match which includes adjustment for ties.
+        Keys are tuples of the form ``(arena_id, match_num)``, values are
+        :class:`.OrderedDict` s mapping TLAs to the ranked position (i.e:
+        first is `1`, etc.) of that team, with the winning team in the
+        start of the list of keys. Tie resolution is done by league position.
+        """
+
+        # Calculate resolve positions for each scored match
+        for match_id, match_points in self.ranked_points.items():
+            positions = self.calculate_ranking(match_points, league_positions)
+            self.resolved_positions[match_id] = positions
+
 
 class TiebreakerScores(BaseScores):
     pass
@@ -259,7 +319,7 @@ class Scores(object):
         self.league = LeagueScores(os.path.join(root, "league"),
                                    teams, scorer)
         self.knockout = KnockoutScores(os.path.join(root, "knockout"),
-                                       teams, scorer)
+                                       teams, scorer, self.league.positions)
         self.tiebreaker = TiebreakerScores(os.path.join(root, "tiebreaker"),
                                            teams, scorer)
 
