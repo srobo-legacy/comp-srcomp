@@ -291,7 +291,8 @@ class MatchSchedule(object):
 
     def add_tiebreaker(self, scores, time):
         """
-        Add a tie breaker to the league if required.
+        Add a tie breaker to the league if required. Also set a ``tiebreaker``
+        attribute if necessary.
 
         :param scores: The scores.
         :param time: The time.
@@ -330,3 +331,5 @@ class MatchSchedule(object):
             match_period = MatchPeriod(time, end_time, end_time,
                                        'Tiebreaker', [slot], MatchType.tiebreaker)
             self.match_periods.append(match_period)
+
+            self.tiebreaker = match

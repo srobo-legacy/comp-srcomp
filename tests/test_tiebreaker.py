@@ -51,6 +51,8 @@ def test_tiebreaker():
 
     schedule.add_tiebreaker(scores, datetime.datetime(2014, 4, 25, 13, 0))
 
+    assert schedule.tiebreaker
+
     start_time = datetime.datetime(2014, 4, 25, 13,  0)
     end_time = datetime.datetime(2014, 4, 25, 13,  5)
 
