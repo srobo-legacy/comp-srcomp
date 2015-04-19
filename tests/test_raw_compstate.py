@@ -6,23 +6,28 @@ from sr.comp.comp import SRComp
 from sr.comp.match_period import Match, MatchType
 from sr.comp.raw_compstate import RawCompstate
 
+
 DUMMY_PATH = os.path.dirname(os.path.abspath(__file__)) + '/dummy'
+
 
 def build_match(num, arena, teams = None, start_time = None, \
                 end_time = None, type_ = None):
     return Match(num, 'Match {n}'.format(n=num), arena, teams,
                  start_time, end_time, type_)
 
+
 def test_load():
     state = RawCompstate(DUMMY_PATH, local_only=True)
     comp = state.load()
     assert isinstance(comp, SRComp)
+
 
 def test_get_score_path():
     m = build_match(0, 'A', type_=MatchType.league)
     state = RawCompstate(DUMMY_PATH, local_only=True)
     path = state.get_score_path(m)
     assert os.path.exists(path), "Path expected to exist within dummy state"
+
 
 def test_load_score():
     m = build_match(0, 'A', type_=MatchType.league)
@@ -36,11 +41,19 @@ def test_load_score():
     expected = ['CLY', 'TTN']
     assert expected == teams, score
 
+
+
+def test_shepherding():
+    state = RawCompstate(DUMMY_PATH, local_only=True)
+    assert state.shepherding
+
+
 def test_contains_HEAD():
     state = RawCompstate(DUMMY_PATH, local_only=True)
 
     has_HEAD = state.has_commit('HEAD')
     assert has_HEAD, "Should have HEAD commit!"
+
 
 def test_git_return_output():
     state = RawCompstate(DUMMY_PATH, local_only=True)
@@ -49,12 +62,14 @@ def test_git_return_output():
 
     assert output.startswith('commit '), output
 
+
 def test_git_no_return_output():
     state = RawCompstate(DUMMY_PATH, local_only=True)
 
     output = state.git(['rev-parse', 'HEAD'])
 
     assert output == 0, "Should succeed and return exit code"
+
 
 def test_git_return_output_when_error():
     state = RawCompstate(DUMMY_PATH, local_only=True)
@@ -67,6 +82,7 @@ def test_git_return_output_when_error():
         msg = "Should have errored about bad command (returned '{0}').".format(output)
         raise AssertionError(msg)
 
+
 def test_git_when_error():
     state = RawCompstate(DUMMY_PATH, local_only=True)
 
@@ -77,6 +93,7 @@ def test_git_when_error():
     else:
         msg = "Should have errored about bad command (returned '{0}').".format(output)
         raise AssertionError(msg)
+
 
 def test_git_converts_error():
     state = RawCompstate(DUMMY_PATH, local_only=True)

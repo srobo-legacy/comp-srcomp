@@ -62,6 +62,13 @@ class RawCompstate(object):
         hosts = raw_deployments['deployments']
         return hosts
 
+    @property
+    def shepherding(self):
+        path = os.path.join(self._path, 'shepherding.yaml')
+
+        with open(path) as file:
+            return yaml.load(file)
+
     # Git repo related functionality
 
     def git(self, command_pieces, err_msg=None, return_output=False):
