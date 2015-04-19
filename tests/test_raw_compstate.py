@@ -48,6 +48,11 @@ def test_shepherding():
     assert state.shepherding
 
 
+def test_layout():
+    state = RawCompstate(DUMMY_PATH, local_only=True)
+    assert state.layout
+
+
 def test_contains_HEAD():
     state = RawCompstate(DUMMY_PATH, local_only=True)
 
