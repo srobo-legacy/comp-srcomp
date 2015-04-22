@@ -113,7 +113,10 @@ class KnockoutScheduler(object):
                                                            round_num, num)
 
                 match = Match(num, display_name, arena, teams,
-                              start_time, end_time, MatchType.knockout)
+                              start_time, end_time, MatchType.knockout,
+                              # Just the finals don't use the resolved ranking
+                              use_resolved_ranking = rounds_remaining != 0)
+
                 self.knockout_rounds[-1].append(match)
                 new_matches[arena] = match
 

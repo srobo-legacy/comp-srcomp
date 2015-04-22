@@ -25,7 +25,7 @@ def make_schedule():
                    teams=['AAA', 'BBB', 'CCC', 'DDD'],
                    start_time=datetime.datetime(2014, 4, 25, 12, 0),
                    end_time=datetime.datetime(2014, 4, 25, 12, 5),
-                   type=MatchType.knockout)
+                   type=MatchType.knockout, use_resolved_ranking=False)
     schedule.knockout_rounds = [[finals]]
     schedule.matches.append({'A':finals})
 
@@ -62,7 +62,8 @@ def test_tiebreaker():
                                    teams=['BBB', 'AAA', None, 'CCC'],
                                    start_time=start_time,
                                    end_time=end_time,
-                                   type=MatchType.tiebreaker)}
+                                   type=MatchType.tiebreaker,
+                                   use_resolved_ranking=False)}
 
     eq_(schedule.matches[-1], tiebreaker_match)
 

@@ -63,8 +63,9 @@ class StaticScheduler(KnockoutScheduler):
 
         display_name = self.get_match_display_name(rounds_remaining, round_num,
                                                    num)
+        is_final = rounds_remaining == 0
         match = Match(num, display_name, arena, teams, start_time, end_time,
-                      MatchType.knockout)
+                      MatchType.knockout, use_resolved_ranking=not is_final)
         self.knockout_rounds[-1].append(match)
 
         new_matches[match_info['arena']] = match

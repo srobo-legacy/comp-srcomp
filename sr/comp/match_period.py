@@ -19,7 +19,8 @@ class MatchPeriod(namedtuple('MatchPeriod', ['start_time', 'end_time',
 
 
 Match = namedtuple('Match', ['num', 'display_name', 'arena', 'teams',
-                             'start_time', 'end_time', 'type'])
+                             'start_time', 'end_time', 'type',
+                             'use_resolved_ranking'])
 
 
 @unique

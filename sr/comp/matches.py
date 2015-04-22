@@ -203,7 +203,8 @@ class MatchSchedule(object):
                     teams = self.remove_drop_outs(teams, match_n)
                     display_name = 'Match {n}'.format(n=match_n)
                     match = Match(match_n, display_name, arena_name, teams,
-                                  start, end_time, MatchType.league)
+                                  start, end_time, MatchType.league,
+                                  use_resolved_ranking=False)
                     m[arena_name] = match
 
                 period.matches.append(m)
@@ -325,7 +326,8 @@ class MatchSchedule(object):
                           teams=tiebreaker_teams,
                           type=MatchType.tiebreaker,
                           start_time=time,
-                          end_time=end_time)
+                          end_time=end_time,
+                          use_resolved_ranking=False)
             slot = {arena: match}
             self.matches.append(slot)
             match_period = MatchPeriod(time, end_time, end_time,
