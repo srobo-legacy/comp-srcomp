@@ -90,14 +90,13 @@ class MatchSchedule(object):
             self.match_periods.append(period)
 
         self._configure_match_slot_lengths(y)
+        self.staging_times = self._get_staging_times(y)
 
         self._build_extra_spacing(y["league"]['extra_spacing'])
         self._build_delaylist(y["delays"])
         self._build_matchlist(league)
 
         self.timezone = gettz(y.get('timezone', 'UTC'))
-        self.staging_deadline = \
-            timedelta(seconds=y.get('staging_deadline', 5 * 60))
 
         self.n_league_matches = self.n_matches()
 
@@ -113,6 +112,36 @@ class MatchSchedule(object):
             raise ValueError('Match slot lengths are inconsistent.')
         self.match_slot_lengths = durations
         self.match_duration = total
+
+    def _get_staging_times(self, yamldata):
+        raw_data = yamldata['staging']
+        durations = {key: datetime.timedelta(seconds=value)
+                     for key, value in raw_data.items()}
+        opens = durations['opens']
+        closes = durations['closes']
+        duration = durations['duration']
+        if duration != opens - closes:
+            raise ValueError('Staging timings are inconsistent.')
+
+        for other in ('signal_teams', 'signal_shepherds'):
+            if other not in durations:
+                msg = "Staging times missing '{0}' key.".format(other)
+                raise ValueError(msg)
+
+        return durations
+
+    def get_staging_times(self, match):
+        pre = self.match_slot_lengths['pre']
+        match_start = match.start_time + pre
+        offsets = self.staging_times
+
+        return  {
+            'opens':            match_start - offsets['opens'],
+            'closes':           match_start - offsets['closes'],
+            'duration':         self.staging_times['duration'],
+            'signal_shepherds': match_start - offsets['signal_shepherds'],
+            'signal_teams':     match_start - offsets['signal_teams'],
+        }
 
     def _build_extra_spacing(self, yamldata):
         spacing = {}

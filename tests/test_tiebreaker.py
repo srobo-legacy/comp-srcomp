@@ -15,6 +15,11 @@ def make_schedule():
                                        'match': 180,
                                        'post': 30,
                                        'total': 300},
+                'staging': {'opens': 300,
+                            'closes': 120,
+                            'duration': 180,
+                            'signal_shepherds': 240,
+                            'signal_teams': 240},
                 'league': { 'extra_spacing': [], },
                 'delays': []}
     teams = defaultdict(lambda: Team(None, None, False, None))
