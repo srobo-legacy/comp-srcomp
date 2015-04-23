@@ -82,20 +82,20 @@ def get_scheduler(matches = None, positions = None, \
 
     teams = None  # static schedule shouldn't use teams
     scheduler = StaticScheduler(league_schedule, scores, arenas, teams, config)
-    return scheduler
+    return scheduler, league_schedule
 
 def helper(places, knockout_positions = None):
-    scheduler = get_scheduler(knockout_positions = knockout_positions)
+    scheduler, league_schedule = get_scheduler(knockout_positions = knockout_positions)
     scheduler.add_knockouts()
 
     period = scheduler.period
 
     expected = [
-        {'A': Match(0, 'Quarter 1 (#0)', 'A', places[0], datetime(2014, 4, 27, 14, 30), datetime(2014, 4, 27, 14, 35), MatchType.knockout, use_resolved_ranking=True) },
-        {'A': Match(1, 'Quarter 2 (#1)', 'A', places[1], datetime(2014, 4, 27, 14, 35), datetime(2014, 4, 27, 14, 40), MatchType.knockout, use_resolved_ranking=True) },
-        {'A': Match(2, 'Semi 1 (#2)', 'A', places[2], datetime(2014, 4, 27, 14, 45), datetime(2014, 4, 27, 14, 50), MatchType.knockout, use_resolved_ranking=True) },
-        {'A': Match(3, 'Semi 2 (#3)', 'A', places[3], datetime(2014, 4, 27, 14, 50), datetime(2014, 4, 27, 14, 55), MatchType.knockout, use_resolved_ranking=True) },
-        {'A': Match(4, 'Final (#4)', 'A', places[4], datetime(2014, 4, 27, 15,  0), datetime(2014, 4, 27, 15,  5), MatchType.knockout, use_resolved_ranking=False) },
+        {'A': Match(0, 'Quarter 1 (#0)', 'A', places[0], league_schedule.build_match_times(datetime(2014, 4, 27, 14, 30), datetime(2014, 4, 27, 14, 35)), MatchType.knockout, use_resolved_ranking=True) },
+        {'A': Match(1, 'Quarter 2 (#1)', 'A', places[1], league_schedule.build_match_times(datetime(2014, 4, 27, 14, 35), datetime(2014, 4, 27, 14, 40)), MatchType.knockout, use_resolved_ranking=True) },
+        {'A': Match(2, 'Semi 1 (#2)', 'A', places[2], league_schedule.build_match_times(datetime(2014, 4, 27, 14, 45), datetime(2014, 4, 27, 14, 50)), MatchType.knockout, use_resolved_ranking=True) },
+        {'A': Match(3, 'Semi 2 (#3)', 'A', places[3], league_schedule.build_match_times(datetime(2014, 4, 27, 14, 50), datetime(2014, 4, 27, 14, 55)), MatchType.knockout, use_resolved_ranking=True) },
+        {'A': Match(4, 'Final (#4)', 'A', places[4], league_schedule.build_match_times(datetime(2014, 4, 27, 15,  0), datetime(2014, 4, 27, 15,  5)), MatchType.knockout, use_resolved_ranking=False) },
     ]
 
     for i in range(len(expected)):
@@ -105,19 +105,19 @@ def helper(places, knockout_positions = None):
         assert e == a, "Match {0} in the knockouts".format(i)
 
 def test_before():
-    league_matches = [{'A': Match(0, 'Match 0', 'A', [], datetime(2014, 4, 27, 12, 30), datetime(2014, 4, 27, 12, 35), MatchType.league, use_resolved_ranking=False) }]
+    league_matches = [{'A': Match(0, 'Match 0', 'A', [], {'slot': {'start': datetime(2014, 4, 27, 12, 30), 'end': datetime(2014, 4, 27, 12, 35)}}, MatchType.league, use_resolved_ranking=False) }]
 
-    scheduler = get_scheduler(matches = league_matches)
+    scheduler, league_schedule = get_scheduler(matches = league_matches)
     scheduler.add_knockouts()
 
     period = scheduler.period
 
     expected = [
-        {'A': Match(1, 'Quarter 1 (#1)', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 30), datetime(2014, 4, 27, 14, 35), MatchType.knockout, use_resolved_ranking=True) },
-        {'A': Match(2, 'Quarter 2 (#2)', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 35), datetime(2014, 4, 27, 14, 40), MatchType.knockout, use_resolved_ranking=True) },
-        {'A': Match(3, 'Semi 1 (#3)', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 45), datetime(2014, 4, 27, 14, 50), MatchType.knockout, use_resolved_ranking=True) },
-        {'A': Match(4, 'Semi 2 (#4)', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 50), datetime(2014, 4, 27, 14, 55), MatchType.knockout, use_resolved_ranking=True) },
-        {'A': Match(5, 'Final (#5)', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 15,  0), datetime(2014, 4, 27, 15,  5), MatchType.knockout, use_resolved_ranking=False) },
+        {'A': Match(1, 'Quarter 1 (#1)', 'A', [UNKNOWABLE_TEAM] * 4, league_schedule.build_match_times(datetime(2014, 4, 27, 14, 30), datetime(2014, 4, 27, 14, 35)), MatchType.knockout, use_resolved_ranking=True) },
+        {'A': Match(2, 'Quarter 2 (#2)', 'A', [UNKNOWABLE_TEAM] * 4, league_schedule.build_match_times(datetime(2014, 4, 27, 14, 35), datetime(2014, 4, 27, 14, 40)), MatchType.knockout, use_resolved_ranking=True) },
+        {'A': Match(3, 'Semi 1 (#3)', 'A', [UNKNOWABLE_TEAM] * 4, league_schedule.build_match_times(datetime(2014, 4, 27, 14, 45), datetime(2014, 4, 27, 14, 50)), MatchType.knockout, use_resolved_ranking=True) },
+        {'A': Match(4, 'Semi 2 (#4)', 'A', [UNKNOWABLE_TEAM] * 4, league_schedule.build_match_times(datetime(2014, 4, 27, 14, 50), datetime(2014, 4, 27, 14, 55)), MatchType.knockout, use_resolved_ranking=True) },
+        {'A': Match(5, 'Final (#5)', 'A', [UNKNOWABLE_TEAM] * 4, league_schedule.build_match_times(datetime(2014, 4, 27, 15,  0), datetime(2014, 4, 27, 15,  5)), MatchType.knockout, use_resolved_ranking=False) },
     ]
 
     for i in range(len(expected)):

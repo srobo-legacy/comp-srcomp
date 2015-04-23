@@ -28,8 +28,8 @@ def make_schedule():
     finals = Match(num=0, display_name='Match 0',
                    arena='A',
                    teams=['AAA', 'BBB', 'CCC', 'DDD'],
-                   start_time=datetime.datetime(2014, 4, 25, 12, 0),
-                   end_time=datetime.datetime(2014, 4, 25, 12, 5),
+                   times={'slot': {'start': datetime.datetime(2014, 4, 25, 12, 0),
+                                   'end': datetime.datetime(2014, 4, 25, 12, 5)}},
                    type=MatchType.knockout, use_resolved_ranking=False)
     schedule.knockout_rounds = [[finals]]
     schedule.matches.append({'A':finals})
@@ -65,8 +65,23 @@ def test_tiebreaker():
                                    display_name='Tiebreaker (#1)',
                                    arena='A',
                                    teams=['BBB', 'AAA', None, 'CCC'],
-                                   start_time=start_time,
-                                   end_time=end_time,
+                                   times={
+                                       'game': {
+                                           'end': datetime.datetime(2014, 4, 25, 13, 4, 30),
+                                           'start': datetime.datetime(2014, 4, 25, 13, 1, 30)
+                                       },
+                                       'staging': {
+                                           'signal_shepherds': datetime.datetime(2014, 4, 25, 12, 57, 30),
+                                           'duration': datetime.timedelta(0, 180),
+                                           'closes': datetime.datetime(2014, 4, 25, 12, 59, 30),
+                                           'opens': datetime.datetime(2014, 4, 25, 12, 56, 30),
+                                           'signal_teams': datetime.datetime(2014, 4, 25, 12, 57, 30)
+                                       },
+                                       'slot': {
+                                           'end': datetime.datetime(2014, 4, 25, 13, 5),
+                                           'start': datetime.datetime(2014, 4, 25, 13, 0)
+                                       }
+                                   },
                                    type=MatchType.tiebreaker,
                                    use_resolved_ranking=False)}
 

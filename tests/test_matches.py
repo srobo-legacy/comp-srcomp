@@ -112,24 +112,6 @@ def test_basic_data():
     assert expected_staging == staging_times, "Wrong values loaded from state"
 
 
-def test_get_staging_times():
-    start = datetime(2014, 3, 26,  13, 0, 0)
-    match = Match(0, None, 'A', [], start, None, None, None)
-
-    matches = load_basic_data()
-
-    staging_times = matches.get_staging_times(match)
-
-    expected = {
-        'opens':            datetime(2014, 3, 26,  12, 56, 30),
-        'closes':           datetime(2014, 3, 26,  12, 59, 30),
-        'duration':         timedelta(seconds=180),
-        'signal_shepherds': datetime(2014, 3, 26,  12, 57, 29),
-        'signal_teams':     datetime(2014, 3, 26,  12, 57, 30),
-    }
-
-    assert expected == staging_times, "Wrong staging times for given match"
-
 def test_extra_spacing_no_delays():
     the_data = get_basic_data()
 

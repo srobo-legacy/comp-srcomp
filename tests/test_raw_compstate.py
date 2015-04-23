@@ -10,10 +10,11 @@ from sr.comp.raw_compstate import RawCompstate
 DUMMY_PATH = os.path.dirname(os.path.abspath(__file__)) + '/dummy'
 
 
-def build_match(num, arena, teams = None, start_time = None, \
-                end_time = None, type_ = None, use_resolved_ranking = False):
+def build_match(num, arena, teams=None, start_time=None, end_time=None,
+                type_=None, use_resolved_ranking=False):
     return Match(num, 'Match {n}'.format(n=num), arena, teams,
-                 start_time, end_time, type_, use_resolved_ranking)
+                 {'slot': {'start': start_time, 'end': end_time}},
+                 type_, use_resolved_ranking)
 
 
 def test_load():

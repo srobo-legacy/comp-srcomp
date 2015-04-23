@@ -18,9 +18,21 @@ class MatchPeriod(namedtuple('MatchPeriod', ['start_time', 'end_time',
                                    self.end_time.strftime('%H:%M'))
 
 
-Match = namedtuple('Match', ['num', 'display_name', 'arena', 'teams',
-                             'start_time', 'end_time', 'type',
-                             'use_resolved_ranking'])
+_Match = namedtuple('Match', ['num', 'display_name', 'arena', 'teams',
+                              'times', 'type', 'use_resolved_ranking'])
+
+
+class Match(_Match):
+
+    __slots__ = ()
+
+    @property
+    def start_time(self):
+        return self.times['slot']['start']
+
+    @property
+    def end_time(self):
+        return self.times['slot']['end']
 
 
 @unique

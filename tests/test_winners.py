@@ -14,14 +14,14 @@ import mock
 
 FINAL_INFO = Match(num=1, display_name='Match 1', arena='A',
                    teams=['AAA', 'BBB', 'CCC', 'DDD'],
-                   start_time=datetime(2014, 4, 26, 16, 30, tzinfo=tzutc()),
-                   end_time=datetime(2014, 4, 26, 16, 35, tzinfo=tzutc()),
+                   times={'slot': {'start': datetime(2014, 4, 26, 16, 30, tzinfo=tzutc()),
+                                   'end': datetime(2014, 4, 26, 16, 35, tzinfo=tzutc())}},
                    type=MatchType.knockout, use_resolved_ranking=False)
 
 TIEBREAKER_INFO = Match(num=2, display_name='Tiebreaker (#2)', arena='A',
                         teams=['AAA', 'BBB'],
-                        start_time=datetime(2014, 4, 26, 16, 30, tzinfo=tzutc()),
-                        end_time=datetime(2014, 4, 26, 16, 35, tzinfo=tzutc()),
+                        times={'slot': {'start': datetime(2014, 4, 26, 16, 30, tzinfo=tzutc()),
+                                        'end': datetime(2014, 4, 26, 16, 35, tzinfo=tzutc())}},
                         type=MatchType.tiebreaker, use_resolved_ranking=False)
 
 TEAMS = {'AAA': Team(tla='AAA', name='AAA Squad', rookie=True, dropped_out_after=None),

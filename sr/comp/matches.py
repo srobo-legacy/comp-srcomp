@@ -113,6 +113,30 @@ class MatchSchedule(object):
         self.match_slot_lengths = durations
         self.match_duration = total
 
+    def build_match_times(self, slot_start_time, slot_end_time):
+        game_start_time = slot_start_time + self.match_slot_lengths['pre']
+        game_end_time = slot_end_time - self.match_slot_lengths['post']
+
+        return {
+            'slot': {
+                'start': slot_start_time,
+                'end': slot_end_time,
+            },
+            'game': {
+                'start': game_start_time,
+                'end': game_end_time,
+            },
+            'staging': {
+                'opens': game_start_time - self.staging_times['opens'],
+                'closes': game_start_time - self.staging_times['closes'],
+                'duration': self.staging_times['duration'],
+                'signal_shepherds':
+                    game_start_time - self.staging_times['signal_shepherds'],
+                'signal_teams':
+                    game_start_time - self.staging_times['signal_teams'],
+            }
+        }
+
     def _get_staging_times(self, yamldata):
         raw_data = yamldata['staging']
         durations = {key: datetime.timedelta(seconds=value)
@@ -129,19 +153,6 @@ class MatchSchedule(object):
                 raise ValueError(msg)
 
         return durations
-
-    def get_staging_times(self, match):
-        pre = self.match_slot_lengths['pre']
-        match_start = match.start_time + pre
-        offsets = self.staging_times
-
-        return  {
-            'opens':            match_start - offsets['opens'],
-            'closes':           match_start - offsets['closes'],
-            'duration':         self.staging_times['duration'],
-            'signal_shepherds': match_start - offsets['signal_shepherds'],
-            'signal_teams':     match_start - offsets['signal_teams'],
-        }
 
     def _build_extra_spacing(self, yamldata):
         spacing = {}
@@ -231,8 +242,9 @@ class MatchSchedule(object):
                 for arena_name, teams in arenas.items():
                     teams = self.remove_drop_outs(teams, match_n)
                     display_name = 'Match {n}'.format(n=match_n)
+                    times = self.build_match_times(start, end_time)
                     match = Match(match_n, display_name, arena_name, teams,
-                                  start, end_time, MatchType.league,
+                                  times, MatchType.league,
                                   use_resolved_ranking=False)
                     m[arena_name] = match
 
@@ -354,8 +366,7 @@ class MatchSchedule(object):
                           arena=arena,
                           teams=tiebreaker_teams,
                           type=MatchType.tiebreaker,
-                          start_time=time,
-                          end_time=end_time,
+                          times=self.build_match_times(time, end_time),
                           use_resolved_ranking=False)
             slot = {arena: match}
             self.matches.append(slot)
