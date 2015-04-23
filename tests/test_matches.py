@@ -3,6 +3,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 
 from sr.comp.matches import MatchSchedule, parse_ranges
+from sr.comp.match_period import Match
 from sr.comp.teams import Team
 
 
@@ -26,6 +27,13 @@ def get_basic_data():
             "match": 180,
             "post": 30,
             "total": 300
+        },
+        "staging": {
+            "opens": 300,
+            "closes": 120,
+            "duration": 180,
+            "signal_shepherds": 241,
+            "signal_teams": 240,
         },
         "delays": [ {
             "delay": 15,
@@ -91,8 +99,36 @@ def test_basic_data():
     assert a_end == datetime(2014, 3, 26,  13, 5)
     assert a_end == b_end
 
-    assert matches.staging_deadline.seconds == 5 * 60
+    expected_staging = {
+        'opens': timedelta(seconds=300),
+        'closes': timedelta(seconds=120),
+        'duration': timedelta(seconds=180),
+        'signal_shepherds': timedelta(seconds=241),
+        'signal_teams': timedelta(seconds=240),
+    }
 
+    staging_times = matches.staging_times
+
+    assert expected_staging == staging_times, "Wrong values loaded from state"
+
+
+def test_get_staging_times():
+    start = datetime(2014, 3, 26,  13, 0, 0)
+    match = Match(0, None, 'A', [], start, None, None, None)
+
+    matches = load_basic_data()
+
+    staging_times = matches.get_staging_times(match)
+
+    expected = {
+        'opens':            datetime(2014, 3, 26,  12, 56, 30),
+        'closes':           datetime(2014, 3, 26,  12, 59, 30),
+        'duration':         timedelta(seconds=180),
+        'signal_shepherds': datetime(2014, 3, 26,  12, 57, 29),
+        'signal_teams':     datetime(2014, 3, 26,  12, 57, 30),
+    }
+
+    assert expected == staging_times, "Wrong staging times for given match"
 
 def test_extra_spacing_no_delays():
     the_data = get_basic_data()
