@@ -91,7 +91,15 @@ class RawCompstate(object):
 
         try:
             return func(command, cwd=self._path, stderr=stderr)
-        except (OSError, subprocess.CalledProcessError):
+        except subprocess.CalledProcessError as e:
+            if err_msg:
+                if e.output:
+                    err_msg += '\n\n' + e.output
+
+                raise RuntimeError(err_msg)
+            else:
+                raise
+        except OSError:
             if err_msg:
                 raise RuntimeError(err_msg)
             else:
@@ -185,7 +193,7 @@ class RawCompstate(object):
         args = ["commit", "-m", commit_msg]
         if allow_empty:
             args += ['--allow-empty']
-        self.git(args, err_msg="Git commit failed.")
+        self.git(args, return_output=True, err_msg="Git commit failed.")
 
     def commit_and_push(self, commit_msg, allow_empty=False):
         self.commit(commit_msg, allow_empty)
@@ -193,5 +201,5 @@ class RawCompstate(object):
         if self._local_only:
             return
 
-        self.push("origin", "master",
+        self.push("origin", "master", return_output=True,
                   err_msg="Git push failed, deal with the merge manually.")
