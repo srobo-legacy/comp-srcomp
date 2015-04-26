@@ -181,11 +181,14 @@ class RawCompstate(object):
     def checkout(self, what):
         self.git(['checkout', what])
 
-    def commit(self, commit_msg):
-        self.git(["commit", "-m", commit_msg], err_msg="Git commit failed.")
+    def commit(self, commit_msg, allow_empty=False):
+        args = ["commit", "-m", commit_msg]
+        if allow_empty:
+            args += ['--allow-empty']
+        self.git(args, err_msg="Git commit failed.")
 
-    def commit_and_push(self, commit_msg):
-        self.commit(commit_msg)
+    def commit_and_push(self, commit_msg, allow_empty=False):
+        self.commit(commit_msg, allow_empty)
 
         if self._local_only:
             return
