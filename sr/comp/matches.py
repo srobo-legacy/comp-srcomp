@@ -10,6 +10,7 @@ from sr.comp import yaml_loader
 from sr.comp.match_period import MatchPeriod, Match, MatchType
 from sr.comp.match_period_clock import MatchPeriodClock
 from sr.comp.knockout_scheduler import KnockoutScheduler
+from sr.comp.static_knockout_scheduler import StaticScheduler
 
 
 Delay = namedtuple("Delay",
@@ -40,7 +41,7 @@ class MatchSchedule(object):
 
     @classmethod
     def create(cls, config_fname, league_fname, scores, arenas, teams,
-               knockout_scheduler=KnockoutScheduler):
+               knockout_scheduler=None):
         """
         Create a new match schedule around the given config data.
 
@@ -57,6 +58,12 @@ class MatchSchedule(object):
         league = yaml_loader.load(league_fname)['matches']
 
         schedule = cls(y, league, teams)
+
+        if knockout_scheduler is None:
+            if y['knockout'].get('static', False):
+                knockout_scheduler = StaticScheduler
+            else:
+                knockout_scheduler = KnockoutScheduler
 
         k = knockout_scheduler(schedule, scores, arenas, teams, y)
         k.add_knockouts()
