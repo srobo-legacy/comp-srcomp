@@ -371,3 +371,8 @@ class MatchSchedule(object):
             self.match_periods.append(match_period)
 
             self.tiebreaker = match
+
+    @property
+    def datetime_now(self):
+        """Get the current date and time, with the correct timezone."""
+        return datetime.datetime.now(self.timezone)
