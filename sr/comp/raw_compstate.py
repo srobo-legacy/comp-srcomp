@@ -201,5 +201,5 @@ class RawCompstate(object):
         if self._local_only:
             return
 
-        self.push("origin", "master", return_output=True,
+        self.push("origin", "master",
                   err_msg="Git push failed, deal with the merge manually.")
