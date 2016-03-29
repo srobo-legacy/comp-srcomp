@@ -85,7 +85,10 @@ def _compute_explicit_awards(path):
     """Compute awards explicitly provided in the compstate repo."""
     if not os.path.exists(path):
         return {}
+
     explicit_awards = yaml_loader.load(path)
+    assert explicit_awards, "Awards file should not be present if empty."
+
     return {Award(key): [value] if isinstance(value, str) else value
             for key, value in explicit_awards.items()}
 
