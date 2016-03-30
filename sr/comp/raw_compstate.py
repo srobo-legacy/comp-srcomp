@@ -31,6 +31,7 @@ class RawCompstate(object):
         """Load the shepherds' state."""
 
         layout = self.layout['teams']
+        layout_map = {r['name']: r for r in layout}
         shepherds = self.shepherding['shepherds']
 
         for s in shepherds:
@@ -38,7 +39,7 @@ class RawCompstate(object):
             if regions:
                 teams = set(s.get('teams', []))
                 for region_name in regions:
-                    region = layout[region_name]
+                    region = layout_map[region_name]
                     teams |= set(region['teams'])
                 s['teams'] = list(sorted(teams))
 
