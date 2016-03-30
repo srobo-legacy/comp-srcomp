@@ -79,9 +79,10 @@ class SRComp(object):
         """A :class:`dict` mapping :class:`sr.comp.winners.Award` objects to
         a :class:`list` of teams."""
 
-        if sys.version_info[0] == 3:
+        pyver = sys.version_info
+        if pyver[0] == 3 and (pyver < (3, 4, 4) or pyver == (3, 5, 0)):
             from warnings import warn
-            warn("Python 3 has a known issue with timezones that have the "
-                 "same `dst()` and `utcoffset()` values (such as BST). "
+            warn("Python 3 < 3.4.4, 3.5.1 has a known issue with timezones that "
+                 "have the same `dst()` and `utcoffset()` values (such as BST). "
                  "Using Python 2 instead is recommended. "
                  "See https://bugs.python.org/issue23600.")
