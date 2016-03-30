@@ -81,6 +81,8 @@ class RawCompstate(object):
 
     @property
     def shepherding(self):
+        """Provides access to the raw shepherding data.
+           Most consumers actually want to use ``load_shepherds`` instead."""
         path = os.path.join(self._path, 'shepherding.yaml')
 
         with open(path) as file:
