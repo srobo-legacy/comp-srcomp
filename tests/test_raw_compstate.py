@@ -43,6 +43,25 @@ def test_load_score():
 
 
 
+def test_load_shepherds():
+    state = RawCompstate(DUMMY_PATH, local_only=True)
+    shepherds = state.load_shepherds()
+
+    expected = [
+        {'name': 'Blue',
+         'colour': '#A9A9F5',
+         'teams': ['ABC', 'DEF', 'GHI'],
+        },
+        {'name': 'Green',
+         'colour': 'green',
+         'teams': ['???', 'ABC', 'DEF', 'GHI'],
+         'regions': ['a-group'],
+        }
+    ]
+
+    assert expected == shepherds, "Wrong shepherds data loaded"
+
+
 def test_shepherding():
     state = RawCompstate(DUMMY_PATH, local_only=True)
     assert state.shepherding

@@ -27,6 +27,23 @@ class RawCompstate(object):
         """Load the state as an ``SRComp`` instance."""
         return SRComp(self._path)
 
+    def load_shepherds(self):
+        """Load the shepherds' state."""
+
+        layout = self.layout['teams']
+        shepherds = self.shepherding['shepherds']
+
+        for s in shepherds:
+            regions = s.get('regions')
+            if regions:
+                teams = set(s.get('teams', []))
+                for region_name in regions:
+                    region = layout[region_name]
+                    teams |= set(region['teams'])
+                s['teams'] = list(sorted(teams))
+
+        return shepherds
+
     def get_score_path(self, match):
         """Get the absolute path to the score file for the given match."""
         filename = "{0:0>3}.yaml".format(match.num)
