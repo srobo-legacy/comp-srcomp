@@ -81,14 +81,15 @@ def get_validated_scores(scorer_cls, input_data):
     """
     Helper function which mimics the behaviour from libproton.
 
-    Given a libproton (Proton 2.0.0-rc1) compatible class this will calculate
-    the scores and validate the input.
+    Given a libproton 3.0 (Proton 3.0.0-rc1) compatible class this will
+    calculate the scores and validate the input.
     """
 
     teams_data = input_data['teams']
+    arena_data = input_data.get('arena')  # May be absent
     extra_data = input_data.get('other')  # May be absent
 
-    scorer = scorer_cls(teams_data)
+    scorer = scorer_cls(teams_data, arena_data)
     scores = scorer.calculate_scores()
 
     # Also check the validation, if supported. Explicit pre-check so

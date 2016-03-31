@@ -4,7 +4,7 @@ import mock
 from sr.comp.scores import LeagueScores, TeamScore
 
 class FakeScorer(object):
-    def __init__(self, score_data):
+    def __init__(self, score_data, arena_data_unused=None):
         self.score_data = score_data
 
     def calculate_scores(self):
