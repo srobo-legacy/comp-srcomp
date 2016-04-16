@@ -110,6 +110,14 @@ Validation
     :undoc-members:
     :show-inheritance:
 
+Venue
+-----
+
+.. automodule:: sr.comp.venue
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Winners
 -------
 

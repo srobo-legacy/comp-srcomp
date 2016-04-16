@@ -6,7 +6,7 @@ import os
 from subprocess import check_output
 import sys
 
-from sr.comp import arenas, matches, scores, teams
+from sr.comp import arenas, matches, scores, teams, venue
 from sr.comp.winners import compute_awards
 
 
@@ -78,6 +78,11 @@ class SRComp(object):
                                      os.path.join(root, "awards.yaml"))
         """A :class:`dict` mapping :class:`sr.comp.winners.Award` objects to
         a :class:`list` of teams."""
+
+        self.venue = venue.Venue(self.teams.keys(),
+                                 os.path.join(root, "layout.yaml"),
+                                 os.path.join(root, "shepherding.yaml"))
+        """A :class:`sr.comp.venue.Venue` instance."""
 
         pyver = sys.version_info
         if pyver[0] == 3 and (pyver < (3, 4, 4) or pyver == (3, 5, 0)):
