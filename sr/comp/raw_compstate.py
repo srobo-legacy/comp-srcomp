@@ -35,13 +35,14 @@ class RawCompstate(object):
         shepherds = self.shepherding['shepherds']
 
         for s in shepherds:
-            regions = s.get('regions')
-            if regions:
-                teams = set(s.get('teams', []))
-                for region_name in regions:
-                    region = layout_map[region_name]
-                    teams |= set(region['teams'])
-                s['teams'] = list(sorted(teams))
+            regions = s['regions']
+            teams = []
+            for region_name in regions:
+                region = layout_map[region_name]
+                teams += region['teams']
+            s['teams'] = teams
+
+            assert len(teams) == len(set(teams)), "Some teams listed in more than one region!"
 
         return shepherds
 
