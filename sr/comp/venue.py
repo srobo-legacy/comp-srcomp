@@ -19,36 +19,51 @@ class InvalidRegionException(Exception):
         self.area = area
 
 
-class LayoutTeamsException(Exception):
+class MismatchException(Exception):
+    """
+    An exception that occurs when there are duplicate, extra or missing items.
+    """
+    def __init__(self, tpl, duplicates, extras, missing):
+        details = []
+
+        for label, teams in (('duplicates', duplicates),
+                             ('extras', extras),
+                             ('missing', missing)):
+            if teams:
+                details.append('{0}: '.format(label) + ', '.join(teams))
+
+        assert details, "No bad items given to {0}!".format(self.__class__)
+
+        detail = '; '.join(details)
+        super(MismatchException, self).__init__(tpl.format(detail))
+
+        self.duplicates = duplicates
+        self.extras = extras
+        self.missing = missing
+
+
+class LayoutTeamsException(MismatchException):
     """
     An exception that occurs when there are duplicate, extra or missing
     teams in a layout.
     """
     def __init__(self, duplicate_teams, extra_teams, missing_teams):
-        details = []
-
-        for label, teams in (('duplicate', duplicate_teams),
-                             ('extra', extra_teams),
-                             ('missing', missing_teams)):
-            if teams:
-                details.append('{0}: '.format(label) + ', '.join(teams))
-
-        assert details, "No bad teams given to LayoutTeamsException!"
-
-        detail = '; '.join(details)
         tpl = "Duplicate, extra or missing teams in the layout! ({0})"
-        super(LayoutTeamsException, self).__init__(tpl.format(detail))
+        super(LayoutTeamsException, self).__init__(tpl, duplicate_teams, \
+                                                   extra_teams, missing_teams)
 
-        self.duplicate_teams = duplicate_teams
-        self.extra_teams = extra_teams
-        self.missing_teams = missing_teams
 
 
 class Venue(object):
     """A class providing information about the layout within the venue."""
 
     @staticmethod
-    def check_teams(teams, teams_layout):
+    def _get_duplicates(items):
+        return [item for item, count in Counter(items).items() if count > 1]
+
+
+    @classmethod
+    def check_teams(cls, teams, teams_layout):
         """
         Check that the given layout of teams contains the same set of
         teams as the reference.
@@ -62,7 +77,7 @@ class Venue(object):
         """
 
         layout_teams = list(chain.from_iterable(r['teams'] for r in teams_layout))
-        duplicate_teams = [team for team, count in Counter(layout_teams).items() if count > 1]
+        duplicate_teams = cls._get_duplicates(layout_teams)
 
         teams_set = set(teams)
         layout_teams_set = set(layout_teams)

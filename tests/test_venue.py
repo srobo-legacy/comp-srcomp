@@ -68,9 +68,9 @@ def test_extra_teams():
         try:
             venue = Venue(['ABC', 'DEF', 'GHI'], 'LYT', 'SHPD')
         except LayoutTeamsException as lte:
-            assert lte.extra_teams == set(['JKL', 'MNO', 'PQR'])
-            assert lte.duplicate_teams == []
-            assert lte.missing_teams == set()
+            assert lte.extras == set(['JKL', 'MNO', 'PQR'])
+            assert lte.duplicates == []
+            assert lte.missing == set()
         else:
             assert False, "Should have errored about the extra teams"
 
@@ -87,9 +87,9 @@ def test_duplicate_teams():
         try:
             venue = Venue(TEAMS, 'LYT', 'SHPD')
         except LayoutTeamsException as lte:
-            assert lte.duplicate_teams == ['ABC']
-            assert lte.extra_teams == set()
-            assert lte.missing_teams == set()
+            assert lte.duplicates == ['ABC']
+            assert lte.extras == set()
+            assert lte.missing == set()
         else:
             assert False, "Should have errored about the extra teams"
 
@@ -100,9 +100,9 @@ def test_missing_teams():
         try:
             venue = Venue(TEAMS + ['Missing'], 'LYT', 'SHPD')
         except LayoutTeamsException as lte:
-            assert lte.missing_teams == set(['Missing'])
-            assert lte.duplicate_teams == []
-            assert lte.extra_teams == set()
+            assert lte.missing == set(['Missing'])
+            assert lte.duplicates == []
+            assert lte.extras == set()
         else:
             assert False, "Should have errored about the missing team"
 
@@ -113,9 +113,9 @@ def test_missing_and_extra_teams():
         try:
             venue = Venue(['ABC', 'DEF', 'GHI', 'Missing'], 'LYT', 'SHPD')
         except LayoutTeamsException as lte:
-            assert lte.extra_teams == set(['JKL', 'MNO', 'PQR'])
-            assert lte.missing_teams == set(['Missing'])
-            assert lte.duplicate_teams == []
+            assert lte.extras == set(['JKL', 'MNO', 'PQR'])
+            assert lte.missing == set(['Missing'])
+            assert lte.duplicates == []
         else:
             assert False, "Should have errored about the extra and missing teams"
 
