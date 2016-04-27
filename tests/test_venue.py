@@ -1,11 +1,14 @@
 
+from copy import deepcopy
 import mock
 
 from sr.comp.venue import InvalidRegionException, \
                           LayoutTeamsException, \
+                          ShepherdingAreasException, \
                           Venue
 
 TEAMS = ['ABC', 'DEF', 'GHI', 'JKL', 'MNO', 'PQR']
+TIMES = {'signal_shepherds': {'Yellow': None, 'Pink': None } }
 
 def mock_layout_loader():
     return {'teams':[{
@@ -118,6 +121,66 @@ def test_missing_and_extra_teams():
             assert lte.duplicates == []
         else:
             assert False, "Should have errored about the extra and missing teams"
+
+
+def test_right_shepherding_areas():
+    with mock.patch('sr.comp.yaml_loader.load') as yaml_load:
+        yaml_load.side_effect = mock_loader
+
+        venue = Venue(TEAMS, 'LYT', 'SHPD')
+        venue.check_staging_times(TIMES)
+
+def test_extra_shepherding_areas():
+    with mock.patch('sr.comp.yaml_loader.load') as yaml_load:
+        yaml_load.side_effect = mock_loader
+
+        venue = Venue(TEAMS, 'LYT', 'SHPD')
+        times = deepcopy(TIMES)
+        times['signal_shepherds']['Blue'] = None
+
+        try:
+            venue.check_staging_times(times)
+        except ShepherdingAreasException as lte:
+            assert lte.extras == set(['Blue'])
+            assert lte.duplicates == []
+            assert lte.missing == set()
+        else:
+            assert False, "Should have errored about the extra shepherding area"
+
+def test_missing_shepherding_areas():
+    with mock.patch('sr.comp.yaml_loader.load') as yaml_load:
+        yaml_load.side_effect = mock_loader
+
+        venue = Venue(TEAMS, 'LYT', 'SHPD')
+        times = deepcopy(TIMES)
+        del times['signal_shepherds']['Pink']
+
+        try:
+            venue.check_staging_times(times)
+        except ShepherdingAreasException as lte:
+            assert lte.missing == set(['Pink'])
+            assert lte.extras == set()
+            assert lte.duplicates == []
+        else:
+            assert False, "Should have errored about the missing shepherding area"
+
+def test_missing_and_extra_shepherding_areas():
+    with mock.patch('sr.comp.yaml_loader.load') as yaml_load:
+        yaml_load.side_effect = mock_loader
+
+        venue = Venue(TEAMS, 'LYT', 'SHPD')
+        times = deepcopy(TIMES)
+        times['signal_shepherds']['Blue'] = None
+        del times['signal_shepherds']['Pink']
+
+        try:
+            venue.check_staging_times(times)
+        except ShepherdingAreasException as lte:
+            assert lte.missing == set(['Pink'])
+            assert lte.extras == set(['Blue'])
+            assert lte.duplicates == []
+        else:
+            assert False, "Should have errored about the extra and missing shepherding areas"
 
 
 def test_locations():

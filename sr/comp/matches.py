@@ -122,8 +122,16 @@ class MatchSchedule(object):
 
     def _get_staging_times(self, yamldata):
         raw_data = yamldata['staging']
-        durations = {key: datetime.timedelta(seconds=value)
-                     for key, value in raw_data.items()}
+
+        def to_timedeltas(item):
+            if isinstance(item, dict):
+                return {key: to_timedeltas(value)
+                        for key, value in item.items()}
+            else:
+                return datetime.timedelta(seconds=item)
+
+        durations = to_timedeltas(raw_data)
+
         opens = durations['opens']
         closes = durations['closes']
         duration = durations['duration']
@@ -142,11 +150,14 @@ class MatchSchedule(object):
         match_start = match.start_time + pre
         offsets = self.staging_times
 
+        signal_shepherds = {area: match_start - offset
+                            for area, offset in offsets['signal_shepherds'].items()}
+
         return  {
             'opens':            match_start - offsets['opens'],
             'closes':           match_start - offsets['closes'],
             'duration':         self.staging_times['duration'],
-            'signal_shepherds': match_start - offsets['signal_shepherds'],
+            'signal_shepherds': signal_shepherds,
             'signal_teams':     match_start - offsets['signal_teams'],
         }
 

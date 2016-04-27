@@ -84,6 +84,8 @@ class SRComp(object):
                                  os.path.join(root, "shepherding.yaml"))
         """A :class:`sr.comp.venue.Venue` instance."""
 
+        self.venue.check_staging_times(self.schedule.staging_times)
+
         pyver = sys.version_info
         if pyver[0] == 3 and (pyver < (3, 4, 4) or pyver == (3, 5, 0)):
             from warnings import warn

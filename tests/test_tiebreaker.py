@@ -18,7 +18,8 @@ def make_schedule():
                 'staging': {'opens': 300,
                             'closes': 120,
                             'duration': 180,
-                            'signal_shepherds': 240,
+                            'signal_shepherds': {'Blue': 241,
+                                                 'Green': 181},
                             'signal_teams': 240},
                 'league': { 'extra_spacing': [], },
                 'delays': []}

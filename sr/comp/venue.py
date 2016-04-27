@@ -53,9 +53,45 @@ class LayoutTeamsException(MismatchException):
                                                    extra_teams, missing_teams)
 
 
+class ShepherdingAreasException(MismatchException):
+    """
+    An exception that occurs when there are duplicate, extra or missing
+    shepherding areas in the staging times.
+    """
+    def __init__(self, where, duplicate, extra, missing):
+        tpl = "Duplicate, extra or missing shepherding areas {0}! ({{0}})".format(where)
+        super(ShepherdingAreasException, self).__init__(tpl, duplicate, extra, missing)
+
 
 class Venue(object):
     """A class providing information about the layout within the venue."""
+
+    @staticmethod
+    def _check_staging_times(shepherding_areas, staging_times):
+        """
+        Check that the given staging times contain signals for the right
+        set of shepherding areas.
+
+        Will throw a :class:`ShepherdingAreasException` if there are
+        any missing, extra or duplicate areas found.
+
+        :param list shepherding_areas: The reference list of shepherding
+                                       areas at the competition.
+        :param list teams_layout: A dict of staging times, containing at
+                                  least a ``signal_shepherds`` key which
+                                  is a map of times for each area.
+        """
+
+        shepherding_areas_set = set(shepherding_areas)
+        staging_areas_set = set(staging_times['signal_shepherds'].keys())
+
+        extra_areas = staging_areas_set - shepherding_areas_set
+        missing_areas = shepherding_areas_set - staging_areas_set
+
+        if extra_areas or missing_areas:
+            raise ShepherdingAreasException('in the staging times', [], \
+                                            extra_areas, missing_areas)
+
 
     @staticmethod
     def _get_duplicates(items):
@@ -98,6 +134,16 @@ class Venue(object):
         shepherding_data = yaml_loader.load(shepherding_file)
         shepherds = shepherding_data['shepherds']
 
+        self._shepherding_areas = [a['name'] for a in shepherds]
+        """
+        A :class:`list` of shepherding zone names from the shepherding file.
+        """
+
+        duplicate_areas = self._get_duplicates(self._shepherding_areas)
+        if duplicate_areas:
+            raise ShepherdingAreasException('in the shepherding data', \
+                                            duplicate_areas, [], [])
+
         self.locations = {r['name']: r for r in teams_layout}
         """
         A :class:`dict` of location names (from the layout file) to location
@@ -121,6 +167,10 @@ class Venue(object):
                     "name": area['name'],
                     "colour": area['colour'],
                 }
+
+
+    def check_staging_times(self, staging_times):
+        self._check_staging_times(self._shepherding_areas, staging_times)
 
 
     def get_team_location(self, team):

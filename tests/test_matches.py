@@ -32,7 +32,10 @@ def get_basic_data():
             "opens": 300,
             "closes": 120,
             "duration": 180,
-            "signal_shepherds": 241,
+            "signal_shepherds": {
+                "Blue": 241,
+                "Green": 181,
+            },
             "signal_teams": 240,
         },
         "delays": [ {
@@ -103,7 +106,10 @@ def test_basic_data():
         'opens': timedelta(seconds=300),
         'closes': timedelta(seconds=120),
         'duration': timedelta(seconds=180),
-        'signal_shepherds': timedelta(seconds=241),
+        'signal_shepherds': {
+            'Blue': timedelta(seconds=241),
+            'Green': timedelta(seconds=181),
+        },
         'signal_teams': timedelta(seconds=240),
     }
 
@@ -124,7 +130,10 @@ def test_get_staging_times():
         'opens':            datetime(2014, 3, 26,  12, 56, 30),
         'closes':           datetime(2014, 3, 26,  12, 59, 30),
         'duration':         timedelta(seconds=180),
-        'signal_shepherds': datetime(2014, 3, 26,  12, 57, 29),
+        'signal_shepherds': {
+            'Blue': datetime(2014, 3, 26,  12, 57, 29),
+            'Green': datetime(2014, 3, 26,  12, 58, 29),
+        },
         'signal_teams':     datetime(2014, 3, 26,  12, 57, 30),
     }
 
