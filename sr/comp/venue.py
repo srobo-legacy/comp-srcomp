@@ -53,8 +53,8 @@ class Venue(object):
         Check that the given layout of teams contains the same set of
         teams as the reference.
 
-        Will throw a LayoutTeamsException if there are any missing,
-        extra or duplicate teams found.
+        Will throw a :class:`LayoutTeamsException` if there are any
+        missing, extra or duplicate teams found.
 
         :param list teans: The reference list of teams in the competition.
         :param list teams_layout: A list of maps with a list of teams
