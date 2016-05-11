@@ -317,12 +317,25 @@ class Scores(object):
 
     def __init__(self, root, teams, scorer):
         self.root = root
+
         self.league = LeagueScores(os.path.join(root, "league"),
                                    teams, scorer)
+        """
+        The :class:`LeagueScores` for the competition.
+        """
+
+
         self.knockout = KnockoutScores(os.path.join(root, "knockout"),
                                        teams, scorer, self.league.positions)
+        """
+        The :class:`KnockoutScores` for the competition.
+        """
+
         self.tiebreaker = TiebreakerScores(os.path.join(root, "tiebreaker"),
                                            teams, scorer)
+        """
+        The :class:`TiebreakerScores` for the competition.
+        """
 
         lsm = None
         for scores in (self.tiebreaker, self.knockout, self.league):
@@ -331,3 +344,6 @@ class Scores(object):
                 break
 
         self.last_scored_match = lsm
+        """
+        The most match with the highest id for which we have score data.
+        """
