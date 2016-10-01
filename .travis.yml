@@ -3,6 +3,6 @@ python:
   - "3.4"
   - "3.3"
   - "2.7"
-before_install: pip install git+git://srobo.org/comp/ranker.git
+before_install: pip install git+git://git.srobo.org/comp/ranker.git
 install: python setup.py install
 script: ./run-tests
