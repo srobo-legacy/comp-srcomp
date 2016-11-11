@@ -3,7 +3,6 @@ python:
   - "3.6-dev"
   - "3.5"
   - "3.4"
-  - "3.3"
   - "2.7"
 before_install: pip install git+git://git.srobo.org/comp/ranker.git
 install: python setup.py install
