@@ -108,6 +108,16 @@ class MatchSchedule(object):
 
         self._build_extra_spacing(y["league"]['extra_spacing'])
         self._build_delaylist(y["delays"])
+
+        self.matches = []
+        """
+        A list of match slots in the schedule. Each match slot is a dict of
+        arena to the :class:`.Match` occuring in that arena.
+        """
+
+        self.n_planned_league_matches = 0
+        """The number of planned league matches."""
+
         self._build_matchlist(league)
 
         self.timezone = gettz(y.get('timezone', 'UTC'))
@@ -215,10 +225,14 @@ class MatchSchedule(object):
         return new_teams
 
     def _build_matchlist(self, yamldata):
-        """Build the match list."""
-        self.matches = []
+        """
+        Build the match list.
+
+        :param dict yamldata: The matches data from the league file, formatted
+        as a dict of match numbers to dicts of arena to lists of TLAs.
+        """
+
         if yamldata is None:
-            self.n_planned_league_matches = 0
             return
 
         match_numbers = sorted(yamldata.keys())
