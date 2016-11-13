@@ -368,8 +368,8 @@ class MatchSchedule(object):
         Add a tie breaker to the league if required. Also set a ``tiebreaker``
         attribute if necessary.
 
-        :param scores: The scores.
-        :param time: The time.
+        :param `.Scores` scores: The scores for the competition.
+        :param datetime.datetime time: The time to have the tiebreaker match.
         """
 
         finals_info = self.knockout_rounds[-1][0]
