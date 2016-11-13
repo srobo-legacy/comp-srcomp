@@ -103,8 +103,8 @@ class MatchSchedule(object):
                                  e["description"], [], MatchType.league)
             self.match_periods.append(period)
 
-        self._configure_match_slot_lengths(y)
-        self.staging_times = self._get_staging_times(y)
+        self._load_match_slot_lengths(y["match_slot_lengths"])
+        self._load_staging_times(y["staging"])
 
         self._build_extra_spacing(y["league"]['extra_spacing'])
         self._build_delaylist(y["delays"])
@@ -114,10 +114,9 @@ class MatchSchedule(object):
 
         self.n_league_matches = self.n_matches()
 
-    def _configure_match_slot_lengths(self, yamldata):
-        raw_data = yamldata['match_slot_lengths']
+    def _load_match_slot_lengths(self, yamldata):
         durations = {key: datetime.timedelta(0, value)
-                     for key, value in raw_data.items()}
+                     for key, value in yamldata.items()}
         pre = durations['pre']
         post = durations['post']
         match = durations['match']
@@ -127,9 +126,7 @@ class MatchSchedule(object):
         self.match_slot_lengths = durations
         self.match_duration = total
 
-    def _get_staging_times(self, yamldata):
-        raw_data = yamldata['staging']
-
+    def _load_staging_times(self, yamldata):
         def to_timedeltas(item):
             if isinstance(item, dict):
                 return {key: to_timedeltas(value)
@@ -137,7 +134,7 @@ class MatchSchedule(object):
             else:
                 return datetime.timedelta(seconds=item)
 
-        durations = to_timedeltas(raw_data)
+        durations = to_timedeltas(yamldata)
 
         opens = durations['opens']
         closes = durations['closes']
@@ -150,7 +147,7 @@ class MatchSchedule(object):
                 msg = "Staging times missing '{0}' key.".format(other)
                 raise ValueError(msg)
 
-        return durations
+        self.staging_times = durations
 
     def get_staging_times(self, match):
         pre = self.match_slot_lengths['pre']
