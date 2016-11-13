@@ -102,7 +102,7 @@ class KnockoutScheduler(object):
                 teams = matches.pop(0)
 
                 if len(teams) < 4:
-                    "Fill empty zones with None"
+                    # Fill empty zones with None
                     teams += [None] * (4 - len(teams))
 
                 # Randomise the zones
@@ -141,7 +141,7 @@ class KnockoutScheduler(object):
         positions = self.scores.knockout.resolved_positions.get(desc, None)
 
         if positions is None:
-            "Given match hasn't been scored yet"
+            # Given match hasn't been scored yet
             return [UNKNOWABLE_TEAM] * 4
 
         # Extract just TLAs
@@ -234,7 +234,7 @@ class KnockoutScheduler(object):
                 arenas = self.arenas
 
             if len(self.knockout_rounds[-1]) == 2:
-                "Extra delay before the final match"
+                # Extra delay before the final match
                 final_delay = timedelta(seconds=knockout_conf["final_delay"])
                 self.clock.advance_time(final_delay)
 

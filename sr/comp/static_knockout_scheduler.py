@@ -58,7 +58,7 @@ class StaticScheduler(KnockoutScheduler):
             teams.append(self.get_team(team_ref))
 
         if len(teams) < 4:
-            "Fill empty zones with None"
+            # Fill empty zones with None
             teams += [None] * (4-len(teams))
 
         display_name = self.get_match_display_name(rounds_remaining, round_num,

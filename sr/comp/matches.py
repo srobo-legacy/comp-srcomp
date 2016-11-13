@@ -179,7 +179,7 @@ class MatchSchedule(object):
     def _build_delaylist(self, yamldata):
         delays = []
         if yamldata is None:
-            "No delays, hurrah"
+            # No delays, hurrah
             self.delays = delays
             return
 
