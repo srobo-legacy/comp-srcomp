@@ -11,4 +11,9 @@ before_install:
 - pip install git+git://git.srobo.org/comp/ranker.git
 - pip install --upgrade setuptools
 install: python setup.py install
-script: ./run-tests
+script:
+- ./run-tests
+# Deliberately after running the real tests so that we can't accidentally
+# depend on it
+- pip install pylint
+- ./lint

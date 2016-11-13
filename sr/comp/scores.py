@@ -48,6 +48,7 @@ class TeamScore(object):
         return self.league_points, self.game_points
 
     def __eq__(self, other):
+        # pylint: disable=protected-access
         return (isinstance(other, type(self)) and
                 self._ordering_key == other._ordering_key)
 
@@ -59,6 +60,8 @@ class TeamScore(object):
         if not isinstance(other, type(self)):
             # TeamScores are greater than other things (that have no score)
             return False
+
+        # pylint: disable=protected-access
         return self._ordering_key < other._ordering_key
 
     def __repr__(self):

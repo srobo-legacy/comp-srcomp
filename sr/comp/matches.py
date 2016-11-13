@@ -371,6 +371,7 @@ class MatchSchedule(object):
         :param `.Scores` scores: The scores for the competition.
         :param datetime.datetime time: The time to have the tiebreaker match.
         """
+        # pylint: disable=too-many-locals
 
         finals_info = self.knockout_rounds[-1][0]
         finals_key = (finals_info.arena, finals_info.num)
