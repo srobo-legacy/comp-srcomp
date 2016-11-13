@@ -261,17 +261,7 @@ class MatchSchedule(object):
                     # no more matches left
                     break
 
-                match_slot = {}
-
-                end_time = start + self.match_duration
-                for arena_name, teams in arenas.items():
-                    teams = self.remove_drop_outs(teams, match_n)
-                    display_name = 'Match {n}'.format(n=match_n)
-                    match = Match(match_n, display_name, arena_name, teams,
-                                  start, end_time, MatchType.league,
-                                  use_resolved_ranking=False)
-                    match_slot[arena_name] = match
-
+                match_slot = self._create_league_match_slot(start, arenas, match_n)
                 period.matches.append(match_slot)
                 self.matches.append(match_slot)
 
@@ -280,6 +270,24 @@ class MatchSchedule(object):
                 extra_spacing = self._spacing.get(match_n)
                 if extra_spacing:
                     clock.advance_time(extra_spacing)
+
+    def _create_league_match_slot(self, start_time, arenas, match_n):
+        """
+        Returns a dict of arena to :class:`.Match` for the given start time,
+        arenas dict and match number.
+        """
+        match_slot = {}
+
+        end_time = start_time + self.match_duration
+        for arena_name, teams in arenas.items():
+            teams = self.remove_drop_outs(teams, match_n)
+            display_name = 'Match {n}'.format(n=match_n)
+            match = Match(match_n, display_name, arena_name, teams,
+                          start_time, end_time, MatchType.league,
+                          use_resolved_ranking=False)
+            match_slot[arena_name] = match
+
+        return match_slot
 
     def delay_at(self, date):
         """
