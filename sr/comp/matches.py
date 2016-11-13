@@ -261,7 +261,7 @@ class MatchSchedule(object):
                     # no more matches left
                     break
 
-                m = {}
+                match_slot = {}
 
                 end_time = start + self.match_duration
                 for arena_name, teams in arenas.items():
@@ -270,10 +270,10 @@ class MatchSchedule(object):
                     match = Match(match_n, display_name, arena_name, teams,
                                   start, end_time, MatchType.league,
                                   use_resolved_ranking=False)
-                    m[arena_name] = match
+                    match_slot[arena_name] = match
 
-                period.matches.append(m)
-                self.matches.append(m)
+                period.matches.append(match_slot)
+                self.matches.append(match_slot)
 
                 match_n += 1
 
