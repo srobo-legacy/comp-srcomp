@@ -46,7 +46,7 @@ class Random(object):
 
     def getrandbits(self, n):
         v = 0
-        for i in range(n):
+        for _ in range(n):
             v <<= 1
             v |= self._rand_bit()
         return v
@@ -66,7 +66,7 @@ class Random(object):
 def _demo():
     R = Random()
     R.seed("hello".encode("utf-8"))
-    for n in range(10):
+    for _ in range(10):
         print(R.random())
 
     items = list(range(16))

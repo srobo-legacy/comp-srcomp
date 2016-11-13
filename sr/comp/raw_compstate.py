@@ -87,15 +87,15 @@ class RawCompstate(object):
            Most consumers actually want to use ``load_shepherds`` instead."""
         path = os.path.join(self._path, 'shepherding.yaml')
 
-        with open(path) as file:
-            return yaml.load(file)
+        with open(path) as shepherding_file:
+            return yaml.load(shepherding_file)
 
     @property
     def layout(self):
         path = os.path.join(self._path, 'layout.yaml')
 
-        with open(path) as file:
-            return yaml.load(file)
+        with open(path) as layout_file:
+            return yaml.load(layout_file)
 
     # Git repo related functionality
 

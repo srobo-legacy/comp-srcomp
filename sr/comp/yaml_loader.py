@@ -19,7 +19,7 @@ except ImportError:
          "Installing libyaml is highly recommended.")
 
 
-def time_constructor(loader, node):
+def time_constructor(_, node):
     return dateutil.parser.parse(node.value)
 
 
