@@ -86,6 +86,13 @@ class MatchSchedule(object):
         for the competition.
         """
 
+        self.knockout_rounds = []
+        """
+        A list of the knockout matches by round. Each entry in the list
+        represents a round of knockout matches, such that `knockout_rounds[-1]`
+        contains a list with only one match -- the final.
+        """
+
         for e in y["match_periods"]["league"]:
             if "max_end_time" in e:
                 max_end_time = e["max_end_time"]
@@ -381,6 +388,7 @@ class MatchSchedule(object):
                                        'Tiebreaker', [slot], MatchType.tiebreaker)
             self.match_periods.append(match_period)
 
+            # pylint: disable=attribute-defined-outside-init
             self.tiebreaker = match
 
     @property

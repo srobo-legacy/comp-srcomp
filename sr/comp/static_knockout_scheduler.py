@@ -2,7 +2,7 @@
 A static knockout schedule.
 """
 
-from sr.comp.match_period import Match, MatchPeriod, MatchType
+from sr.comp.match_period import Match, MatchType
 from sr.comp.knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
 
 
@@ -74,11 +74,6 @@ class StaticScheduler(KnockoutScheduler):
         self.period.matches.append(new_matches)
 
     def add_knockouts(self):
-        period = self.config["match_periods"]["knockout"][0]
-        self.period = MatchPeriod(period["start_time"], period["end_time"],
-                                  period["end_time"], period["description"],
-                                  [], MatchType.knockout)
-
         knockout_conf = self.config["static_knockout"]
 
         for round_num in sorted(knockout_conf.keys()):

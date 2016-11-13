@@ -1,4 +1,4 @@
-from nose.tools import eq_
+from nose.tools import eq_, assert_raises
 from collections import defaultdict
 import datetime
 import mock
@@ -95,6 +95,9 @@ def test_no_tiebreaker_if_winner():
     schedule.add_tiebreaker(scores, datetime.datetime(2014, 4, 25, 13, 0))
     eq_(schedule.n_matches(), 1)
 
+    with assert_raises(AttributeError):
+        assert not schedule.tiebreaker
+
 def test_no_tiebreaker_if_no_final():
     schedule = make_schedule()
     scores = mock.Mock()
@@ -106,6 +109,8 @@ def test_no_tiebreaker_if_no_final():
     schedule.add_tiebreaker(scores, datetime.datetime(2014, 4, 25, 13, 0))
     eq_(schedule.n_matches(), 1)
 
+    with assert_raises(AttributeError):
+        assert not schedule.tiebreaker
 
 def test_final_match_no_tiebreaker():
     schedule = make_schedule()

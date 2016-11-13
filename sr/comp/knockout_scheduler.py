@@ -42,6 +42,13 @@ class KnockoutScheduler(object):
 
         self.R = stable_random.Random()
 
+        period = self.config["match_periods"]["knockout"][0]
+        self.period = MatchPeriod(period["start_time"], period["end_time"],
+                                  period["end_time"], period["description"],
+                                  [], MatchType.knockout)
+
+        self.clock = MatchPeriodClock(self.period, self.schedule.delays)
+
     def _played_all_league_matches(self):
         """
         Check if all league matches have been played.
@@ -206,14 +213,6 @@ class KnockoutScheduler(object):
 
     def add_knockouts(self):
         """Add the knockouts to the schedule."""
-
-        period = self.config["match_periods"]["knockout"][0]
-
-        self.period = MatchPeriod(period["start_time"], period["end_time"],
-                                  period["end_time"], period["description"],
-                                  [], MatchType.knockout)
-
-        self.clock = MatchPeriodClock(self.period, self.schedule.delays)
 
         knockout_conf = self.config["knockout"]
         round_spacing = timedelta(seconds=knockout_conf["round_spacing"])
