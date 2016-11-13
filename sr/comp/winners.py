@@ -34,7 +34,7 @@ class Award(Enum):
     web = "web"              # Online Presence award
 
 
-def _compute_main_awards(scores, final_match_info, teams):
+def _compute_main_awards(scores, final_match_info):
     """Compute awards resulting from the grand finals."""
     last_match_key = (final_match_info.arena, final_match_info.num)
 
@@ -107,7 +107,7 @@ def compute_awards(scores, final_match, teams, path=None):
     """
 
     awards = {}
-    awards.update(_compute_main_awards(scores, final_match, teams))
+    awards.update(_compute_main_awards(scores, final_match))
     awards.update(_compute_rookie_award(scores, teams))
     if path is not None:
         awards.update(_compute_explicit_awards(path))
