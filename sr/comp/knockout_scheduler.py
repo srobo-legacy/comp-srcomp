@@ -42,10 +42,17 @@ class KnockoutScheduler(object):
 
         self.R = stable_random.Random()
 
-        period = self.config["match_periods"]["knockout"][0]
-        self.period = MatchPeriod(period["start_time"], period["end_time"],
-                                  period["end_time"], period["description"],
-                                  [], MatchType.knockout)
+        period_config = self.config["match_periods"]["knockout"][0]
+        self.period = MatchPeriod(
+            period_config["start_time"],
+            period_config["end_time"],
+            # The knockouts *must* end on time, so we don't specify a
+            # different max_end_time.
+            period_config["end_time"],
+            period_config["description"],
+            [],
+            MatchType.knockout,
+        )
 
         self.clock = MatchPeriodClock(self.period, self.schedule.delays)
 
