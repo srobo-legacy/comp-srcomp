@@ -157,7 +157,7 @@ class RawCompstate(object):
         try:
             self.rev_parse(commit + "^{commit}")
             return True
-        except:
+        except RuntimeError:
             return False
 
     def _is_parent(self, parent, child):
@@ -169,7 +169,7 @@ class RawCompstate(object):
             # up to and including 'parent'; any output therefore tells us
             # that they're related
             return len(revs.strip()) != 0
-        except:
+        except subprocess.CalledProcessError:
             # One or both revisions are unknown
             return False
 
