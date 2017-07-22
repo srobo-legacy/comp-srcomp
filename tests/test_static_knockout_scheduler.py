@@ -105,6 +105,7 @@ def helper(places, knockout_positions = None):
         assert e == a, "Match {0} in the knockouts".format(i)
 
 def test_before():
+    # Add an unscored league match so that we don't appear to have played them all
     league_matches = [{'A': Match(0, 'Match 0', 'A', [], datetime(2014, 4, 27, 12, 30), datetime(2014, 4, 27, 12, 35), MatchType.league, use_resolved_ranking=False) }]
 
     scheduler = get_scheduler(matches = league_matches)
