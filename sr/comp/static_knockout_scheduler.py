@@ -5,8 +5,6 @@ A static knockout schedule.
 from sr.comp.match_period import Match, MatchType
 from sr.comp.knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
 
-NUM_TEAMS_PER_ARENA = 4
-
 
 class StaticScheduler(KnockoutScheduler):
     """
@@ -23,6 +21,8 @@ class StaticScheduler(KnockoutScheduler):
     def __init__(self, schedule, scores, arenas, teams, config):
         super(StaticScheduler, self).__init__(schedule, scores, arenas, teams,
                                               config)
+
+        self.num_teams_per_arena = self.config['static_knockout']['teams_per_arena']
 
     def get_team(self, team_ref):
         if not self._played_all_league_matches():
@@ -59,9 +59,9 @@ class StaticScheduler(KnockoutScheduler):
         for team_ref in match_info['teams']:
             teams.append(self.get_team(team_ref))
 
-        if len(teams) < NUM_TEAMS_PER_ARENA:
+        if len(teams) < self.num_teams_per_arena:
             # Fill empty zones with None
-            teams += [None] * (NUM_TEAMS_PER_ARENA-len(teams))
+            teams += [None] * (self.num_teams_per_arena-len(teams))
 
         display_name = self.get_match_display_name(rounds_remaining, round_num,
                                                    num)
@@ -76,7 +76,7 @@ class StaticScheduler(KnockoutScheduler):
         self.period.matches.append(new_matches)
 
     def add_knockouts(self):
-        knockout_conf = self.config["static_knockout"]
+        knockout_conf = self.config['static_knockout']['matches']
 
         for round_num, round_info in sorted(knockout_conf.items()):
             self.knockout_rounds += [[]]
