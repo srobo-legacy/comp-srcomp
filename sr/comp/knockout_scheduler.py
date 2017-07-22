@@ -11,6 +11,8 @@ from sr.comp.match_period_clock import MatchPeriodClock
 # Use '???' as the "we don't know yet" marker
 UNKNOWABLE_TEAM = '???'
 
+NUM_TEAMS_PER_ARENA = 4
+
 
 class KnockoutScheduler(object):
     """
@@ -115,9 +117,9 @@ class KnockoutScheduler(object):
             for arena in arenas:
                 teams = matches.pop(0)
 
-                if len(teams) < 4:
+                if len(teams) < NUM_TEAMS_PER_ARENA:
                     # Fill empty zones with None
-                    teams += [None] * (4 - len(teams))
+                    teams += [None] * (NUM_TEAMS_PER_ARENA - len(teams))
 
                 # Randomise the zones
                 self.R.shuffle(teams)
@@ -156,7 +158,7 @@ class KnockoutScheduler(object):
 
         if positions is None:
             # Given match hasn't been scored yet
-            return [UNKNOWABLE_TEAM] * 4
+            return [UNKNOWABLE_TEAM] * NUM_TEAMS_PER_ARENA
 
         # Extract just TLAs
         return list(positions.keys())

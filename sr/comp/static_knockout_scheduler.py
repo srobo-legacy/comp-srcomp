@@ -5,6 +5,8 @@ A static knockout schedule.
 from sr.comp.match_period import Match, MatchType
 from sr.comp.knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
 
+NUM_TEAMS_PER_ARENA = 4
+
 
 class StaticScheduler(KnockoutScheduler):
     """
@@ -57,9 +59,9 @@ class StaticScheduler(KnockoutScheduler):
         for team_ref in match_info['teams']:
             teams.append(self.get_team(team_ref))
 
-        if len(teams) < 4:
+        if len(teams) < NUM_TEAMS_PER_ARENA:
             # Fill empty zones with None
-            teams += [None] * (4-len(teams))
+            teams += [None] * (NUM_TEAMS_PER_ARENA-len(teams))
 
         display_name = self.get_match_display_name(rounds_remaining, round_num,
                                                    num)
