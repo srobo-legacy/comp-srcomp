@@ -78,9 +78,8 @@ class StaticScheduler(KnockoutScheduler):
     def add_knockouts(self):
         knockout_conf = self.config["static_knockout"]
 
-        for round_num in sorted(knockout_conf.keys()):
+        for round_num, round_info in sorted(knockout_conf.items()):
             self.knockout_rounds += [[]]
             rounds_remaining = len(knockout_conf) - round_num - 1
-            for match_num in sorted(knockout_conf[round_num].keys()):
-                match_info = knockout_conf[round_num][match_num]
+            for match_num, match_info in sorted(round_info.items()):
                 self._add_match(match_info, rounds_remaining, match_num)
