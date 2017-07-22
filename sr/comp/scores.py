@@ -14,8 +14,8 @@ from sr.comp import ranker # pylint: disable=no-name-in-module
 class InvalidTeam(Exception):
     """An exception that occurs when a score contains an invalid team."""
 
-    def __init__(self, tla):
-        message = "Team {0} does not exist.".format(tla)
+    def __init__(self, tla, context):
+        message = "Team {0} (found in {1}) does not exist.".format(tla, context)
         super(InvalidTeam, self).__init__(message)
         self.tla = tla
 
@@ -177,10 +177,10 @@ class BaseScores(object):
             self._load_resfile(resfile)
 
         # Sum the game for each team
-        for match in self.game_points.values():
+        for match_id, match in self.game_points.items():
             for tla, score in match.items():
                 if tla not in self.teams:
-                    raise InvalidTeam(tla)
+                    raise InvalidTeam(tla, "score for match {0}{1}".format(*match_id))
                 self.teams[tla].game_points += score
 
     def _load_resfile(self, fname):
@@ -253,10 +253,10 @@ class LeagueScores(BaseScores):
         super(LeagueScores, self).__init__(resultdir, teams, scorer)
 
         # Sum the league scores for each team
-        for match in self.ranked_points.values():
+        for match_id, match in self.ranked_points.items():
             for tla, score in match.items():
                 if tla not in self.teams:
-                    raise InvalidTeam(tla)
+                    raise InvalidTeam(tla, "ranked score for match {0}{1}".format(*match_id))
                 self.teams[tla].league_points += score
 
         self.positions = self.rank_league(self.teams)
