@@ -84,13 +84,8 @@ def get_scheduler(matches = None, positions = None, \
     scheduler = StaticScheduler(league_schedule, scores, arenas, teams, config)
     return scheduler
 
-def helper(places, **kwargs):
-    scheduler = get_scheduler(**kwargs)
-    scheduler.add_knockouts()
-
-    period = scheduler.period
-
-    expected = [
+def build_5_matches(places):
+    return [
         {'A': Match(0, 'Quarter 1 (#0)', 'A', places[0], datetime(2014, 4, 27, 14, 30), datetime(2014, 4, 27, 14, 35), MatchType.knockout, use_resolved_ranking=True) },
         {'A': Match(1, 'Quarter 2 (#1)', 'A', places[1], datetime(2014, 4, 27, 14, 35), datetime(2014, 4, 27, 14, 40), MatchType.knockout, use_resolved_ranking=True) },
         {'A': Match(2, 'Semi 1 (#2)', 'A', places[2], datetime(2014, 4, 27, 14, 45), datetime(2014, 4, 27, 14, 50), MatchType.knockout, use_resolved_ranking=True) },
@@ -98,8 +93,13 @@ def helper(places, **kwargs):
         {'A': Match(4, 'Final (#4)', 'A', places[4], datetime(2014, 4, 27, 15,  0), datetime(2014, 4, 27, 15,  5), MatchType.knockout, use_resolved_ranking=False) },
     ]
 
-    for i in range(len(expected)):
-        e = expected[i]
+def assertMatches(expected_matches, **kwargs):
+    scheduler = get_scheduler(**kwargs)
+    scheduler.add_knockouts()
+
+    period = scheduler.period
+
+    for i, e in enumerate(expected_matches):
         a = period.matches[i]
 
         assert e == a, "Match {0} in the knockouts".format(i)
@@ -107,11 +107,6 @@ def helper(places, **kwargs):
 def test_before():
     # Add an unscored league match so that we don't appear to have played them all
     league_matches = [{'A': Match(0, 'Match 0', 'A', [], datetime(2014, 4, 27, 12, 30), datetime(2014, 4, 27, 12, 35), MatchType.league, use_resolved_ranking=False) }]
-
-    scheduler = get_scheduler(matches = league_matches)
-    scheduler.add_knockouts()
-
-    period = scheduler.period
 
     expected = [
         {'A': Match(1, 'Quarter 1 (#1)', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 14, 30), datetime(2014, 4, 27, 14, 35), MatchType.knockout, use_resolved_ranking=True) },
@@ -121,14 +116,13 @@ def test_before():
         {'A': Match(5, 'Final (#5)', 'A', [UNKNOWABLE_TEAM] * 4, datetime(2014, 4, 27, 15,  0), datetime(2014, 4, 27, 15,  5), MatchType.knockout, use_resolved_ranking=False) },
     ]
 
-    for i in range(len(expected)):
-        e = expected[i]
-        a = period.matches[i]
-
-        assert e == a, "Match {0} in the knockouts".format(i)
+    assertMatches(
+        expected,
+        matches=league_matches,
+    )
 
 def test_start():
-    helper([
+    expected_matches = build_5_matches([
         ['CCC', 'EEE', 'HHH', 'JJJ'],
         ['DDD', 'FFF', 'GGG', 'III'],
         ['BBB'] + [UNKNOWABLE_TEAM] * 3,
@@ -136,45 +130,55 @@ def test_start():
         [UNKNOWABLE_TEAM] * 4,
     ])
 
+    assertMatches(expected_matches)
+
 def test_partial_1():
-    helper([
+    expected_matches = build_5_matches([
         ['CCC', 'EEE', 'HHH', 'JJJ'],
         ['DDD', 'FFF', 'GGG', 'III'],
         ['BBB', 'JJJ', 'EEE', UNKNOWABLE_TEAM],
         ['AAA', 'HHH', UNKNOWABLE_TEAM, UNKNOWABLE_TEAM],
         [UNKNOWABLE_TEAM] * 4,
-    ],
-    knockout_positions={
-        # QF 1
-        ('A', 0): OrderedDict([
-                    ('JJJ', 1),
-                    ('HHH', 2),
-                    ('EEE', 3),
-                    ('CCC', 4)
-                ])
-    })
+    ])
+
+    assertMatches(
+        expected_matches,
+        knockout_positions={
+            # QF 1
+            ('A', 0): OrderedDict([
+                        ('JJJ', 1),
+                        ('HHH', 2),
+                        ('EEE', 3),
+                        ('CCC', 4)
+                    ])
+        },
+    )
 
 def test_partial_2():
-    helper([
+    expected_matches = build_5_matches([
         ['CCC', 'EEE', 'HHH', 'JJJ'],
         ['DDD', 'FFF', 'GGG', 'III'],
         ['BBB', 'JJJ', 'EEE', 'GGG'],
         ['AAA', 'HHH', 'III', 'FFF'],
         [UNKNOWABLE_TEAM] * 4,
-    ],
-    knockout_positions={
-        # QF 1
-        ('A', 0): OrderedDict([
-                ('JJJ', 1),
-                ('HHH', 2),
-                ('EEE', 3),
-                ('CCC', 4)
-            ]),
-        # QF 2
-        ('A', 1): OrderedDict([
-                ('III', 1),
-                ('GGG', 2),
-                ('FFF', 3),
-                ('DDD', 4)
-            ])
-    })
+    ])
+
+    assertMatches(
+        expected_matches,
+        knockout_positions={
+            # QF 1
+            ('A', 0): OrderedDict([
+                    ('JJJ', 1),
+                    ('HHH', 2),
+                    ('EEE', 3),
+                    ('CCC', 4)
+                ]),
+            # QF 2
+            ('A', 1): OrderedDict([
+                    ('III', 1),
+                    ('GGG', 2),
+                    ('FFF', 3),
+                    ('DDD', 4)
+                ])
+        },
+    )
