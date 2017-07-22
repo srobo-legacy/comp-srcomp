@@ -6,11 +6,11 @@ from datetime import timedelta
 
 from dateutil.tz import gettz
 
-from sr.comp import yaml_loader
-from sr.comp.match_period import MatchPeriod, Match, MatchType
-from sr.comp.match_period_clock import MatchPeriodClock
-from sr.comp.knockout_scheduler import KnockoutScheduler
-from sr.comp.static_knockout_scheduler import StaticScheduler
+from . import yaml_loader
+from .match_period import MatchPeriod, Match, MatchType
+from .match_period_clock import MatchPeriodClock
+from .knockout_scheduler import KnockoutScheduler
+from .static_knockout_scheduler import StaticScheduler
 
 
 Delay = namedtuple("Delay",

@@ -12,9 +12,9 @@ The awards calculated are:
 from enum import Enum, unique
 import os.path
 
-from sr.comp import yaml_loader
-from sr.comp.match_period import MatchType
-from sr.comp.scores import InvalidTeam
+from . import yaml_loader
+from .match_period import MatchType
+from .scores import InvalidTeam
 
 
 @unique

@@ -4,7 +4,7 @@ import os
 import subprocess
 import yaml
 
-from sr.comp.comp import SRComp
+from .comp import SRComp
 
 
 class RawCompstate(object):

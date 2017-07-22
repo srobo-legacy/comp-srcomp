@@ -5,10 +5,10 @@ from functools import total_ordering
 import glob
 import os
 
-from sr.comp import yaml_loader
+from . import yaml_loader
 
 # For reasons which are not clear, Pylint on Travis doesn't find the ranker.
-from sr.comp import ranker # pylint: disable=no-name-in-module
+from sr.comp import ranker # pylint: disable=no-name-in-module,relative-import
 
 
 class InvalidTeam(Exception):

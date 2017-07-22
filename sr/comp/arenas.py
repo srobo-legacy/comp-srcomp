@@ -2,7 +2,7 @@
 
 from collections import namedtuple, OrderedDict
 
-from sr.comp import yaml_loader
+from . import yaml_loader
 
 
 Arena = namedtuple('Arena', ['name', 'display_name', 'colour'])

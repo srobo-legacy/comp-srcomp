@@ -2,8 +2,8 @@
 A static knockout schedule.
 """
 
-from sr.comp.match_period import Match, MatchType
-from sr.comp.knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
+from .match_period import Match, MatchType
+from .knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
 
 
 class StaticScheduler(KnockoutScheduler):

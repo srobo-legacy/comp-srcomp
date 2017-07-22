@@ -5,8 +5,8 @@ from __future__ import print_function
 from collections import defaultdict
 import sys
 
-from sr.comp.knockout_scheduler import UNKNOWABLE_TEAM
-from sr.comp.match_period import MatchType
+from .knockout_scheduler import UNKNOWABLE_TEAM
+from .match_period import MatchType
 
 
 NO_TEAM = None

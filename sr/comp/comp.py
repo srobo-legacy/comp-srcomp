@@ -6,8 +6,8 @@ import os
 from subprocess import check_output
 import sys
 
-from sr.comp import arenas, matches, scores, teams, venue
-from sr.comp.winners import compute_awards
+from . import arenas, matches, scores, teams, venue
+from .winners import compute_awards
 
 
 def load_scorer(root):

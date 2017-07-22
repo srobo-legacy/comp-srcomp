@@ -3,9 +3,9 @@
 import math
 from datetime import timedelta
 
-from sr.comp import knockout, stable_random
-from sr.comp.match_period import MatchPeriod, Match, MatchType
-from sr.comp.match_period_clock import MatchPeriodClock
+from . import knockout, stable_random
+from .match_period import MatchPeriod, Match, MatchType
+from .match_period_clock import MatchPeriodClock
 
 
 # Use '???' as the "we don't know yet" marker

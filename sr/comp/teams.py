@@ -2,7 +2,7 @@
 
 from collections import namedtuple
 
-from sr.comp import yaml_loader
+from . import yaml_loader
 
 
 _Team = namedtuple('Team', ['tla', 'name', 'rookie',

@@ -3,7 +3,7 @@
 from collections import Counter
 from itertools import chain
 
-from sr.comp import yaml_loader
+from . import yaml_loader
 
 
 class InvalidRegionException(Exception):
