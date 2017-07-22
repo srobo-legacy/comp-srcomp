@@ -14,6 +14,7 @@ import os.path
 
 from sr.comp import yaml_loader
 from sr.comp.match_period import MatchType
+from sr.comp.scores import InvalidTeam
 
 
 @unique
@@ -81,7 +82,7 @@ def _compute_rookie_award(scores, teams):
                         if position == best_position))}
 
 
-def _compute_explicit_awards(path):
+def _compute_explicit_awards(path, teams):
     """Compute awards explicitly provided in the compstate repo."""
     if not os.path.exists(path):
         return {}
@@ -89,8 +90,15 @@ def _compute_explicit_awards(path):
     explicit_awards = yaml_loader.load(path)
     assert explicit_awards, "Awards file should not be present if empty."
 
-    return {Award(key): [value] if isinstance(value, str) else value
+    awards = {Award(key): [value] if isinstance(value, str) else value
             for key, value in explicit_awards.items()}
+
+    for award_teams in awards.values():
+        for tla in award_teams:
+            if tla not in teams:
+                raise InvalidTeam(tla, path)
+
+    return awards
 
 
 def compute_awards(scores, final_match, teams, path=None):
@@ -110,5 +118,5 @@ def compute_awards(scores, final_match, teams, path=None):
     awards.update(_compute_main_awards(scores, final_match))
     awards.update(_compute_rookie_award(scores, teams))
     if path is not None:
-        awards.update(_compute_explicit_awards(path))
+        awards.update(_compute_explicit_awards(path, teams))
     return awards
