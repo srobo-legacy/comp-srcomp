@@ -351,5 +351,5 @@ class Scores(object):
 
         self.last_scored_match = lsm
         """
-        The most match with the highest id for which we have score data.
+        The match with the highest id for which we have score data.
         """
