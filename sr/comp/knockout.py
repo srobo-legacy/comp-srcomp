@@ -17,7 +17,7 @@ def reverse_bits(n, width):
 def first_round_seeding(n_teams):
     """
     Return the seed arrangement for the first round of a knockout with
-    ``n_teams``.
+    ``n_teams`` at 4 teams per match.
 
     :param int n_teams: The number of teams.
     :return: A list of matches.
