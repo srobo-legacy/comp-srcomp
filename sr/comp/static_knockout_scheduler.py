@@ -80,7 +80,7 @@ class StaticScheduler(KnockoutScheduler):
 
         for round_num in sorted(knockout_conf.keys()):
             self.knockout_rounds += [[]]
-            rounds_remaining = len(knockout_conf.keys()) - round_num - 1
+            rounds_remaining = len(knockout_conf) - round_num - 1
             for match_num in sorted(knockout_conf[round_num].keys()):
                 match_info = knockout_conf[round_num][match_num]
                 self._add_match(match_info, rounds_remaining, match_num)
