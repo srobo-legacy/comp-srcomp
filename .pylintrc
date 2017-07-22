@@ -15,6 +15,7 @@ jobs=4
 # --disable=W"
 disable=C,
     locally-disabled,
+    no-else-return,
     too-many-arguments,
     too-many-instance-attributes,
     too-many-public-methods,
