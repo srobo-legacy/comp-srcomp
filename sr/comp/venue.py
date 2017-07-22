@@ -30,7 +30,7 @@ class MismatchException(Exception):
                              ('extras', extras),
                              ('missing', missing)):
             if teams:
-                details.append('{0}: '.format(label) + ', '.join(teams))
+                details.append('{0}: '.format(label) + ', '.join(sorted(teams)))
 
         assert details, "No bad items given to {0}!".format(self.__class__)
 
