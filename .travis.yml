@@ -11,7 +11,7 @@ matrix:
 before_install:
 - pip install git+git://git.srobo.org/comp/ranker.git
 - pip install --upgrade setuptools
-install: python setup.py install
+install: pip install .
 script:
 - ./run-tests
 # Deliberately after running the real tests so that we can't accidentally
