@@ -84,8 +84,8 @@ def get_scheduler(matches = None, positions = None, \
     scheduler = StaticScheduler(league_schedule, scores, arenas, teams, config)
     return scheduler
 
-def helper(places, knockout_positions = None):
-    scheduler = get_scheduler(knockout_positions = knockout_positions)
+def helper(places, **kwargs):
+    scheduler = get_scheduler(**kwargs)
     scheduler.add_knockouts()
 
     period = scheduler.period
@@ -143,7 +143,8 @@ def test_partial_1():
         ['BBB', 'JJJ', 'EEE', UNKNOWABLE_TEAM],
         ['AAA', 'HHH', UNKNOWABLE_TEAM, UNKNOWABLE_TEAM],
         [UNKNOWABLE_TEAM] * 4,
-    ], {
+    ],
+    knockout_positions={
         # QF 1
         ('A', 0): OrderedDict([
                     ('JJJ', 1),
@@ -160,7 +161,8 @@ def test_partial_2():
         ['BBB', 'JJJ', 'EEE', 'GGG'],
         ['AAA', 'HHH', 'III', 'FFF'],
         [UNKNOWABLE_TEAM] * 4,
-    ], {
+    ],
+    knockout_positions={
         # QF 1
         ('A', 0): OrderedDict([
                 ('JJJ', 1),
