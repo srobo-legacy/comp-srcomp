@@ -58,6 +58,10 @@ class SRComp(object):
         """A :class:`collections.OrderedDict` mapping arena names to
         :class:`sr.comp.arenas.Arena` objects."""
 
+        self.corners = arenas.load_corners(os.path.join(root, "arenas.yaml"))
+        """A :class:`collections.OrderedDict` mapping corner numbers to
+        :class:`sr.comp.arenas.Corner` objects."""
+
         schedule_fname = os.path.join(root, "schedule.yaml")
         league_fname = os.path.join(root, "league.yaml")
         self.schedule = matches.MatchSchedule.create(schedule_fname,
@@ -67,10 +71,6 @@ class SRComp(object):
 
         self.timezone = self.schedule.timezone
         """The timezone of the competition."""
-
-        self.corners = arenas.load_corners(os.path.join(root, "arenas.yaml"))
-        """A :class:`collections.OrderedDict` mapping corner numbers to
-        :class:`sr.comp.arenas.Corner` objects."""
 
         self.awards = compute_awards(self.scores,
                                      self.schedule.final_match,
