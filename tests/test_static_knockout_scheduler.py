@@ -121,7 +121,13 @@ def get_scheduler(matches_config, matches = None, positions = None, \
     arenas = ['A']
 
     teams = None  # static schedule shouldn't use teams
-    scheduler = StaticScheduler(league_schedule, scores, arenas, teams, config)
+    scheduler = StaticScheduler(
+        league_schedule,
+        scores,
+        arenas,
+        teams,
+        config,
+    )
     return scheduler
 
 def build_5_matches(places):
