@@ -8,6 +8,12 @@ from sr.comp.matches import Delay
 from sr.comp.match_period import Match, MatchType
 from sr.comp.knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
 
+def mock_first_round_seeding(side_effect):
+    return mock.patch(
+        'sr.comp.knockout.first_round_seeding',
+        side_effect=side_effect,
+    )
+
 def get_scheduler(matches = None, positions = None, \
                     knockout_positions = None, league_game_points = None, \
                     delays = None, teams=None):
@@ -162,8 +168,7 @@ def test_first_round_before_league_end():
     # Mock the random (even thought it's not really random)
     scheduler.R = mock.Mock()
     # Mock the seeder to make it less interesting
-    with mock.patch('sr.comp.knockout.first_round_seeding') as first_round_seeding:
-        first_round_seeding.side_effect = seeder
+    with mock_first_round_seeding(side_effect=seeder):
         scheduler.add_knockouts()
 
     knockout_rounds = scheduler.knockout_rounds
@@ -204,8 +209,7 @@ def check_first_round_single_dropout_from_first_match(teams):
     # Mock the random (even thought it's not really random)
     scheduler.R = mock.Mock()
     # Mock the seeder to make it less interesting
-    with mock.patch('sr.comp.knockout.first_round_seeding') as first_round_seeding:
-        first_round_seeding.side_effect = seeder
+    with mock_first_round_seeding(side_effect=seeder):
         scheduler.add_knockouts()
 
     knockout_rounds = scheduler.knockout_rounds
@@ -271,8 +275,7 @@ def check_first_round_single_dropout_from_second_match(teams):
     # Mock the random (even thought it's not really random)
     scheduler.R = mock.Mock()
     # Mock the seeder to make it less interesting
-    with mock.patch('sr.comp.knockout.first_round_seeding') as first_round_seeding:
-        first_round_seeding.side_effect = seeder
+    with mock_first_round_seeding(side_effect=seeder):
         scheduler.add_knockouts()
 
     knockout_rounds = scheduler.knockout_rounds
