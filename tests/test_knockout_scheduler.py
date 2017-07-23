@@ -10,7 +10,7 @@ from sr.comp.knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
 
 def mock_first_round_seeding(side_effect):
     return mock.patch(
-        'sr.comp.knockout.first_round_seeding',
+        'sr.comp.knockout_scheduler.seeding.first_round_seeding',
         side_effect=side_effect,
     )
 

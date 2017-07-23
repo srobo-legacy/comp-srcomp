@@ -4,8 +4,7 @@ from datetime import datetime, timedelta
 import mock
 
 from sr.comp.match_period import Match, MatchType
-from sr.comp.knockout_scheduler import UNKNOWABLE_TEAM
-from sr.comp.static_knockout_scheduler import StaticScheduler
+from sr.comp.knockout_scheduler import StaticScheduler, UNKNOWABLE_TEAM
 
 def get_four_team_config():
     return {

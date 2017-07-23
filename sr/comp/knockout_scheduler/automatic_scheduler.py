@@ -1,20 +1,21 @@
-"""Knockout schedule generation."""
+"""An automatic seeded knockout schedule."""
 
 import math
 from datetime import timedelta
 
-from . import knockout, stable_random
-from .match_period import MatchPeriod, Match, MatchType
-from .match_period_clock import MatchPeriodClock
+from ..match_period import Match, MatchType
+from ..match_period_clock import MatchPeriodClock
+from . import seeding, stable_random
+from .base_scheduler import BaseKnockoutScheduler, UNKNOWABLE_TEAM
 
 
-# Use '???' as the "we don't know yet" marker
-UNKNOWABLE_TEAM = '???'
-
-
-class KnockoutScheduler(object):
+class KnockoutScheduler(BaseKnockoutScheduler):
     """
-    A class that can be used to generate a knockout schedule.
+    A class that can be used to generate a knockout schedule based on seeding.
+
+    Due to the way the seeding logic works, this class is suitable only when
+    games feature four slots for competitors, with the top two progressing to
+    the next round.
 
     :param schedule: The league schedule.
     :param scores: The scores.
@@ -23,81 +24,18 @@ class KnockoutScheduler(object):
     :param config: Custom configuration for the knockout scheduler.
     """
 
-    # Constant in this scheduler as the helper 'knockout' logic only builds
-    # first rounds for matches of four teams.
     num_teams_per_arena = 4
+    """
+    Constant value due to the way the automatic seeding works.
+    """
 
     def __init__(self, schedule, scores, arenas, teams, config):
-        self.schedule = schedule
-        self.scores = scores
-        self.arenas = arenas
-        self.teams = teams
-        self.config = config
-
-        # The knockout matches appear in the normal matches list
-        # but this list provides them in groups of rounds.
-        # e.g. self.knockout_rounds[-2] gives the semi-final matches
-        # and self.knockout_rounds[-1] gives the final match (in a list)
-        # Note that the ordering of the matches within the rounds
-        # in this list is important (e.g. self.knockout_rounds[0][0] is
-        # will involve the top seed, whilst self.knockout_rounds[0][-1] will
-        # involve the second seed).
-        self.knockout_rounds = []
+        super(KnockoutScheduler, self).__init__(schedule, scores, arenas, teams,
+                                                config)
 
         self.R = stable_random.Random()
 
-        period_config = self.config["match_periods"]["knockout"][0]
-        self.period = MatchPeriod(
-            period_config["start_time"],
-            period_config["end_time"],
-            # The knockouts *must* end on time, so we don't specify a
-            # different max_end_time.
-            period_config["end_time"],
-            period_config["description"],
-            [],
-            MatchType.knockout,
-        )
-
         self.clock = MatchPeriodClock(self.period, self.schedule.delays)
-
-    def _played_all_league_matches(self):
-        """
-        Check if all league matches have been played.
-
-        :return: :py:bool:`True` if we've played all league matches.
-        """
-
-        for arena_matches in self.schedule.matches:
-            for match in arena_matches.values():
-                if match.type != MatchType.league:
-                    continue
-
-                if (match.arena, match.num) not in \
-                        self.scores.league.game_points:
-                    return False
-
-        return True
-
-    @staticmethod
-    def get_match_display_name(rounds_remaining, round_num, global_num):
-        """
-        Get a human-readable match display name.
-
-        :param rounds_remaining: The number of knockout rounds remaining.
-        :param knockout_num: The match number within the knockout round.
-        :param global_num: The global match number.
-        """
-
-        if rounds_remaining == 0:
-            display_name = 'Final (#{global_num})'
-        elif rounds_remaining == 1:
-            display_name = 'Semi {round_num} (#{global_num})'
-        elif rounds_remaining == 2:
-            display_name = 'Quarter {round_num} (#{global_num})'
-        else:
-            display_name = 'Match {global_num}'
-        return display_name.format(round_num=round_num + 1,
-                                   global_num=global_num)
 
     def _add_round_of_matches(self, matches, arenas, rounds_remaining):
         """
@@ -147,24 +85,6 @@ class KnockoutScheduler(object):
 
             round_num += 1
 
-    def get_ranking(self, game):
-        """
-        Get a ranking of the given match's teams.
-
-        :param game: A game.
-        """
-        desc = (game.arena, game.num)
-
-        # Get the resolved positions if present (will be a tla -> position map)
-        positions = self.scores.knockout.resolved_positions.get(desc, None)
-
-        if positions is None:
-            # Given match hasn't been scored yet
-            return [UNKNOWABLE_TEAM] * self.num_teams_per_arena
-
-        # Extract just TLAs
-        return list(positions.keys())
-
     def get_winners(self, game):
         """
         Find the parent match's winners.
@@ -188,12 +108,6 @@ class KnockoutScheduler(object):
 
         self._add_round_of_matches(matches, arenas, rounds_remaining)
 
-    def _get_non_dropped_out_teams(self, for_match):
-        teams = list(self.scores.league.positions.keys())
-        teams = [tla for tla in teams
-                 if self.teams[tla].is_still_around(for_match)]
-        return teams
-
     def _add_first_round(self, conf_arity=None):
         next_match_num = len(self.schedule.matches)
         teams = self._get_non_dropped_out_teams(next_match_num)
@@ -211,7 +125,7 @@ class KnockoutScheduler(object):
 
         matches = []
 
-        for seeds in knockout.first_round_seeding(arity):
+        for seeds in seeding.first_round_seeding(arity):
             match_teams = [teams[seed] for seed in seeds]
             matches.append(match_teams)
 
@@ -223,8 +137,6 @@ class KnockoutScheduler(object):
         return int(math.log(len(prev_matches), 2))
 
     def add_knockouts(self):
-        """Add the knockouts to the schedule."""
-
         knockout_conf = self.config["knockout"]
         round_spacing = timedelta(seconds=knockout_conf["round_spacing"])
 

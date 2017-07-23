@@ -2,11 +2,11 @@
 A static knockout schedule.
 """
 
-from .match_period import Match, MatchType
-from .knockout_scheduler import KnockoutScheduler, UNKNOWABLE_TEAM
+from ..match_period import Match, MatchType
+from .base_scheduler import BaseKnockoutScheduler, UNKNOWABLE_TEAM
 
 
-class StaticScheduler(KnockoutScheduler):
+class StaticScheduler(BaseKnockoutScheduler):
     """
     A knockout scheduler which loads almost fixed data from the config. Assumes
     only a single arena.

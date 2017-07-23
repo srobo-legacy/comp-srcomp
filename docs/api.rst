@@ -22,18 +22,22 @@ Competition
     :undoc-members:
     :show-inheritance:
 
-Knockout
---------
+Knockout Schedulers
+-------------------
 
-.. automodule:: sr.comp.knockout
+.. automodule:: sr.comp.knockout_scheduler
+
+.. autoclass:: sr.comp.knockout_scheduler.base_scheduler.BaseKnockoutScheduler
     :members:
     :undoc-members:
     :show-inheritance:
 
-Knockout Scheduler
-------------------
+.. autoclass:: sr.comp.knockout_scheduler.KnockoutScheduler
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-.. automodule:: sr.comp.knockout_scheduler
+.. autoclass:: sr.comp.knockout_scheduler.StaticScheduler
     :members:
     :undoc-members:
     :show-inheritance:
@@ -82,14 +86,6 @@ Stable Random
 -------------
 
 .. automodule:: sr.comp.stable_random
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-Static Knockout Scheduler
--------------------------
-
-.. automodule:: sr.comp.static_knockout_scheduler
     :members:
     :undoc-members:
     :show-inheritance:
