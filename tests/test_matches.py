@@ -72,7 +72,11 @@ def load_data(the_data):
     teams = defaultdict(lambda: Team(None, None, False, None))
     teams['WYC'] = Team(None, None, False, 1)  # dropped out after match 1
 
-    matches = MatchSchedule(the_data, the_data['matches'], teams)
+    matches = MatchSchedule(
+        the_data,
+        the_data['matches'],
+        teams,
+    )
     return matches
 
 def load_basic_data():

@@ -57,7 +57,11 @@ def load_datas(the_datas, teams):
         mock_finder.return_value = the_files
         mock_loader.side_effect = loader
 
-        scores = LeagueScores('somewhere', teams, FakeScorer)
+        scores = LeagueScores(
+            'somewhere',
+            teams,
+            FakeScorer,
+        )
         return scores
 
 def load_basic_data():

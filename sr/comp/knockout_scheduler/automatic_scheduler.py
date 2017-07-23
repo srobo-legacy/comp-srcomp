@@ -30,8 +30,13 @@ class KnockoutScheduler(BaseKnockoutScheduler):
     """
 
     def __init__(self, schedule, scores, arenas, teams, config):
-        super(KnockoutScheduler, self).__init__(schedule, scores, arenas, teams,
-                                                config)
+        super(KnockoutScheduler, self).__init__(
+            schedule,
+            scores,
+            arenas,
+            teams,
+            config,
+        )
 
         self.R = stable_random.Random()
 
