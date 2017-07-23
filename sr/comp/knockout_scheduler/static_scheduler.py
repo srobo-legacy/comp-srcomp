@@ -33,19 +33,28 @@ class StaticScheduler(BaseKnockoutScheduler):
             positions = list(self.scores.league.positions.keys())
             pos = int(team_ref[1:])
             pos -= 1  # seed numbers are 1 based
-            return positions[pos]
+            try:
+                return positions[pos]
+            except IndexError:
+                raise ValueError(
+                    "Cannot reference seed {}, there are only {} teams!".format(
+                        team_ref,
+                        len(positions),
+                    ),
+                )
 
         # get a position from a match
         assert len(team_ref) == 3
         round_num, match_num, pos = [int(x) for x in team_ref]
-        match = self.knockout_rounds[round_num][match_num]
 
-        if match is None:
-            message = "Reference '{}' to unscheduled match!".format(team_ref)
-            raise AssertionError(message)
-
-        ranking = self.get_ranking(match)
-        return ranking[pos]
+        try:
+            match = self.knockout_rounds[round_num][match_num]
+            ranking = self.get_ranking(match)
+            return ranking[pos]
+        except IndexError:
+            raise ValueError(
+                "Reference '{}' to unscheduled match!".format(team_ref),
+            )
 
     def _add_match(self, match_info, rounds_remaining, round_num):
         new_matches = {}
