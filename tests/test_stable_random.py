@@ -2,7 +2,7 @@ from __future__ import print_function
 
 from nose.tools import eq_
 
-from sr.comp.stable_random import Random
+from sr.comp.knockout_scheduler.stable_random import Random
 
 # Tests primarily to ensure stable behaviour across Python versions
 
