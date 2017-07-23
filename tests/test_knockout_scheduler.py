@@ -1,3 +1,4 @@
+from nose.tools import assert_raises
 
 from collections import defaultdict, OrderedDict
 from datetime import datetime, timedelta
@@ -59,12 +60,8 @@ def get_scheduler(matches = None, positions = None, \
 
 
 def test_invalid_num_teams_per_arena():
-    try:
+    with assert_raises(ValueError):
         get_scheduler(num_teams_per_arena=2)
-    except ValueError:
-        pass
-    else:
-        assert False, "Failed to raise ValueError for invalid number of teams per arena"
 
 def test_knockout_match_winners_empty():
     scheduler = get_scheduler()
