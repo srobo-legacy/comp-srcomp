@@ -50,10 +50,6 @@ class SRComp(object):
         """A :class:`collections.OrderedDict` mapping TLAs to
         :class:`sr.comp.teams.Team` objects."""
 
-        scorer = load_scorer(root)
-        self.scores = scores.Scores(root, self.teams.keys(), scorer)
-        """A :class:`sr.comp.scores.Scores` instance."""
-
         self.arenas = arenas.load_arenas(os.path.join(root, "arenas.yaml"))
         """A :class:`collections.OrderedDict` mapping arena names to
         :class:`sr.comp.arenas.Arena` objects."""
@@ -61,6 +57,10 @@ class SRComp(object):
         self.corners = arenas.load_corners(os.path.join(root, "arenas.yaml"))
         """A :class:`collections.OrderedDict` mapping corner numbers to
         :class:`sr.comp.arenas.Corner` objects."""
+
+        scorer = load_scorer(root)
+        self.scores = scores.Scores(root, self.teams.keys(), scorer)
+        """A :class:`sr.comp.scores.Scores` instance."""
 
         schedule_fname = os.path.join(root, "schedule.yaml")
         league_fname = os.path.join(root, "league.yaml")
