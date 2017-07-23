@@ -39,8 +39,7 @@ class MatchSchedule(object):
     """
 
     @classmethod
-    def create(cls, config_fname, league_fname, scores, arenas, teams,
-               knockout_scheduler=None):
+    def create(cls, config_fname, league_fname, scores, arenas, teams):
         """
         Create a new match schedule around the given config data.
 
@@ -49,7 +48,6 @@ class MatchSchedule(object):
         :param `.Scores` scores: The scores for the competition.
         :param dict arenas: A mapping of arena ids to :class:`.Arena` instances.
         :param dict teams: A mapping of TLAs to :class:`.Team` instances.
-        :param class knockout_scheduler: The scheduler to use for the knockcout stages.
         """
 
         y = yaml_loader.load(config_fname)
@@ -58,11 +56,10 @@ class MatchSchedule(object):
 
         schedule = cls(y, league, teams)
 
-        if knockout_scheduler is None:
-            if y['knockout'].get('static', False):
-                knockout_scheduler = StaticScheduler
-            else:
-                knockout_scheduler = KnockoutScheduler
+        if y['knockout'].get('static', False):
+            knockout_scheduler = StaticScheduler
+        else:
+            knockout_scheduler = KnockoutScheduler
 
         k = knockout_scheduler(schedule, scores, arenas, teams, y)
         k.add_knockouts()
