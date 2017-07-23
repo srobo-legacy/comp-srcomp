@@ -61,6 +61,7 @@ def load_datas(the_datas, teams):
             'somewhere',
             teams,
             FakeScorer,
+            num_teams_per_arena=4,
         )
         return scores
 

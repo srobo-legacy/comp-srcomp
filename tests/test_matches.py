@@ -76,6 +76,7 @@ def load_data(the_data):
         the_data,
         the_data['matches'],
         teams,
+        num_teams_per_arena=4,
     )
     return matches
 

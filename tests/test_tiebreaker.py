@@ -24,7 +24,7 @@ def make_schedule():
                 'league': { 'extra_spacing': [], },
                 'delays': []}
     teams = defaultdict(lambda: Team(None, None, False, None))
-    schedule = MatchSchedule(settings, {}, teams)
+    schedule = MatchSchedule(settings, {}, teams, 4)
 
     finals = Match(num=0, display_name='Match 0',
                    arena='A',

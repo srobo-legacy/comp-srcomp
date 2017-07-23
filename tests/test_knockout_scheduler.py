@@ -16,7 +16,7 @@ def mock_first_round_seeding(side_effect):
 
 def get_scheduler(matches = None, positions = None, \
                     knockout_positions = None, league_game_points = None, \
-                    delays = None, teams=None):
+                    delays = None, teams=None, num_teams_per_arena = 4):
     matches = matches or []
     delays = delays or []
     match_duration = timedelta(minutes = 5)
@@ -53,10 +53,18 @@ def get_scheduler(matches = None, positions = None, \
     arenas = ['A']
     if teams is None:
         teams = defaultdict(lambda: Team(None, None, False, None))
-    scheduler = KnockoutScheduler(league_schedule, scores, arenas, teams,
-                                  config)
+    scheduler = KnockoutScheduler(league_schedule, scores, arenas, num_teams_per_arena,
+                                  teams, config)
     return scheduler
 
+
+def test_invalid_num_teams_per_arena():
+    try:
+        get_scheduler(num_teams_per_arena=2)
+    except ValueError:
+        pass
+    else:
+        assert False, "Failed to raise ValueError for invalid number of teams per arena"
 
 def test_knockout_match_winners_empty():
     scheduler = get_scheduler()

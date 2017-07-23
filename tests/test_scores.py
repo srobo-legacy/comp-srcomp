@@ -13,7 +13,7 @@ def test_last_scored_match_none():
             ks.return_value = mock.Mock(last_scored_match = knockout_lsm)
             ts.return_value = mock.Mock(last_scored_match = tiebreaker_lsm)
 
-            scores = Scores('', None, None)
+            scores = Scores('', None, None, 0)
 
             lsm = scores.last_scored_match
             assert expected == lsm

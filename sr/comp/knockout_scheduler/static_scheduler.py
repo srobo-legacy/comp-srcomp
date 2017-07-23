@@ -10,19 +10,7 @@ class StaticScheduler(BaseKnockoutScheduler):
     """
     A knockout scheduler which loads almost fixed data from the config. Assumes
     only a single arena.
-
-    :param schedule: The league schedule.
-    :param scores: The scores.
-    :param areans: The arenas.
-    :param teams: The teams.
-    :param config: Extra configuration for the static knockout.
     """
-
-    def __init__(self, schedule, scores, arenas, teams, config):
-        super(StaticScheduler, self).__init__(schedule, scores, arenas, teams,
-                                              config)
-
-        self.num_teams_per_arena = self.config['static_knockout']['teams_per_arena']
 
     def get_team(self, team_ref):
         if not self._played_all_league_matches():

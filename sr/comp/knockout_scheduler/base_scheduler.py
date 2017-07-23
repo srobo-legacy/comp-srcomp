@@ -18,23 +18,21 @@ class BaseKnockoutScheduler(object):
     :param config: Custom configuration for the knockout scheduler.
     """
 
-    num_teams_per_arena = NotImplemented
-    """
-    The number of spaces for teams in an arena.
-
-    This is used in building matches where we don't yet know which teams will
-    actually be playing, and for filling in when there aren't enough teams to
-    fill the arena.
-
-    Derrived classes must assign an integer value for this attribute.
-    """
-
-    def __init__(self, schedule, scores, arenas, teams, config):
+    def __init__(self, schedule, scores, arenas, num_teams_per_arena, teams, config):
         self.schedule = schedule
         self.scores = scores
         self.arenas = arenas
         self.teams = teams
         self.config = config
+
+        self.num_teams_per_arena = num_teams_per_arena
+        """
+        The number of spaces for teams in an arena.
+
+        This is used in building matches where we don't yet know which teams will
+        actually be playing, and for filling in when there aren't enough teams to
+        fill the arena.
+        """
 
         # The knockout matches appear in the normal matches list
         # but this list provides them in groups of rounds.

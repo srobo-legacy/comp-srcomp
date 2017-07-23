@@ -8,7 +8,7 @@ with open('README.rst') as f:
 
 install_requires = [
     'PyYAML >=3.11, <4',
-    'sr.comp.ranker >=1.0, <2',
+    'sr.comp.ranker >=1.3, <2',
     'mock >=1.0.1, <2',
     'python-dateutil >=2.2, <3'
 ]
