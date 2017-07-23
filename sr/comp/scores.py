@@ -204,8 +204,8 @@ class BaseScores(object):
 
         positions = ranker.calc_positions(game_points, dsq)
         self.game_positions[match_id] = positions
-        self.ranked_points[match_id] = ranker.calc_ranked_points(positions,
-                                                                 dsq)
+        self.ranked_points[match_id] = \
+            ranker.calc_ranked_points(positions, dsq)
 
     @property
     def last_scored_match(self):
