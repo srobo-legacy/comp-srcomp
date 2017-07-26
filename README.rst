@@ -24,9 +24,13 @@ around the path to a local working copy of a *compstate repo*.
     from srcomp import SRComp
     comp = SRComp('/path/to/compstate')
 
-Web clients should look at using the HTTP API provided by
+**Web clients** should look at using the HTTP API provided by
 `srcomp-http <https://www.studentrobotics.org/cgit/comp/srcomp-http.git>`__
 rather than implementing their own intermediary.
+
+There is also a **command line** interface which provides utilities for
+managing a *compstate*:
+`srcomp-cli <https://www.studentrobotics.org/cgit/comp/srcomp-cli.git>`__.
 
 See the
 `dummy-comp <https://www.studentrobotics.org/cgit/comp/dummy-comp.git>`__
@@ -46,17 +50,6 @@ Test with
 ---------
 
 ``./run-tests``
-
-Scripts
--------
-
--  ``./validate``: Validates that the directory given by the only
-   argument is a valid competition state folder.
--  ``./convert-schedule``: Converts a schedule from being one match per
-   line with participants separated by pipes into a yaml format similar
-   to that used in schedule.yaml. NB: it only outputs the 'matches' root
-   key and assumes two arenas 'A' and 'B' and for games with four
-   participants.
 
 .. |Build Status| image:: https://travis-ci.org/PeterJCLaw/srcomp.png?branch=master
    :target: https://travis-ci.org/PeterJCLaw/srcomp
