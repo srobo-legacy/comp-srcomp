@@ -29,7 +29,7 @@ around the path to a local working copy of a *compstate repo*.
 rather than implementing their own intermediary.
 
 There is also a **command line** interface which provides utilities for
-managing a *compstate*:
+managing a *compstate repo*:
 `srcomp-cli <https://www.studentrobotics.org/cgit/comp/srcomp-cli.git>`__.
 
 See the
