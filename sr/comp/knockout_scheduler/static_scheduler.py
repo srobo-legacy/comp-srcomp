@@ -49,11 +49,17 @@ class StaticScheduler(BaseKnockoutScheduler):
 
         try:
             match = self.knockout_rounds[round_num][match_num]
+        except IndexError:
+            raise ValueError(
+                "Reference '{}' to unscheduled match!".format(team_ref),
+            )
+
+        try:
             ranking = self.get_ranking(match)
             return ranking[pos]
         except IndexError:
             raise ValueError(
-                "Reference '{}' to unscheduled match!".format(team_ref),
+                "Reference '{}' to invalid ranking!".format(team_ref),
             )
 
     def _add_match(self, match_info, rounds_remaining, round_num):
