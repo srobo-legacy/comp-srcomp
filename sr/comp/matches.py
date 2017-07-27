@@ -12,6 +12,17 @@ from .match_period_clock import MatchPeriodClock
 from .knockout_scheduler import KnockoutScheduler, StaticScheduler
 
 
+class WrongNumberOfTeams(Exception):
+    def __init__(self, match_n, arena_name, teams, num_teams_per_arena):
+        message = "Match {0}{1} has {2} teams but must have {3}".format(
+            arena_name,
+            match_n,
+            len(teams),
+            num_teams_per_arena,
+        )
+        super(WrongNumberOfTeams, self).__init__(message)
+
+
 Delay = namedtuple("Delay",
                    ["delay", "time"])
 
@@ -39,7 +50,7 @@ class MatchSchedule(object):
     """
 
     @classmethod
-    def create(cls, config_fname, league_fname, scores, arenas, teams):
+    def create(cls, config_fname, league_fname, scores, arenas, num_teams_per_arena, teams):
         """
         Create a new match schedule around the given config data.
 
@@ -47,6 +58,7 @@ class MatchSchedule(object):
         :param str league_fname: The filename of the file containing the league matches.
         :param `.Scores` scores: The scores for the competition.
         :param dict arenas: A mapping of arena ids to :class:`.Arena` instances.
+        :param int num_teams_per_arena: The usual number of teams per arena.
         :param dict teams: A mapping of TLAs to :class:`.Team` instances.
         """
 
@@ -54,14 +66,14 @@ class MatchSchedule(object):
 
         league = yaml_loader.load(league_fname)['matches']
 
-        schedule = cls(y, league, teams)
+        schedule = cls(y, league, teams, num_teams_per_arena)
 
         if y['knockout'].get('static', False):
             knockout_scheduler = StaticScheduler
         else:
             knockout_scheduler = KnockoutScheduler
 
-        k = knockout_scheduler(schedule, scores, arenas, teams, y)
+        k = knockout_scheduler(schedule, scores, arenas, num_teams_per_arena, teams, y)
         k.add_knockouts()
 
         schedule.knockout_rounds = k.knockout_rounds
@@ -72,7 +84,9 @@ class MatchSchedule(object):
 
         return schedule
 
-    def __init__(self, y, league, teams):
+    def __init__(self, y, league, teams, num_teams_per_arena):
+        self._num_corners = num_teams_per_arena
+
         self.teams = teams
         """A mapping of TLAs to :class:`.Team` instances."""
 
@@ -278,6 +292,10 @@ class MatchSchedule(object):
         for arena_name, teams in arenas.items():
             teams = self.remove_drop_outs(teams, match_n)
             display_name = 'Match {n}'.format(n=match_n)
+
+            if len(teams) != self._num_corners:
+                raise WrongNumberOfTeams(match_n, arena_name, teams, self._num_corners)
+
             match = Match(match_n, display_name, arena_name, teams,
                           start_time, end_time, MatchType.league,
                           use_resolved_ranking=False)

@@ -134,10 +134,12 @@ class BaseScores(object):
     :param str resultdir: Where to find score sheet files.
     :param dict teams: The teams in the competition.
     :param dict scorer: The scorer logic.
+    :param int num_teams_per_arena: The usual number of teams per arena.
     """
 
-    def __init__(self, resultdir, teams, scorer):
+    def __init__(self, resultdir, teams, scorer, num_teams_per_arena):
         self._scorer = scorer
+        self._num_corners = num_teams_per_arena
 
         self.game_points = {}
         """
@@ -205,7 +207,7 @@ class BaseScores(object):
         positions = ranker.calc_positions(game_points, dsq)
         self.game_positions[match_id] = positions
         self.ranked_points[match_id] = \
-            ranker.calc_ranked_points(positions, dsq)
+            ranker.calc_ranked_points(positions, dsq, self._num_corners)
 
     @property
     def last_scored_match(self):
@@ -249,8 +251,8 @@ class LeagueScores(BaseScores):
             last_score = score
         return positions
 
-    def __init__(self, resultdir, teams, scorer):
-        super(LeagueScores, self).__init__(resultdir, teams, scorer)
+    def __init__(self, resultdir, teams, scorer, num_teams_per_arena):
+        super(LeagueScores, self).__init__(resultdir, teams, scorer, num_teams_per_arena)
 
         # Sum the league scores for each team
         for match_id, match in self.ranked_points.items():
@@ -294,8 +296,8 @@ class KnockoutScores(BaseScores):
 
         return ranking
 
-    def __init__(self, resultdir, teams, scorer, league_positions):
-        super(KnockoutScores, self).__init__(resultdir, teams, scorer)
+    def __init__(self, resultdir, teams, scorer, num_teams_per_arena, league_positions):
+        super(KnockoutScores, self).__init__(resultdir, teams, scorer, num_teams_per_arena)
 
         self.resolved_positions = {}
         """
@@ -321,24 +323,25 @@ class Scores(object):
     A simple class which stores references to the league and knockout scores.
     """
 
-    def __init__(self, root, teams, scorer):
+    def __init__(self, root, teams, scorer, num_teams_per_arena):
         self.root = root
 
         self.league = LeagueScores(os.path.join(root, "league"),
-                                   teams, scorer)
+                                   teams, scorer, num_teams_per_arena)
         """
         The :class:`LeagueScores` for the competition.
         """
 
 
         self.knockout = KnockoutScores(os.path.join(root, "knockout"),
-                                       teams, scorer, self.league.positions)
+                                       teams, scorer, num_teams_per_arena,
+                                       self.league.positions)
         """
         The :class:`KnockoutScores` for the competition.
         """
 
         self.tiebreaker = TiebreakerScores(os.path.join(root, "tiebreaker"),
-                                           teams, scorer)
+                                           teams, scorer, num_teams_per_arena)
         """
         The :class:`TiebreakerScores` for the competition.
         """

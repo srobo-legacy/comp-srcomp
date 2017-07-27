@@ -20,6 +20,7 @@ class KnockoutScheduler(BaseKnockoutScheduler):
     :param schedule: The league schedule.
     :param scores: The scores.
     :param dict arenas: The arenas.
+    :param int num_teams_per_arena: The usual number of teams per arena.
     :param dict teams: The teams.
     :param config: Custom configuration for the knockout scheduler.
     """
@@ -29,11 +30,21 @@ class KnockoutScheduler(BaseKnockoutScheduler):
     Constant value due to the way the automatic seeding works.
     """
 
-    def __init__(self, schedule, scores, arenas, teams, config):
+    def __init__(self, schedule, scores, arenas, num_teams_per_arena, teams, config):
+        if num_teams_per_arena != self.num_teams_per_arena:
+            raise ValueError(
+                "The automatic knockout scheduler can only be used for {0} teams"
+                " per arena (and not {1})".format(
+                    self.num_teams_per_arena,
+                    num_teams_per_arena,
+                ),
+            )
+
         super(KnockoutScheduler, self).__init__(
             schedule,
             scores,
             arenas,
+            num_teams_per_arena,
             teams,
             config,
         )

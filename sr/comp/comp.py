@@ -58,15 +58,18 @@ class SRComp(object):
         """A :class:`collections.OrderedDict` mapping corner numbers to
         :class:`sr.comp.arenas.Corner` objects."""
 
+        self.num_teams_per_arena = len(self.corners)
+
         scorer = load_scorer(root)
-        self.scores = scores.Scores(root, self.teams.keys(), scorer)
+        self.scores = scores.Scores(root, self.teams.keys(), scorer, self.num_teams_per_arena)
         """A :class:`sr.comp.scores.Scores` instance."""
 
         schedule_fname = os.path.join(root, "schedule.yaml")
         league_fname = os.path.join(root, "league.yaml")
         self.schedule = matches.MatchSchedule.create(schedule_fname,
                                                      league_fname, self.scores,
-                                                     self.arenas, self.teams)
+                                                     self.arenas, self.num_teams_per_arena,
+                                                     self.teams)
         """A :class:`sr.comp.matches.MatchSchedule` instance."""
 
         self.timezone = self.schedule.timezone

@@ -109,6 +109,8 @@ def get_scheduler(matches_config, matches = None, positions = None, \
     knockout_scores = mock.Mock(resolved_positions = knockout_positions)
     scores = mock.Mock(league = league_scores, knockout = knockout_scores)
 
+    num_teams_per_arena = matches_config.pop('teams_per_arena')
+
     period_config = {
         "description": "A description of the period",
         "start_time":   datetime(2014, 3, 27,  13),
@@ -125,6 +127,7 @@ def get_scheduler(matches_config, matches = None, positions = None, \
         league_schedule,
         scores,
         arenas,
+        num_teams_per_arena,
         teams,
         config,
     )
