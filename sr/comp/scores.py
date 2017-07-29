@@ -314,7 +314,7 @@ class KnockoutScores(BaseScores):
             self.resolved_positions[match_id] = positions
 
 
-class TiebreakerScores(BaseScores):
+class TiebreakerScores(KnockoutScores):
     pass
 
 
@@ -341,7 +341,8 @@ class Scores(object):
         """
 
         self.tiebreaker = TiebreakerScores(os.path.join(root, "tiebreaker"),
-                                           teams, scorer, num_teams_per_arena)
+                                           teams, scorer, num_teams_per_arena,
+                                           self.league.positions)
         """
         The :class:`TiebreakerScores` for the competition.
         """
