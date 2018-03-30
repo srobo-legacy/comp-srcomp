@@ -25,15 +25,15 @@ around the path to a local working copy of a *compstate repo*.
     comp = SRComp('/path/to/compstate')
 
 **Web clients** should look at using the HTTP API provided by
-`srcomp-http <https://www.studentrobotics.org/cgit/comp/srcomp-http.git>`__
+`srcomp-http <https://github.com/PeterJCLaw/srcomp-http>`__
 rather than implementing their own intermediary.
 
 There is also a **command line** interface which provides utilities for
 managing a *compstate repo*:
-`srcomp-cli <https://www.studentrobotics.org/cgit/comp/srcomp-cli.git>`__.
+`srcomp-cli <https://github.com/PeterJCLaw/srcomp-cli>`__.
 
 See the
-`dummy-comp <https://www.studentrobotics.org/cgit/comp/dummy-comp.git>`__
+`dummy-comp <https://github.com/PeterJCLaw/dummy-comp>`__
 for an example of the structure and values expected in a *compstate
 repo*.
 
